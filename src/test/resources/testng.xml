@@ -16,4 +16,9 @@
             <package name="com.jenjinstudios.io.stream"/>
         </packages>
     </test>
+    <test name="concurrency" verbose="1">
+        <packages>
+            <package name="com.jenjinstudios.io.concurrency"/>
+        </packages>
+    </test>
 </suite>
