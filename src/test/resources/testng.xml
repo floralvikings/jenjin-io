@@ -1,0 +1,9 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="jenjin-io" verbose="1" >
+    <test name="io">
+        <packages>
+            <package name="com.jenjinstudios.io" />
+        </packages>
+    </test>
+</suite>
