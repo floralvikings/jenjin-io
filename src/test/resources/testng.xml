@@ -6,4 +6,9 @@
             <package name="com.jenjinstudios.io" />
         </packages>
     </test>
+    <test name="serialization" verbose="1" >
+        <packages>
+            <package name="com.jenjinstudios.io.serialization"/>
+        </packages>
+    </test>
 </suite>
