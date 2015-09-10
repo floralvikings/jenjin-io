@@ -1,0 +1,37 @@
+description = 'Jenjin Core IO API'
+
+apply plugin: 'java'
+sourceCompatibility = 1.8
+version = '0.0.0'
+
+repositories {
+    mavenCentral();
+}
+
+dependencies {
+    compile 'org.slf4j:slf4j-api:1.7.12'
+
+    // Test dependencies
+    testCompile 'org.testng:testng:6.8.7'
+    testCompile 'org.mockito:mockito-all:2.0.2-beta'
+    testCompile 'org.powermock:powermock-api-mockito:1.6.2'
+    testCompile 'org.slf4j:slf4j-jdk14:1.7.12'
+}
+
+test {
+    // enable TestNG
+    useTestNG({
+        suiteXmlFiles ->
+            [
+                    'src/test/resources/testng.xml'
+            ]
+    })
+
+    testLogging {
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.6'
+}
