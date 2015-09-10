@@ -11,4 +11,9 @@
             <package name="com.jenjinstudios.io.serialization"/>
         </packages>
     </test>
+    <test name="stream" verbose="1" >
+        <packages>
+            <package name="com.jenjinstudios.io.stream"/>
+        </packages>
+    </test>
 </suite>
