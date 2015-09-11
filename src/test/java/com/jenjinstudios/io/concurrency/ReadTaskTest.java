@@ -5,6 +5,8 @@ import com.jenjinstudios.io.stream.MessageInputStream;
 import org.mockito.Mockito;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
+
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.*;
 
@@ -29,5 +31,21 @@ public class ReadTaskTest
         new ReadTask(messageQueue, messageInputStream).run();
 
         verify(messageQueue).messageReceived(message);
+    }
+
+    /**
+     * Test task execution with the input stream throwing an exception.
+     * @throws Exception If there is an exception thrown during testing.
+     */
+    @Test
+    public void testRunWithException() throws Exception {
+        MessageQueue messageQueue = mock(MessageQueue.class);
+        MessageInputStream messageInputStream = mock(MessageInputStream.class);
+        IOException ex = mock(IOException.class);
+        when(messageInputStream.read()).thenThrow(ex);
+
+        new ReadTask(messageQueue, messageInputStream).run();
+
+        verify(messageQueue).errorEncountered(ex);
     }
 }
