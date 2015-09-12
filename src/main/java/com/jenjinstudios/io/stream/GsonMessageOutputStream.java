@@ -36,4 +36,10 @@ public class GsonMessageOutputStream implements MessageOutputStream
         final String json = gson.toJson(message, Message.class);
         dataOutputStream.writeUTF(json);
     }
+
+    @Override
+    public void close() throws IOException {
+        outputStream.flush();
+        outputStream.close();
+    }
 }

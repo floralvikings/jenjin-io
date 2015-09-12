@@ -17,4 +17,10 @@ public interface MessageInputStream
      * @throws IOException If there is an exception when reading the message.
      */
     Message read() throws IOException;
+
+    /**
+     * Close the underlying stream.
+     * @throws IOException If there is an exception when closing the underlying stream.
+     */
+    void close() throws IOException;
 }

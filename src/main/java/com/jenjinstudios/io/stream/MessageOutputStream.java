@@ -19,4 +19,10 @@ public interface MessageOutputStream
      * @throws IOException If there is an exception while writing the message.
      */
     void write(Message message) throws IOException;
+
+    /**
+     * Close the underlying stream.
+     * @throws IOException If there is an exception when closing the underlying stream.
+     */
+    void close() throws IOException;
 }

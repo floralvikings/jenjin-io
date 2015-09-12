@@ -34,4 +34,9 @@ public class GsonMessageInputStream implements MessageInputStream
               .create();
         return gson.fromJson(s, Message.class);
     }
+
+    @Override
+    public void close() throws IOException {
+        inputStream.close();
+    }
 }
