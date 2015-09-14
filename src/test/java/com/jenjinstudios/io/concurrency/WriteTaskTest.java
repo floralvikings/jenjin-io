@@ -1,7 +1,7 @@
 package com.jenjinstudios.io.concurrency;
 
 import com.jenjinstudios.io.Message;
-import com.jenjinstudios.io.stream.MessageWriter;
+import com.jenjinstudios.io.MessageWriter;
 import org.testng.annotations.Test;
 
 import java.util.Collections;

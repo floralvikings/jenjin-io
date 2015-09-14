@@ -1,7 +1,9 @@
 package com.jenjinstudios.io.stream;
 
 import com.jenjinstudios.io.ExecutionContext;
+import com.jenjinstudios.io.GsonMessageReader;
 import com.jenjinstudios.io.Message;
+import com.jenjinstudios.io.MessageReader;
 import org.testng.annotations.Test;
 
 import java.io.ByteArrayInputStream;

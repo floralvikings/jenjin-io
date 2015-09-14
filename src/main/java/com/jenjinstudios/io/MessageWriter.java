@@ -1,4 +1,4 @@
-package com.jenjinstudios.io.stream;
+package com.jenjinstudios.io;
 
 import com.jenjinstudios.io.Message;
 

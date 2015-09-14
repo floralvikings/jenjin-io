@@ -1,7 +1,7 @@
 package com.jenjinstudios.io.concurrency;
 
 import com.jenjinstudios.io.Message;
-import com.jenjinstudios.io.stream.MessageReader;
+import com.jenjinstudios.io.MessageReader;
 
 import java.io.IOException;
 
