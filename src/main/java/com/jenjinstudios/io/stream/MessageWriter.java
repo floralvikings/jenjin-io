@@ -9,7 +9,7 @@ import java.io.IOException;
  *
  * @author Caleb Brinkman
  */
-public interface MessageOutputStream
+public interface MessageWriter
 {
     /**
      * Write the given message to the backing output stream.

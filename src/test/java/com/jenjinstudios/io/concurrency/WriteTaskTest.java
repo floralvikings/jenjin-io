@@ -1,7 +1,7 @@
 package com.jenjinstudios.io.concurrency;
 
 import com.jenjinstudios.io.Message;
-import com.jenjinstudios.io.stream.MessageOutputStream;
+import com.jenjinstudios.io.stream.MessageWriter;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
@@ -25,13 +25,13 @@ public class WriteTaskTest
     public void testRun() throws Exception {
         MessageQueue messageQueue = mock(MessageQueue.class);
         Message message = mock(Message.class);
-        MessageOutputStream messageOutputStream = mock(MessageOutputStream.class);
+        MessageWriter messageWriter = mock(MessageWriter.class);
         when(messageQueue.getOutgoingAndClear())
               .thenReturn(Collections.singletonList(message))
               .thenReturn(mock(List.class));
 
-        new WriteTask(messageQueue, messageOutputStream).run();
+        new WriteTask(messageQueue, messageWriter).run();
 
-        verify(messageOutputStream).write(message);
+        verify(messageWriter).write(message);
     }
 }

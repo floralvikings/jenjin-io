@@ -1,7 +1,7 @@
 package com.jenjinstudios.io.concurrency;
 
 import com.jenjinstudios.io.Message;
-import com.jenjinstudios.io.stream.MessageOutputStream;
+import com.jenjinstudios.io.stream.MessageWriter;
 
 import java.io.IOException;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
 public class WriteTask implements Runnable
 {
     private final MessageQueue messageQueue;
-    private final MessageOutputStream outputStream;
+    private final MessageWriter outputStream;
 
     /**
      * Construct a new WriteTask that will send messages from the given MessageQueue via the given MessageOutputStream.
@@ -22,7 +22,7 @@ public class WriteTask implements Runnable
      * @param messageQueue The MessageQueue.
      * @param outputStream The MessageOutputStream.
      */
-    public WriteTask(MessageQueue messageQueue, MessageOutputStream outputStream) {
+    public WriteTask(MessageQueue messageQueue, MessageWriter outputStream) {
         this.messageQueue = messageQueue;
         this.outputStream = outputStream;
     }

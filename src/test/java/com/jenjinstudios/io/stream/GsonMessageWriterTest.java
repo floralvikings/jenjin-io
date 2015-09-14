@@ -14,7 +14,7 @@ import static org.testng.Assert.*;
  *
  * @author Caleb Brinkman
  */
-public class GsonMessageOutputStreamTest
+public class GsonMessageWriterTest
 {
     /**
      * Test the write method.
@@ -26,8 +26,8 @@ public class GsonMessageOutputStreamTest
         message.setName("foo");
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        MessageOutputStream gsonMessageOutputStream = new GsonMessageOutputStream(outputStream);
-        gsonMessageOutputStream.write(message);
+        MessageWriter gsonMessageWriter = new GsonMessageWriter(outputStream);
+        gsonMessageWriter.write(message);
 
         final String json = "{\"class\":\"com.jenjinstudios.io.stream" +
               ".GsonMessageOutputStreamTest$TestMessage\",\"fields\":{\"name\":\"foo\"}}";
