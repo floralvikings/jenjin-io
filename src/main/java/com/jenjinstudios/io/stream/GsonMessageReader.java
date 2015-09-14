@@ -14,7 +14,7 @@ import java.io.InputStream;
  *
  * @author Caleb Brinkman
  */
-public class GsonMessageInputStream implements MessageInputStream
+public class GsonMessageReader implements MessageReader
 {
     private final InputStream inputStream;
 
@@ -22,7 +22,7 @@ public class GsonMessageInputStream implements MessageInputStream
      * Construct a new GsonMessageInputStream that will read Messages from the given InputStream.
      * @param inputStream The InputStream.
      */
-    public GsonMessageInputStream(InputStream inputStream) {
+    public GsonMessageReader(InputStream inputStream) {
         this.inputStream = inputStream;
     }
 

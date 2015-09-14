@@ -2,14 +2,12 @@ package com.jenjinstudios.io.stream;
 
 import com.jenjinstudios.io.ExecutionContext;
 import com.jenjinstudios.io.Message;
-import org.mockito.Mockito;
 import org.testng.annotations.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
-import static org.mockito.Mockito.*;
 import static org.testng.Assert.*;
 
 /**
@@ -17,7 +15,7 @@ import static org.testng.Assert.*;
  *
  * @author Caleb Brinkman
  */
-public class GsonMessageInputStreamTest
+public class GsonMessageReaderTest
 {
     /**
      * Test the read method.
@@ -35,8 +33,8 @@ public class GsonMessageInputStreamTest
         System.arraycopy(jsonBytes, 0, bytes, lengthBytes.length, jsonBytes.length);
 
         final InputStream inputStream = new ByteArrayInputStream(bytes);
-        final MessageInputStream gsonMessageInputStream = new GsonMessageInputStream(inputStream);
-        final Message message = gsonMessageInputStream.read();
+        final MessageReader gsonMessageReader = new GsonMessageReader(inputStream);
+        final Message message = gsonMessageReader.read();
 
         assertTrue(message instanceof TestMessage, "Message should be instance of TestMessage");
         assertEquals(((TestMessage)message).getName(), "foo", "Message name should be \"foo\"");

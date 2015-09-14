@@ -1,14 +1,12 @@
 package com.jenjinstudios.io.concurrency;
 
 import com.jenjinstudios.io.Message;
-import com.jenjinstudios.io.stream.MessageInputStream;
-import org.mockito.Mockito;
+import com.jenjinstudios.io.stream.MessageReader;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
 
 import static org.mockito.Mockito.*;
-import static org.testng.Assert.*;
 
 /**
  * Used for testing the ReadTask class.
@@ -25,10 +23,10 @@ public class ReadTaskTest
     public void testRun() throws Exception {
         Message message = mock(Message.class);
         MessageQueue messageQueue = mock(MessageQueue.class);
-        MessageInputStream messageInputStream = mock(MessageInputStream.class);
-        when(messageInputStream.read()).thenReturn(message);
+        MessageReader messageReader = mock(MessageReader.class);
+        when(messageReader.read()).thenReturn(message);
 
-        new ReadTask(messageQueue, messageInputStream).run();
+        new ReadTask(messageQueue, messageReader).run();
 
         verify(messageQueue).messageReceived(message);
     }
@@ -40,11 +38,11 @@ public class ReadTaskTest
     @Test
     public void testRunWithException() throws Exception {
         MessageQueue messageQueue = mock(MessageQueue.class);
-        MessageInputStream messageInputStream = mock(MessageInputStream.class);
+        MessageReader messageReader = mock(MessageReader.class);
         IOException ex = mock(IOException.class);
-        when(messageInputStream.read()).thenThrow(ex);
+        when(messageReader.read()).thenThrow(ex);
 
-        new ReadTask(messageQueue, messageInputStream).run();
+        new ReadTask(messageQueue, messageReader).run();
 
         verify(messageQueue).errorEncountered(ex);
     }

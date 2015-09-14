@@ -9,7 +9,7 @@ import java.io.IOException;
  *
  * @author Caleb Brinkman
  */
-public interface MessageInputStream
+public interface MessageReader
 {
     /**
      * Read a message from the backing InputStream.

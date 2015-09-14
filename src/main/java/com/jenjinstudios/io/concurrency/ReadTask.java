@@ -1,7 +1,7 @@
 package com.jenjinstudios.io.concurrency;
 
 import com.jenjinstudios.io.Message;
-import com.jenjinstudios.io.stream.MessageInputStream;
+import com.jenjinstudios.io.stream.MessageReader;
 
 import java.io.IOException;
 
@@ -13,7 +13,7 @@ import java.io.IOException;
 public class ReadTask implements Runnable
 {
     private final MessageQueue messageQueue;
-    private final MessageInputStream inputStream;
+    private final MessageReader inputStream;
 
     /**
      * Construct a new ReadTask that will read from the given message input stream and store the incoming messages in
@@ -22,7 +22,7 @@ public class ReadTask implements Runnable
      * @param messageQueue The MessageQueue.
      * @param inputStream The MessageInputStream.
      */
-    public ReadTask(MessageQueue messageQueue, MessageInputStream inputStream) {
+    public ReadTask(MessageQueue messageQueue, MessageReader inputStream) {
         this.messageQueue = messageQueue;
         this.inputStream = inputStream;
     }
