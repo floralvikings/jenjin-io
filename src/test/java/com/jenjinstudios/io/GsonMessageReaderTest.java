@@ -1,4 +1,4 @@
-package com.jenjinstudios.io.stream;
+package com.jenjinstudios.io;
 
 import com.jenjinstudios.io.ExecutionContext;
 import com.jenjinstudios.io.GsonMessageReader;
@@ -13,7 +13,7 @@ import java.nio.ByteBuffer;
 import static org.testng.Assert.*;
 
 /**
- * Test the GsonMessageInputStream class.
+ * Test the GsonMessageReader class.
  *
  * @author Caleb Brinkman
  */
@@ -25,8 +25,8 @@ public class GsonMessageReaderTest
      */
     @Test
     public void testRead() throws Exception {
-        final String json = "{\"class\":\"com.jenjinstudios.io.stream" +
-              ".GsonMessageInputStreamTest$TestMessage\",\"fields\":{\"name\":\"foo\"}}";
+        final String json = "{\"class\":\"com.jenjinstudios.io" +
+              ".GsonMessageReaderTest$TestMessage\",\"fields\":{\"name\":\"foo\"}}";
         final byte[] jsonBytes = json.getBytes();
         final byte[] lengthBytes = ByteBuffer.allocate(2).putChar((char) jsonBytes.length).array();
         byte[] bytes = new byte[(jsonBytes.length + lengthBytes.length)];

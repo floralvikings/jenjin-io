@@ -14,17 +14,17 @@ import java.util.List;
 public class WriteTask implements Runnable
 {
     private final MessageQueue messageQueue;
-    private final MessageWriter outputStream;
+    private final MessageWriter messageWriter;
 
     /**
-     * Construct a new WriteTask that will send messages from the given MessageQueue via the given MessageOutputStream.
+     * Construct a new WriteTask that will send messages from the given MessageQueue via the given MessageWriter.
      *
      * @param messageQueue The MessageQueue.
-     * @param outputStream The MessageOutputStream.
+     * @param messageWriter The MessageWriter.
      */
-    public WriteTask(MessageQueue messageQueue, MessageWriter outputStream) {
+    public WriteTask(MessageQueue messageQueue, MessageWriter messageWriter) {
         this.messageQueue = messageQueue;
-        this.outputStream = outputStream;
+        this.messageWriter = messageWriter;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class WriteTask implements Runnable
         final List<Message> outgoing = messageQueue.getOutgoingAndClear();
         outgoing.forEach(message -> {
             try {
-                outputStream.write(message);
+                messageWriter.write(message);
             } catch (IOException e) {
                 messageQueue.errorEncountered(e);
             }

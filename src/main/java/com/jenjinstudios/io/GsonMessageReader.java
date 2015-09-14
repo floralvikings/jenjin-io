@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Implements a MessageInputStream which relies on Gson to deserialize incoming data.
+ * Implements a MessageWriter which relies on Gson to deserialize incoming data.
  *
  * @author Caleb Brinkman
  */
@@ -18,7 +18,7 @@ public class GsonMessageReader implements MessageReader
     private final InputStream inputStream;
 
     /**
-     * Construct a new GsonMessageInputStream that will read Messages from the given InputStream.
+     * Construct a new GsonMessageReader that will read Messages from the given InputStream.
      * @param inputStream The InputStream.
      */
     public GsonMessageReader(InputStream inputStream) {

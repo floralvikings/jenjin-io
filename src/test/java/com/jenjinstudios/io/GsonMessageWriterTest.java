@@ -1,4 +1,4 @@
-package com.jenjinstudios.io.stream;
+package com.jenjinstudios.io;
 
 import com.jenjinstudios.io.ExecutionContext;
 import com.jenjinstudios.io.GsonMessageWriter;
@@ -12,7 +12,7 @@ import java.nio.ByteBuffer;
 import static org.testng.Assert.*;
 
 /**
- * Used to test the GsonMessageOutputStream class.
+ * Used to test the GsonMessageWriter class.
  *
  * @author Caleb Brinkman
  */
@@ -31,8 +31,8 @@ public class GsonMessageWriterTest
         MessageWriter gsonMessageWriter = new GsonMessageWriter(outputStream);
         gsonMessageWriter.write(message);
 
-        final String json = "{\"class\":\"com.jenjinstudios.io.stream" +
-              ".GsonMessageOutputStreamTest$TestMessage\",\"fields\":{\"name\":\"foo\"}}";
+        final String json = "{\"class\":\"com.jenjinstudios.io" +
+              ".GsonMessageWriterTest$TestMessage\",\"fields\":{\"name\":\"foo\"}}";
         final byte[] jsonBytes = json.getBytes();
         final byte[] lengthBytes = ByteBuffer.allocate(2).putChar((char) jsonBytes.length).array();
         byte[] bytes = new byte[(jsonBytes.length + lengthBytes.length)];

@@ -13,24 +13,24 @@ import java.io.IOException;
 public class ReadTask implements Runnable
 {
     private final MessageQueue messageQueue;
-    private final MessageReader inputStream;
+    private final MessageReader messageReader;
 
     /**
      * Construct a new ReadTask that will read from the given message input stream and store the incoming messages in
      * the given MessageQueue.
      *
      * @param messageQueue The MessageQueue.
-     * @param inputStream The MessageInputStream.
+     * @param messageReader The MessageReader.
      */
-    public ReadTask(MessageQueue messageQueue, MessageReader inputStream) {
+    public ReadTask(MessageQueue messageQueue, MessageReader messageReader) {
         this.messageQueue = messageQueue;
-        this.inputStream = inputStream;
+        this.messageReader = messageReader;
     }
 
     @Override
     public void run() {
         try {
-            final Message message = inputStream.read();
+            final Message message = messageReader.read();
             messageQueue.messageReceived(message);
         } catch (IOException e) {
             messageQueue.errorEncountered(e);

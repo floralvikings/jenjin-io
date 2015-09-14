@@ -1,7 +1,7 @@
 package com.jenjinstudios.io;
 
 /**
- * Read from a MessageInputStream, executed, or written to a MessageOutputStream.
+ * Read from a MessageReader, executed, or written to a MessageWriter.
  *
  * @author Caleb Brinkman
  */

@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * Implements a MessageOutputStream which reslies on Gson to serialize outgoing data.
+ * Implements a MessageWriter which reslies on Gson to serialize outgoing data.
  *
  * @author Caleb Brinkman
  */
@@ -19,7 +19,7 @@ public class GsonMessageWriter implements MessageWriter
     private final OutputStream outputStream;
 
     /**
-     * Construct a new GsonMessageOutputStream that will write Messages to the given stream.
+     * Construct a new GsonMessageWriter that will write Messages to the given stream.
      * @param outputStream The output stream.
      */
     public GsonMessageWriter(OutputStream outputStream) {
