@@ -20,8 +20,6 @@ public class GsonMessageSerializerTest
      */
     @Test
     public void testSerialize() throws Exception {
-        final String expectedJson = "{\"class\":\"com.jenjinstudios.io.serialization" +
-              ".GsonMessageSerializerTest$TestMessage\",\"fields\":{\"name\":\"foo\"}}";
 
         final TestMessage testMessage = new TestMessage();
         testMessage.setName("foo");
@@ -31,6 +29,8 @@ public class GsonMessageSerializerTest
         final Gson gson = gsonBuilder.create();
 
         final String json = gson.toJson(testMessage, Message.class);
+        final String expectedJson = "{\"class\":\"com.jenjinstudios.io.serialization" +
+              ".GsonMessageSerializerTest$TestMessage\",\"fields\":{\"name\":\"foo\"}}";
         Assert.assertEquals(json, expectedJson, "Serialized form should match.");
     }
 
