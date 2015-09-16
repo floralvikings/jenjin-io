@@ -23,8 +23,10 @@ public class MessageQueue
      * @param message The message that has been received.
      */
     public void messageReceived(Message message) {
-        synchronized (incoming) {
-            incoming.add(message);
+        if (message != null) {
+            synchronized (incoming) {
+                incoming.add(message);
+            }
         }
     }
 
