@@ -1,8 +1,9 @@
-package com.jenjinstudios.io;
+package com.jenjinstudios.io.serialization;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.jenjinstudios.io.serialization.GsonMessageSerializer;
+import com.jenjinstudios.io.Message;
+import com.jenjinstudios.io.MessageWriter;
 
 import java.io.DataOutput;
 import java.io.DataOutputStream;

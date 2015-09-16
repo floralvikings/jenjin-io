@@ -1,4 +1,8 @@
-package com.jenjinstudios.io;
+package com.jenjinstudios.io.serialization;
+
+import com.jenjinstudios.io.MessageIOFactory;
+import com.jenjinstudios.io.MessageReader;
+import com.jenjinstudios.io.MessageWriter;
 
 import java.io.InputStream;
 import java.io.OutputStream;

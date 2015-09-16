@@ -1,7 +1,6 @@
-package com.jenjinstudios.io;
+package com.jenjinstudios.io.serialization;
 
 import com.jenjinstudios.io.ExecutionContext;
-import com.jenjinstudios.io.GsonMessageWriter;
 import com.jenjinstudios.io.Message;
 import com.jenjinstudios.io.MessageWriter;
 import org.testng.annotations.Test;
@@ -9,7 +8,7 @@ import org.testng.annotations.Test;
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 /**
  * Used to test the GsonMessageWriter class.
@@ -31,7 +30,7 @@ public class GsonMessageWriterTest
         MessageWriter gsonMessageWriter = new GsonMessageWriter(outputStream);
         gsonMessageWriter.write(message);
 
-        final String json = "{\"class\":\"com.jenjinstudios.io" +
+        final String json = "{\"class\":\"com.jenjinstudios.io.serialization" +
               ".GsonMessageWriterTest$TestMessage\",\"fields\":{\"name\":\"foo\"}}";
         final byte[] jsonBytes = json.getBytes();
         final byte[] lengthBytes = ByteBuffer.allocate(2).putChar((char) jsonBytes.length).array();

@@ -1,7 +1,6 @@
-package com.jenjinstudios.io;
+package com.jenjinstudios.io.serialization;
 
 import com.jenjinstudios.io.ExecutionContext;
-import com.jenjinstudios.io.GsonMessageReader;
 import com.jenjinstudios.io.Message;
 import com.jenjinstudios.io.MessageReader;
 import org.testng.annotations.Test;
@@ -10,7 +9,8 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 /**
  * Test the GsonMessageReader class.
@@ -25,7 +25,7 @@ public class GsonMessageReaderTest
      */
     @Test
     public void testRead() throws Exception {
-        final String json = "{\"class\":\"com.jenjinstudios.io" +
+        final String json = "{\"class\":\"com.jenjinstudios.io.serialization" +
               ".GsonMessageReaderTest$TestMessage\",\"fields\":{\"name\":\"foo\"}}";
         final byte[] jsonBytes = json.getBytes();
         final byte[] lengthBytes = ByteBuffer.allocate(2).putChar((char) jsonBytes.length).array();
