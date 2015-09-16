@@ -5,7 +5,7 @@ package com.jenjinstudios.io;
  *
  * @author Caleb Brinkman
  */
-public abstract class Message<C extends ExecutionContext>
+public interface Message<C extends ExecutionContext>
 {
     /**
      * Execute any actions required by the message.
@@ -14,5 +14,5 @@ public abstract class Message<C extends ExecutionContext>
      *
      * @return The response to the message; return null for no response.
      */
-    public abstract Message execute(C context);
+    Message execute(C context);
 }

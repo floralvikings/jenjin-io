@@ -42,7 +42,7 @@ public class GsonMessageReaderTest
         assertEquals(((TestMessage)message).getName(), "foo", "Message name should be \"foo\"");
     }
 
-    private static class TestMessage extends Message
+    private static class TestMessage implements Message
     {
         private String name;
 

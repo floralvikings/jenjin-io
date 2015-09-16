@@ -6,7 +6,8 @@ import com.jenjinstudios.io.ExecutionContext;
 import com.jenjinstudios.io.Message;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 /**
  * Test the GsonMessageDeserializer class.
@@ -33,7 +34,7 @@ public class GsonMessageDeserializerTest
         assertEquals(((TestMessage)message).getName(), "foo", "Message should have name \"foo\"");
     }
 
-    private static class TestMessage extends Message
+    private static class TestMessage implements Message
     {
         private String name;
 

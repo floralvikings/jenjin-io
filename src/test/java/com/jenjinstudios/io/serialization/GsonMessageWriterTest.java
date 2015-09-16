@@ -42,7 +42,7 @@ public class GsonMessageWriterTest
         assertEquals(outputStream.toByteArray(), bytes, "Arrays should be equal.");
     }
 
-    private static class TestMessage extends Message
+    private static class TestMessage implements Message
     {
         private String name;
 

@@ -34,7 +34,8 @@ public class GsonMessageSerializerTest
         Assert.assertEquals(json, expectedJson, "Serialized form should match.");
     }
 
-    private static class TestMessage extends Message {
+    private static class TestMessage implements Message
+    {
         private String name;
 
         @Override
