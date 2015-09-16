@@ -5,6 +5,6 @@ package com.jenjinstudios.io;
  *
  * @author Caleb Brinkman
  */
-public class ExecutionContext
+public interface ExecutionContext
 {
 }
