@@ -1,6 +1,7 @@
 package com.jenjinstudios.io.connection;
 
 import com.jenjinstudios.io.ExecutionContext;
+import com.jenjinstudios.io.Message;
 import com.jenjinstudios.io.MessageReader;
 import com.jenjinstudios.io.MessageWriter;
 import com.jenjinstudios.io.concurrency.*;
@@ -21,6 +22,7 @@ public class Connection
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(Connection.class);
     private static final int TERMINATION_TIMEOUT = 120;
+    private final MessageQueue messageQueue;
     private final ScheduledExecutorService executor;
     private final ExecutionContext context;
     private final MessageReader messageReader;
@@ -42,14 +44,13 @@ public class Connection
         this.context = context;
         this.messageReader = messageReader;
         this.messageWriter = messageWriter;
+        messageQueue = new MessageQueue();
     }
 
     /**
      * Start sending, receiving, and executing messages.
      */
     public void start() {
-        MessageQueue messageQueue = new MessageQueue();
-
         Runnable executionTask = new ExecutionTask(messageQueue, context);
         Runnable writeTask = new WriteTask(messageQueue, messageWriter);
         Runnable readTask = new ReadTask(messageQueue, messageReader);
@@ -83,4 +84,13 @@ public class Connection
             LOGGER.warn("Exception when closing output stream", e);
         }
     }
+
+    /**
+     * Send the specified Message from this connection.  Note that this operation is not atomic; the message is added
+     * to and outgoing queue, and will be sent when the thread responsible for writing outgoing messages is able to
+     * process it.
+     *
+     * @param message The message to be sent.
+     */
+    public void sendMessage(Message message) { messageQueue.queueOutgoing(message); }
 }
