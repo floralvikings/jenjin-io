@@ -16,4 +16,9 @@
             <package name="com.jenjinstudios.io.concurrency"/>
         </packages>
     </test>
+    <test name="connection" verbose="1">
+        <packages>
+            <package name="com.jenjinstudios.io.connection" />
+        </packages>
+    </test>
 </suite>
