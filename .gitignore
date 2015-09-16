@@ -2,6 +2,10 @@
 .gradle
 build/
 
+# Jekyll stuff
+Gemfile.lock
+_site/
+
 # Ignore Gradle GUI config
 gradle-app.setting
 
