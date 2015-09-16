@@ -66,7 +66,7 @@ public class Connection
      */
     public void stop() {
         LOGGER.debug("Shutting down executor service");
-        executor.shutdown();
+        executor.shutdownNow();
         try {
             executor.awaitTermination(TERMINATION_TIMEOUT, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
