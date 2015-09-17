@@ -15,6 +15,7 @@ public class ErrorTask implements Runnable
 
     /**
      * Construct a new ErrorTask that will utilize the given MessageQueue.
+     *
      * @param messageQueue The MessageQueue.
      */
     public ErrorTask(MessageQueue messageQueue) {

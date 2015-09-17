@@ -1,19 +1,19 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="jenjin-io" verbose="1" >
+<suite name="jenjin-io" verbose="1">
     <test name="io">
         <packages>
             <package name="com.jenjinstudios.io" />
         </packages>
     </test>
-    <test name="serialization" verbose="1" >
+    <test name="serialization" verbose="1">
         <packages>
-            <package name="com.jenjinstudios.io.serialization"/>
+            <package name="com.jenjinstudios.io.serialization" />
         </packages>
     </test>
     <test name="concurrency" verbose="1">
         <packages>
-            <package name="com.jenjinstudios.io.concurrency"/>
+            <package name="com.jenjinstudios.io.concurrency" />
         </packages>
     </test>
     <test name="connection" verbose="1">

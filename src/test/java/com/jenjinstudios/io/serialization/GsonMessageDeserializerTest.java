@@ -17,6 +17,7 @@ public class GsonMessageDeserializerTest
 {
     /**
      * Test the deserialize method.
+     *
      * @throws Exception If there's an exception during testing.
      */
     @Test
@@ -25,7 +26,8 @@ public class GsonMessageDeserializerTest
         gsonBuilder.registerTypeAdapter(Message.class, new GsonMessageDeserializer());
         final Gson gson = gsonBuilder.create();
 
-        final String json = "{\"class\":\"com.jenjinstudios.io.serialization.TestMessage\",\"fields\":{\"name\":\"foo\"}}";
+        final String json = "{\"class\":\"com.jenjinstudios.io.serialization.TestMessage\"," +
+              "\"fields\":{\"name\":\"foo\"}}";
         final Message message = gson.fromJson(json, Message.class);
 
         assertTrue(message instanceof AdaptedMessage, "Message should be instance of AdaptedMessage");

@@ -7,10 +7,7 @@ import org.testng.annotations.Test;
 import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.testng.Assert.*;
+import static org.mockito.Mockito.*;
 
 /**
  * Used for testing the ExecutionTask class.
@@ -21,6 +18,7 @@ public class ExecutionTaskTest
 {
     /**
      * Test the execution of the task.
+     *
      * @throws Exception If there's an exception.
      */
     @Test

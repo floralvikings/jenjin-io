@@ -1,7 +1,5 @@
 package com.jenjinstudios.io.serialization;
 
-import com.jenjinstudios.io.ExecutionContext;
-import com.jenjinstudios.io.Message;
 import com.jenjinstudios.io.MessageWriter;
 import org.testng.annotations.Test;
 
@@ -19,6 +17,7 @@ public class GsonMessageWriterTest
 {
     /**
      * Test the write method.
+     *
      * @throws Exception If there is an exception during testing.
      */
     @Test
@@ -30,7 +29,8 @@ public class GsonMessageWriterTest
         MessageWriter gsonMessageWriter = new GsonMessageWriter(outputStream);
         gsonMessageWriter.write(message);
 
-        final String json = "{\"class\":\"com.jenjinstudios.io.serialization.TestMessage\",\"fields\":{\"name\":\"foo\"}}";
+        final String json = "{\"class\":\"com.jenjinstudios.io.serialization.TestMessage\"," +
+              "\"fields\":{\"name\":\"foo\"}}";
         final byte[] jsonBytes = json.getBytes();
         final byte[] lengthBytes = ByteBuffer.allocate(2).putChar((char) jsonBytes.length).array();
         byte[] bytes = new byte[(jsonBytes.length + lengthBytes.length)];

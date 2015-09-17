@@ -73,6 +73,7 @@ public class MessageQueue
 
     /**
      * Indicate than an exception has occurred and store the exception in the queue.
+     *
      * @param throwable The exception.
      */
     public void errorEncountered(Throwable throwable) {
@@ -83,11 +84,12 @@ public class MessageQueue
 
     /**
      * Get any errors reported to this queue and clear the internal list.
+     *
      * @return A List of errors reported to this queue.
      */
     public List<Throwable> getErrorsAndClear() {
         List<Throwable> temp;
-        synchronized(errors) {
+        synchronized (errors) {
             temp = new LinkedList<>(errors);
             errors.clear();
         }

@@ -37,7 +37,8 @@ public class GsonMessageDeserializer implements JsonDeserializer<Message>
 
     @Override
     public Message deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-          throws JsonParseException {
+          throws JsonParseException
+    {
         JsonObject jsonObject = json.getAsJsonObject();
         JsonElement classElement = jsonObject.get("class");
         if (classElement == null) {

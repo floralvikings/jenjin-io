@@ -2,7 +2,6 @@ package com.jenjinstudios.io.serialization;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.jenjinstudios.io.ExecutionContext;
 import com.jenjinstudios.io.Message;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -16,6 +15,7 @@ public class GsonMessageSerializerTest
 {
     /**
      * Test the serialization.
+     *
      * @throws Exception If there is an exception during test execution.
      */
     @Test
@@ -29,7 +29,8 @@ public class GsonMessageSerializerTest
         final Gson gson = gsonBuilder.create();
 
         final String json = gson.toJson(testMessage, Message.class);
-        final String expectedJson = "{\"class\":\"com.jenjinstudios.io.serialization.TestMessage\",\"fields\":{\"name\":\"foo\"}}";
+        final String expectedJson = "{\"class\":\"com.jenjinstudios.io.serialization.TestMessage\"," +
+              "\"fields\":{\"name\":\"foo\"}}";
         Assert.assertEquals(json, expectedJson, "Serialized form should match.");
     }
 }

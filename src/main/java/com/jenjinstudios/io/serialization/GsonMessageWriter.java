@@ -21,6 +21,7 @@ public class GsonMessageWriter implements MessageWriter
 
     /**
      * Construct a new GsonMessageWriter that will write Messages to the given stream.
+     *
      * @param outputStream The output stream.
      */
     public GsonMessageWriter(OutputStream outputStream) {

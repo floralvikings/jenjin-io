@@ -17,6 +17,7 @@ public class MessageQueueTest
 {
     /**
      * Test the getIncomingAndClear method.
+     *
      * @throws Exception If there is an exception during testing.
      */
     @Test
@@ -35,6 +36,7 @@ public class MessageQueueTest
 
     /**
      * Test the getOutgoingAndClear method.
+     *
      * @throws Exception If there is an exception during testing.
      */
     @Test
@@ -53,6 +55,7 @@ public class MessageQueueTest
 
     /**
      * Test the getErrorsAndClear method.
+     *
      * @throws Exception If there is an exception during testing.
      */
     @Test

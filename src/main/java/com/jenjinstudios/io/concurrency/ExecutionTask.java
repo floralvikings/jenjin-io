@@ -17,6 +17,7 @@ public class ExecutionTask implements Runnable
 
     /**
      * Construct a new ExecuteTask that will execute messages from the given MessageQueue.
+     *
      * @param messageQueue The MessageQueue.
      * @param executionContext The context in which messages should execute.
      */
@@ -30,7 +31,7 @@ public class ExecutionTask implements Runnable
         final List<Message> incoming = messageQueue.getIncomingAndClear();
         incoming.forEach(message -> {
             Message response = message.execute(executionContext);
-            if(response != null) {
+            if (response != null) {
                 messageQueue.queueOutgoing(response);
             }
         });

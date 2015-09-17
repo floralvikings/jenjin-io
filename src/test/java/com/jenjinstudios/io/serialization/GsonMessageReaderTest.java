@@ -20,11 +20,13 @@ public class GsonMessageReaderTest
 {
     /**
      * Test the read method.
+     *
      * @throws Exception If there is an exception during the test.
      */
     @Test
     public void testRead() throws Exception {
-        final String json = "{\"class\":\"com.jenjinstudios.io.serialization.TestMessage\",\"fields\":{\"name\":\"foo\"}}";
+        final String json = "{\"class\":\"com.jenjinstudios.io.serialization.TestMessage\"," +
+              "\"fields\":{\"name\":\"foo\"}}";
         final byte[] jsonBytes = json.getBytes();
         final byte[] lengthBytes = ByteBuffer.allocate(2).putChar((char) jsonBytes.length).array();
         byte[] bytes = new byte[(jsonBytes.length + lengthBytes.length)];

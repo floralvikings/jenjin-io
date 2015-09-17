@@ -17,6 +17,7 @@ public class ReadTaskTest
 {
     /**
      * Test the task execution.
+     *
      * @throws Exception If there's an exception during testing.
      */
     @Test
@@ -33,6 +34,7 @@ public class ReadTaskTest
 
     /**
      * Test task execution with the input stream throwing an exception.
+     *
      * @throws Exception If there is an exception thrown during testing.
      */
     @Test

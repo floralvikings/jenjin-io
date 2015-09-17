@@ -21,6 +21,7 @@ public class GsonMessageReader implements MessageReader
 
     /**
      * Construct a new GsonMessageReader that will read Messages from the given InputStream.
+     *
      * @param inputStream The InputStream.
      */
     public GsonMessageReader(InputStream inputStream) {
