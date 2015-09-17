@@ -1,6 +1,5 @@
 package com.jenjinstudios.io.serialization;
 
-import com.jenjinstudios.io.ExecutionContext;
 import com.jenjinstudios.io.Message;
 import com.jenjinstudios.io.MessageReader;
 import org.testng.annotations.Test;
@@ -37,7 +36,7 @@ public class GsonMessageReaderTest
         final MessageReader gsonMessageReader = new GsonMessageReader(inputStream);
         final Message message = gsonMessageReader.read();
 
-        assertTrue(message instanceof TestMessage, "Message should be instance of TestMessage");
-        assertEquals(((TestMessage)message).getName(), "foo", "Message name should be \"foo\"");
+        assertTrue(message instanceof AdaptedMessage, "Message should be instance of AdaptedMessage");
+        assertEquals(((AdaptedMessage) message).getName(), "foo", "Message name should be \"foo\"");
     }
 }

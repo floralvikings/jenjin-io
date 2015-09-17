@@ -2,8 +2,14 @@ package com.jenjinstudios.io.serialization;
 
 import com.google.gson.*;
 import com.jenjinstudios.io.Message;
+import com.jenjinstudios.io.annotations.MessageAdapter;
+import org.reflections.Reflections;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Used to deserialize Message objects with Gson.
@@ -12,6 +18,23 @@ import java.lang.reflect.Type;
  */
 public class GsonMessageDeserializer implements JsonDeserializer<Message>
 {
+    private final Map<String, Class> annotatedMessages;
+
+    /**
+     * Construct a new GsonMessageDeserializer.
+     */
+    public GsonMessageDeserializer() {
+        annotatedMessages = new HashMap<>(10);
+
+        Reflections reflections = new Reflections("");
+        final Set<Class<?>> annotated = reflections.getTypesAnnotatedWith(MessageAdapter.class);
+        for (Class annotatedClass : annotated) {
+            Annotation annotation = annotatedClass.getAnnotation(MessageAdapter.class);
+            String messageClass = ((MessageAdapter) annotation).adaptFrom().getName();
+            annotatedMessages.put(messageClass, annotatedClass);
+        }
+    }
+
     @Override
     public Message deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
           throws JsonParseException {
@@ -22,10 +45,14 @@ public class GsonMessageDeserializer implements JsonDeserializer<Message>
         }
         String className = classElement.getAsString();
         Class<Message> lookupClass;
-        try {
-            lookupClass = (Class<Message>) Class.forName(className);
-        } catch (ClassNotFoundException | ClassCastException e) {
-            throw new JsonParseException("Message implementation not found or incorrect: ", e);
+        if (annotatedMessages.containsKey(className)) {
+            lookupClass = annotatedMessages.get(className);
+        } else {
+            try {
+                lookupClass = (Class<Message>) Class.forName(className);
+            } catch (ClassNotFoundException | ClassCastException e) {
+                throw new JsonParseException("Message implementation not found or incorrect: ", e);
+            }
         }
         JsonElement fieldsElement = jsonObject.get("fields");
         return (fieldsElement != null)

@@ -2,7 +2,6 @@ package com.jenjinstudios.io.serialization;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.jenjinstudios.io.ExecutionContext;
 import com.jenjinstudios.io.Message;
 import org.testng.annotations.Test;
 
@@ -29,7 +28,7 @@ public class GsonMessageDeserializerTest
         final String json = "{\"class\":\"com.jenjinstudios.io.serialization.TestMessage\",\"fields\":{\"name\":\"foo\"}}";
         final Message message = gson.fromJson(json, Message.class);
 
-        assertTrue(message instanceof TestMessage, "Message should be instance of TestMessage");
-        assertEquals(((TestMessage)message).getName(), "foo", "Message should have name \"foo\"");
+        assertTrue(message instanceof AdaptedMessage, "Message should be instance of AdaptedMessage");
+        assertEquals(((AdaptedMessage) message).getName(), "foo", "Message should have name \"foo\"");
     }
 }

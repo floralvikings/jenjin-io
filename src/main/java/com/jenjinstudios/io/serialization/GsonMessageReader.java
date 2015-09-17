@@ -17,6 +17,7 @@ import java.io.InputStream;
 public class GsonMessageReader implements MessageReader
 {
     private final InputStream inputStream;
+    private final Object gsonMessageDeserializer = new GsonMessageDeserializer();
 
     /**
      * Construct a new GsonMessageReader that will read Messages from the given InputStream.
@@ -30,7 +31,7 @@ public class GsonMessageReader implements MessageReader
     public Message read() throws IOException {
         final String s = new DataInputStream(inputStream).readUTF();
         Gson gson = new GsonBuilder()
-              .registerTypeAdapter(Message.class, new GsonMessageDeserializer())
+              .registerTypeAdapter(Message.class, gsonMessageDeserializer)
               .create();
         return gson.fromJson(s, Message.class);
     }
