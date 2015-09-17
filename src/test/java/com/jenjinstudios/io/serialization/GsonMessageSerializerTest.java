@@ -29,20 +29,7 @@ public class GsonMessageSerializerTest
         final Gson gson = gsonBuilder.create();
 
         final String json = gson.toJson(testMessage, Message.class);
-        final String expectedJson = "{\"class\":\"com.jenjinstudios.io.serialization" +
-              ".GsonMessageSerializerTest$TestMessage\",\"fields\":{\"name\":\"foo\"}}";
+        final String expectedJson = "{\"class\":\"com.jenjinstudios.io.serialization.TestMessage\",\"fields\":{\"name\":\"foo\"}}";
         Assert.assertEquals(json, expectedJson, "Serialized form should match.");
-    }
-
-    private static class TestMessage implements Message
-    {
-        private String name;
-
-        @Override
-        public Message execute(ExecutionContext context) {
-            return null;
-        }
-
-        public void setName(String name) { this.name = name; }
     }
 }

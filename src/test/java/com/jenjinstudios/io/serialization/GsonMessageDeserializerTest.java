@@ -26,23 +26,10 @@ public class GsonMessageDeserializerTest
         gsonBuilder.registerTypeAdapter(Message.class, new GsonMessageDeserializer());
         final Gson gson = gsonBuilder.create();
 
-        final String json = "{\"class\":\"com.jenjinstudios.io.serialization" +
-              ".GsonMessageDeserializerTest$TestMessage\",\"fields\":{\"name\":\"foo\"}}";
+        final String json = "{\"class\":\"com.jenjinstudios.io.serialization.TestMessage\",\"fields\":{\"name\":\"foo\"}}";
         final Message message = gson.fromJson(json, Message.class);
 
         assertTrue(message instanceof TestMessage, "Message should be instance of TestMessage");
         assertEquals(((TestMessage)message).getName(), "foo", "Message should have name \"foo\"");
-    }
-
-    private static class TestMessage implements Message
-    {
-        private String name;
-
-        @Override
-        public Message execute(ExecutionContext context) {
-            return null;
-        }
-
-        public String getName() { return name; }
     }
 }

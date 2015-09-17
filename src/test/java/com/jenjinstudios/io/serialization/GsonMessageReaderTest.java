@@ -25,8 +25,7 @@ public class GsonMessageReaderTest
      */
     @Test
     public void testRead() throws Exception {
-        final String json = "{\"class\":\"com.jenjinstudios.io.serialization" +
-              ".GsonMessageReaderTest$TestMessage\",\"fields\":{\"name\":\"foo\"}}";
+        final String json = "{\"class\":\"com.jenjinstudios.io.serialization.TestMessage\",\"fields\":{\"name\":\"foo\"}}";
         final byte[] jsonBytes = json.getBytes();
         final byte[] lengthBytes = ByteBuffer.allocate(2).putChar((char) jsonBytes.length).array();
         byte[] bytes = new byte[(jsonBytes.length + lengthBytes.length)];
@@ -40,17 +39,5 @@ public class GsonMessageReaderTest
 
         assertTrue(message instanceof TestMessage, "Message should be instance of TestMessage");
         assertEquals(((TestMessage)message).getName(), "foo", "Message name should be \"foo\"");
-    }
-
-    private static class TestMessage implements Message
-    {
-        private String name;
-
-        @Override
-        public Message execute(ExecutionContext context) {
-            return null;
-        }
-
-        public String getName() { return name; }
     }
 }

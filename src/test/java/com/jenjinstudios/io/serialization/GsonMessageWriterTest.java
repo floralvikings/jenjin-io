@@ -30,8 +30,7 @@ public class GsonMessageWriterTest
         MessageWriter gsonMessageWriter = new GsonMessageWriter(outputStream);
         gsonMessageWriter.write(message);
 
-        final String json = "{\"class\":\"com.jenjinstudios.io.serialization" +
-              ".GsonMessageWriterTest$TestMessage\",\"fields\":{\"name\":\"foo\"}}";
+        final String json = "{\"class\":\"com.jenjinstudios.io.serialization.TestMessage\",\"fields\":{\"name\":\"foo\"}}";
         final byte[] jsonBytes = json.getBytes();
         final byte[] lengthBytes = ByteBuffer.allocate(2).putChar((char) jsonBytes.length).array();
         byte[] bytes = new byte[(jsonBytes.length + lengthBytes.length)];
@@ -40,17 +39,5 @@ public class GsonMessageWriterTest
         System.arraycopy(jsonBytes, 0, bytes, lengthBytes.length, jsonBytes.length);
 
         assertEquals(outputStream.toByteArray(), bytes, "Arrays should be equal.");
-    }
-
-    private static class TestMessage implements Message
-    {
-        private String name;
-
-        @Override
-        public Message execute(ExecutionContext context) {
-            return null;
-        }
-
-        public void setName(String name) { this.name = name; }
     }
 }
