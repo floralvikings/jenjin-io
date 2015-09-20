@@ -85,6 +85,8 @@ public class Connection
         }
     }
 
+    public ExecutionContext getContext() { return context; }
+
     /**
      * Send the specified Message from this connection.  Note that this operation is not atomic; the message is added
      * to and outgoing queue, and will be sent when the thread responsible for writing outgoing messages is able to
