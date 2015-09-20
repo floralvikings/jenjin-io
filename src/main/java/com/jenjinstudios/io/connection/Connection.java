@@ -18,13 +18,13 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Caleb Brinkman
  */
-public class Connection
+public class Connection<C extends ExecutionContext>
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(Connection.class);
     private static final int TERMINATION_TIMEOUT = 120;
     private final MessageQueue messageQueue;
     private final ScheduledExecutorService executor;
-    private final ExecutionContext context;
+    private final C context;
     private final MessageReader messageReader;
     private final MessageWriter messageWriter;
 
@@ -35,10 +35,7 @@ public class Connection
      * @param messageReader The stream from which messages should be read.
      * @param messageWriter The stream to which messages should be written.
      */
-    public Connection(
-          ExecutionContext context,
-          MessageReader messageReader,
-          MessageWriter messageWriter)
+    public Connection(C context, MessageReader messageReader, MessageWriter messageWriter)
     {
         executor = Executors.newScheduledThreadPool(4);
         this.context = context;
@@ -85,7 +82,7 @@ public class Connection
         }
     }
 
-    public ExecutionContext getContext() { return context; }
+    public C getContext() { return context; }
 
     /**
      * Send the specified Message from this connection.  Note that this operation is not atomic; the message is added
