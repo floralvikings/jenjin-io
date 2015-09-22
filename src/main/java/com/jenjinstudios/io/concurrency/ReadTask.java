@@ -5,6 +5,7 @@ import com.jenjinstudios.io.MessageReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.EOFException;
 import java.io.IOException;
 
 /**
@@ -35,12 +36,19 @@ public class ReadTask implements Runnable
         try {
             final Message message = messageReader.read();
             messageQueue.messageReceived(message);
+        } catch (EOFException ignored) {
+            LOGGER.info("Client disconnected");
+            try {
+                messageReader.close();
+            } catch (IOException closeException) {
+                LOGGER.warn("Error when closing message reader", closeException);
+            }
         } catch (IOException e) {
             messageQueue.errorEncountered(e);
             try {
                 messageReader.close();
-            } catch (IOException e1) {
-                LOGGER.warn("Error when closing message reader", e1);
+            } catch (IOException closeException) {
+                LOGGER.warn("Error when closing message reader", closeException);
             }
         }
     }
