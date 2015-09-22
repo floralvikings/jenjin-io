@@ -2,6 +2,8 @@ package com.jenjinstudios.io.concurrency;
 
 import com.jenjinstudios.io.Message;
 import com.jenjinstudios.io.MessageReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -12,6 +14,7 @@ import java.io.IOException;
  */
 public class ReadTask implements Runnable
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReadTask.class);
     private final MessageQueue messageQueue;
     private final MessageReader messageReader;
 
@@ -34,6 +37,11 @@ public class ReadTask implements Runnable
             messageQueue.messageReceived(message);
         } catch (IOException e) {
             messageQueue.errorEncountered(e);
+            try {
+                messageReader.close();
+            } catch (IOException e1) {
+                LOGGER.warn("Error when closing message reader", e1);
+            }
         }
     }
 }
