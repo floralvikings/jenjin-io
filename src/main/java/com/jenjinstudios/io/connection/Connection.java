@@ -66,11 +66,6 @@ public class Connection<C extends ExecutionContext>
         LOGGER.debug("Shutting down executor service");
         executor.shutdownNow();
         try {
-            executor.awaitTermination(TERMINATION_TIMEOUT, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            LOGGER.warn("Exception while awaiting executor shutdown", e);
-        }
-        try {
             messageReader.close();
         } catch (IOException e) {
             LOGGER.warn("Exception when closing input stream", e);
@@ -79,6 +74,11 @@ public class Connection<C extends ExecutionContext>
             messageWriter.close();
         } catch (IOException e) {
             LOGGER.warn("Exception when closing output stream", e);
+        }
+        try {
+            executor.awaitTermination(TERMINATION_TIMEOUT, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            LOGGER.warn("Exception while awaiting executor shutdown", e);
         }
     }
 
