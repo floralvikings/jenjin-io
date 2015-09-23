@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.function.BiConsumer;
 
 /**
  * Used to configure and create a Connection.
@@ -24,6 +25,7 @@ public class ConnectionBuilder
     private MessageReader messageReader;
     private MessageWriter messageWriter;
     private ExecutionContext executionContext;
+    private BiConsumer<Connection, Throwable> errorCallback;
 
     /**
      * Build a connection using all the values supplied to this builder.
@@ -35,7 +37,7 @@ public class ConnectionBuilder
         if (messageWriter == null) { throw new IllegalStateException("MessageWriter not set"); }
         if (executionContext == null) { throw new IllegalStateException("Execution Context not set"); }
 
-        return new Connection(executionContext, messageReader, messageWriter);
+        return new Connection(executionContext, messageReader, messageWriter, errorCallback);
     }
 
     /**
@@ -138,5 +140,18 @@ public class ConnectionBuilder
         } else {
             throw new IllegalStateException("Execution context is already set");
         }
+    }
+
+    /**
+     * Build a connection with the given error callback function.
+     *
+     * @param callback The Consumer (accepting a Connection and Throwable) that will be invoked when an error is
+     * encountered.
+     *
+     * @return This ConnectionBuilder.
+     */
+    public ConnectionBuilder withErrorCallback(BiConsumer<Connection, Throwable> callback) {
+        this.errorCallback = callback;
+        return this;
     }
 }
