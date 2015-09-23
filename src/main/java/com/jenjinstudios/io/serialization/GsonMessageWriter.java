@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * Implements a MessageWriter which reslies on Gson to serialize outgoing data.
+ * Implements a MessageWriter which relies on Gson to serialize outgoing data.
  *
  * @author Caleb Brinkman
  */
