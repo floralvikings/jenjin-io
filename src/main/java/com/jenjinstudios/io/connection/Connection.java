@@ -99,7 +99,7 @@ public class Connection<C extends ExecutionContext>
      *
      * @param cause The exception which triggered this shutdown.
      */
-    public final void errorEncountered(Throwable cause) {
+    private void errorEncountered(Throwable cause) {
         if (errorCallback != null) {
             errorCallback.accept(this, cause);
         }
