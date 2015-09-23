@@ -14,5 +14,5 @@ public interface Message<C extends ExecutionContext>
      *
      * @return The response to the message; return null for no response.
      */
-    Message execute(C context);
+    default Message execute(C context) { return null; }
 }
