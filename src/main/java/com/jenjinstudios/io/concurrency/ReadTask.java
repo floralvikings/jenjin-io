@@ -5,7 +5,6 @@ import com.jenjinstudios.io.MessageReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.EOFException;
 import java.io.IOException;
 
 /**
@@ -18,6 +17,7 @@ public class ReadTask implements Runnable
     private static final Logger LOGGER = LoggerFactory.getLogger(ReadTask.class);
     private final MessageQueue messageQueue;
     private final MessageReader messageReader;
+    private volatile boolean noError = true;
 
     /**
      * Construct a new ReadTask that will read from the given message input stream and store the incoming messages in
@@ -34,16 +34,12 @@ public class ReadTask implements Runnable
     @Override
     public void run() {
         try {
-            final Message message = messageReader.read();
-            messageQueue.messageReceived(message);
-        } catch (EOFException ignored) {
-            LOGGER.info("Client disconnected");
-            try {
-                messageReader.close();
-            } catch (IOException closeException) {
-                LOGGER.warn("Error when closing message reader", closeException);
+            if (noError) {
+                final Message message = messageReader.read();
+                messageQueue.messageReceived(message);
             }
         } catch (IOException e) {
+            noError = false;
             messageQueue.errorEncountered(e);
             try {
                 messageReader.close();

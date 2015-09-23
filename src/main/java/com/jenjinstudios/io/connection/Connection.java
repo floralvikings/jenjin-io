@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
 
 /**
  * Used for making connections so that Message objects can be read, written, and executed in a non-blocking fashion.
@@ -21,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 public class Connection<C extends ExecutionContext>
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(Connection.class);
-    private static final int TERMINATION_TIMEOUT = 120;
+    private final BiConsumer<Connection, Throwable> errorCallback;
     private final MessageQueue messageQueue;
     private final ScheduledExecutorService executor;
     private final C context;
@@ -35,13 +36,27 @@ public class Connection<C extends ExecutionContext>
      * @param messageReader The stream from which messages should be read.
      * @param messageWriter The stream to which messages should be written.
      */
-    public Connection(C context, MessageReader messageReader, MessageWriter messageWriter)
+    Connection(C context, MessageReader messageReader, MessageWriter messageWriter)
+    {
+        this(context, messageReader, messageWriter, null);
+    }
+
+    /**
+     * Construct a new connection.
+     *
+     * @param context The context in which messages should execute.
+     * @param messageReader The stream from which messages should be read.
+     * @param messageWriter The stream to which messages should be written.
+     */
+    Connection(C context, MessageReader messageReader, MessageWriter messageWriter, BiConsumer<Connection, Throwable>
+          errorCallback)
     {
         executor = Executors.newScheduledThreadPool(4);
         this.context = context;
         this.messageReader = messageReader;
         this.messageWriter = messageWriter;
         messageQueue = new MessageQueue();
+        this.errorCallback = errorCallback;
     }
 
     /**
@@ -51,7 +66,7 @@ public class Connection<C extends ExecutionContext>
         Runnable executionTask = new ExecutionTask(messageQueue, context);
         Runnable writeTask = new WriteTask(messageQueue, messageWriter);
         Runnable readTask = new ReadTask(messageQueue, messageReader);
-        Runnable errorTask = new ErrorTask(messageQueue);
+        Runnable errorTask = new ErrorTask(messageQueue, this::errorEncountered);
 
         executor.scheduleWithFixedDelay(errorTask, 0, 10, TimeUnit.MILLISECONDS);
         executor.scheduleWithFixedDelay(readTask, 0, 10, TimeUnit.MILLISECONDS);
@@ -75,10 +90,18 @@ public class Connection<C extends ExecutionContext>
         } catch (IOException e) {
             LOGGER.warn("Exception when closing output stream", e);
         }
-        try {
-            executor.awaitTermination(TERMINATION_TIMEOUT, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            LOGGER.warn("Exception while awaiting executor shutdown", e);
+    }
+
+    /**
+     * This method is an "emergency stop" in the event that a fatal error is encountered by the error checking thread.
+     * <p>
+     * Without supplying a custom error callback, this is the default callback for <i>all</i> errors encountered.
+     *
+     * @param cause The exception which triggered this shutdown.
+     */
+    public final void errorEncountered(Throwable cause) {
+        if (errorCallback != null) {
+            errorCallback.accept(this, cause);
         }
     }
 
