@@ -4,6 +4,8 @@ import com.google.gson.*;
 import com.jenjinstudios.io.Message;
 import com.jenjinstudios.io.annotations.MessageAdapter;
 import org.reflections.Reflections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -18,20 +20,23 @@ import java.util.Set;
  */
 public class GsonMessageDeserializer implements JsonDeserializer<Message>
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GsonMessageDeserializer.class);
     private static final Map<String, Class> MESSAGE_CLASSES = new HashMap<>(10);
 
     static {
+        LOGGER.debug("Scanning for message classes");
         Reflections reflections = new Reflections("");
         final Set<Class<? extends Message>> messageClasses = reflections.getSubTypesOf(Message.class);
         for (Class messageClass : messageClasses) {
+            LOGGER.debug("Registering message class: " + messageClass.getName());
             Annotation annotation = messageClass.getAnnotation(MessageAdapter.class);
             if (annotation != null) {
                 String adaptFromClass = ((MessageAdapter) annotation).adaptFrom().getName();
+                LOGGER.debug("Registering adapter class: " + adaptFromClass);
                 MESSAGE_CLASSES.put(adaptFromClass, messageClass);
-            } else {
-                MESSAGE_CLASSES.put(messageClass.getName(), messageClass);
             }
         }
+        LOGGER.debug("Registered Message Classes: {}", MESSAGE_CLASSES);
     }
 
     @Override
@@ -44,7 +49,16 @@ public class GsonMessageDeserializer implements JsonDeserializer<Message>
             throw new JsonParseException("Message must specify class to be deserialized into");
         }
         String className = classElement.getAsString();
-        Class<Message> lookupClass = MESSAGE_CLASSES.get(className);
+        Class<Message> lookupClass;
+        if (MESSAGE_CLASSES.containsKey(className)) {
+            lookupClass = MESSAGE_CLASSES.get(className);
+        } else {
+            try {
+                lookupClass = (Class<Message>) Class.forName(className);
+            } catch (ClassNotFoundException | ClassCastException e) {
+                throw new JsonParseException("Message implementation not found or incorrect: ", e);
+            }
+        }
         JsonElement fieldsElement = jsonObject.get("fields");
         return (fieldsElement != null)
               ? context.deserialize(fieldsElement, lookupClass)
