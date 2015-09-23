@@ -18,20 +18,19 @@ import java.util.Set;
  */
 public class GsonMessageDeserializer implements JsonDeserializer<Message>
 {
-    private final Map<String, Class> annotatedMessages;
+    private static final Map<String, Class> MESSAGE_CLASSES = new HashMap<>(10);
 
-    /**
-     * Construct a new GsonMessageDeserializer.
-     */
-    public GsonMessageDeserializer() {
-        annotatedMessages = new HashMap<>(10);
-
+    static {
         Reflections reflections = new Reflections("");
-        final Set<Class<?>> annotated = reflections.getTypesAnnotatedWith(MessageAdapter.class);
-        for (Class annotatedClass : annotated) {
-            Annotation annotation = annotatedClass.getAnnotation(MessageAdapter.class);
-            String messageClass = ((MessageAdapter) annotation).adaptFrom().getName();
-            annotatedMessages.put(messageClass, annotatedClass);
+        final Set<Class<? extends Message>> messageClasses = reflections.getSubTypesOf(Message.class);
+        for (Class messageClass : messageClasses) {
+            Annotation annotation = messageClass.getAnnotation(MessageAdapter.class);
+            if (annotation != null) {
+                String adaptFromClass = ((MessageAdapter) annotation).adaptFrom().getName();
+                MESSAGE_CLASSES.put(adaptFromClass, messageClass);
+            } else {
+                MESSAGE_CLASSES.put(messageClass.getName(), messageClass);
+            }
         }
     }
 
@@ -45,16 +44,7 @@ public class GsonMessageDeserializer implements JsonDeserializer<Message>
             throw new JsonParseException("Message must specify class to be deserialized into");
         }
         String className = classElement.getAsString();
-        Class<Message> lookupClass;
-        if (annotatedMessages.containsKey(className)) {
-            lookupClass = annotatedMessages.get(className);
-        } else {
-            try {
-                lookupClass = (Class<Message>) Class.forName(className);
-            } catch (ClassNotFoundException | ClassCastException e) {
-                throw new JsonParseException("Message implementation not found or incorrect: ", e);
-            }
-        }
+        Class<Message> lookupClass = MESSAGE_CLASSES.get(className);
         JsonElement fieldsElement = jsonObject.get("fields");
         return (fieldsElement != null)
               ? context.deserialize(fieldsElement, lookupClass)
