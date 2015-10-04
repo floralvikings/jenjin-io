@@ -16,7 +16,6 @@ dependencies {
     // Test dependencies
     testCompile 'org.testng:testng:6.8.7'
     testCompile 'org.mockito:mockito-all:2.0.2-beta'
-    testCompile 'org.powermock:powermock-api-mockito:1.6.2'
     testCompile 'org.slf4j:slf4j-jdk14:1.7.12'
 }
 
