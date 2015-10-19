@@ -36,3 +36,33 @@ test {
 task wrapper(type: Wrapper) {
     gradleVersion = '2.6'
 }
+
+// Javadoc copy to gh-pages
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.ajoberstar:gradle-git:1.3.2'
+    }
+}
+
+import org.ajoberstar.grgit.*
+task updateJavadoc(dependsOn: javadoc) {
+    def repo = Grgit.open(project.file('.'))
+    def currentBranch = repo.branch.getCurrent().name
+    doFirst {
+        repo.checkout(branch: 'gh-pages')
+        copy {
+            from 'build/docs/javadoc'
+            into 'javadoc'
+        }
+    }
+    doLast {
+        repo.add(patterns: ['javadoc/'])
+        repo.add(patterns: ['javadoc/'], update: true)
+        repo.commit(message: "Update Javadocs")
+        repo.push();
+        repo.checkout(branch: currentBranch)
+    }
+}
