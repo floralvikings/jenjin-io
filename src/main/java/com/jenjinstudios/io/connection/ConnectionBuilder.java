@@ -51,12 +51,14 @@ public class ConnectionBuilder
      * @param socket The socket over which the connection will be made.
      *
      * @throws IOException If there is an exception when creating streams from the given socket.
+     * @return This ConnectionBuilder.
      */
-    public void withSocket(Socket socket) throws IOException {
+    public ConnectionBuilder withSocket(Socket socket) throws IOException {
         final InputStream inputStream = socket.getInputStream();
         final OutputStream outputStream = socket.getOutputStream();
         withInputStream(inputStream);
         withOutputStream(outputStream);
+        return this;
     }
 
     /**
@@ -64,8 +66,9 @@ public class ConnectionBuilder
      * streams.
      *
      * @param factory The MessageIOFactory.
+     * @return This ConnectionBuilder.
      */
-    public void withMessageIOFactory(MessageIOFactory factory) {
+    public ConnectionBuilder withMessageIOFactory(MessageIOFactory factory) {
         if (messageIOFactory == null) {
             if ((messageReader != null) || (messageWriter != null)) {
                 LOGGER.warn("Applying MessageIOFactory after one or both streams have already been set");
@@ -74,6 +77,7 @@ public class ConnectionBuilder
         } else {
             throw new IllegalStateException("MessageIOFactory already set");
         }
+        return this;
     }
 
     /**
@@ -138,13 +142,15 @@ public class ConnectionBuilder
      * Build a connection with the given ExecutionContext.
      *
      * @param context The context in which the Connection will execute messages.
+     * @return This ConnectionBuilder.
      */
-    public void withExecutionContext(ExecutionContext context) {
+    public ConnectionBuilder withExecutionContext(ExecutionContext context) {
         if (executionContext == null) {
             executionContext = context;
         } else {
             throw new IllegalStateException("Execution context is already set");
         }
+        return this;
     }
 
     /**
