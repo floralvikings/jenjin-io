@@ -37,7 +37,7 @@ When the ```start``` method is called, four threads are started with the followi
 
 Jenjin-IO is licensed under the [MIT license](https://github.com/floralvikings/jenjin-io/blob/master/LICENSE)
 
-## Dendencies
+## Dependencies
 
 Below is the entire set of dependencies (including **test dependencies** and  *transitive dependencies*):
 
