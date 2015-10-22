@@ -9,10 +9,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * Used for making connections so that Message objects can be read, written, and executed in a non-blocking fashion.
@@ -28,6 +31,7 @@ public class Connection<C extends ExecutionContext>
     private final C context;
     private final MessageReader messageReader;
     private final MessageWriter messageWriter;
+    private final Collection<Consumer<ExecutionContext>> contextualTasks;
 
     /**
      * Construct a new connection.
@@ -38,7 +42,7 @@ public class Connection<C extends ExecutionContext>
      */
     Connection(C context, MessageReader messageReader, MessageWriter messageWriter)
     {
-        this(context, messageReader, messageWriter, null);
+        this(context, messageReader, messageWriter, null, Collections.<Consumer<ExecutionContext>>emptyList());
     }
 
     /**
@@ -48,9 +52,15 @@ public class Connection<C extends ExecutionContext>
      * @param messageReader The stream from which messages should be read.
      * @param messageWriter The stream to which messages should be written.
      */
-    Connection(C context, MessageReader messageReader, MessageWriter messageWriter, BiConsumer<Connection, Throwable>
-          errorCallback)
+    Connection(
+          C context,
+          MessageReader messageReader,
+          MessageWriter messageWriter,
+          BiConsumer<Connection, Throwable> errorCallback,
+          Collection<Consumer<ExecutionContext>> contextualTasks
+    )
     {
+        this.contextualTasks = contextualTasks;
         executor = Executors.newScheduledThreadPool(4);
         this.context = context;
         this.messageReader = messageReader;
@@ -63,7 +73,7 @@ public class Connection<C extends ExecutionContext>
      * Start sending, receiving, and executing messages.
      */
     public void start() {
-        Runnable executionTask = new ExecutionTask(messageQueue, context);
+        Runnable executionTask = new ExecutionTask(messageQueue, context, contextualTasks);
         Runnable writeTask = new WriteTask(messageQueue, messageWriter);
         Runnable readTask = new ReadTask(messageQueue, messageReader);
         Runnable errorTask = new ErrorTask(messageQueue, this::errorEncountered);

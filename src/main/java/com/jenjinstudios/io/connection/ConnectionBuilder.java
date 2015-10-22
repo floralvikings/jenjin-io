@@ -11,7 +11,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * Used to configure and create a Connection.
@@ -21,6 +25,7 @@ import java.util.function.BiConsumer;
 public class ConnectionBuilder
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionBuilder.class);
+    private final Collection<Consumer<ExecutionContext>> contextualTasks = new LinkedList<>();
     private MessageIOFactory messageIOFactory;
     private MessageReader messageReader;
     private MessageWriter messageWriter;
@@ -37,7 +42,7 @@ public class ConnectionBuilder
         if (messageWriter == null) { throw new IllegalStateException("MessageWriter not set"); }
         if (executionContext == null) { throw new IllegalStateException("Execution Context not set"); }
 
-        return new Connection(executionContext, messageReader, messageWriter, errorCallback);
+        return new Connection(executionContext, messageReader, messageWriter, errorCallback, contextualTasks);
     }
 
     /**
@@ -152,6 +157,43 @@ public class ConnectionBuilder
      */
     public ConnectionBuilder withErrorCallback(BiConsumer<Connection, Throwable> callback) {
         this.errorCallback = callback;
+        return this;
+    }
+
+    /**
+     * Build a connection that includes the given contextual task to be executed synchronously with message execution.
+     *
+     * @param task The task to be executed; a Consumer accepting an ExecutionContext.
+     *
+     * @return This ConnectionBuilder.
+     */
+    public ConnectionBuilder withContextualTask(Consumer<ExecutionContext> task) {
+        contextualTasks.add(task);
+        return this;
+    }
+
+    /**
+     * Build a connection that includes the given contextual task to be executed synchronously with message execution.
+     *
+     * @param tasks The tasks to be executed; Consumers accepting an ExecutionContext.
+     *
+     * @return This ConnectionBuilder.
+     */
+    @SafeVarargs
+    public final ConnectionBuilder withContextualTasks(Consumer<ExecutionContext>... tasks) {
+        Collections.addAll(contextualTasks, tasks);
+        return this;
+    }
+
+    /**
+     * Build a connection that includes the given contextual task to be executed synchronously with message execution.
+     *
+     * @param tasks The tasks to be executed; Consumers accepting an ExecutionContext.
+     *
+     * @return This ConnectionBuilder.
+     */
+    public ConnectionBuilder withContextualTasks(Collection<Consumer<ExecutionContext>> tasks) {
+        contextualTasks.addAll(tasks);
         return this;
     }
 }
