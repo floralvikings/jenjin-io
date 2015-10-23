@@ -21,7 +21,7 @@ import java.util.Set;
 public class GsonMessageDeserializer implements JsonDeserializer<Message>
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(GsonMessageDeserializer.class);
-    private static final Map<String, Class> MESSAGE_CLASSES = new HashMap<>(10);
+    private static final Map<String, Class> ADAPTED_CLASSES = new HashMap<>(10);
 
     static {
         LOGGER.debug("Scanning for message classes");
@@ -33,10 +33,10 @@ public class GsonMessageDeserializer implements JsonDeserializer<Message>
             if (annotation != null) {
                 String adaptFromClass = ((MessageAdapter) annotation).adaptFrom().getName();
                 LOGGER.debug("Registering adapter class: " + adaptFromClass);
-                MESSAGE_CLASSES.put(adaptFromClass, messageClass);
+                ADAPTED_CLASSES.put(adaptFromClass, messageClass);
             }
         }
-        LOGGER.debug("Registered Message Classes: {}", MESSAGE_CLASSES);
+        LOGGER.debug("Registered Message Classes: {}", ADAPTED_CLASSES);
     }
 
     @Override
@@ -50,8 +50,8 @@ public class GsonMessageDeserializer implements JsonDeserializer<Message>
         }
         String className = classElement.getAsString();
         Class<Message> lookupClass;
-        if (MESSAGE_CLASSES.containsKey(className)) {
-            lookupClass = MESSAGE_CLASSES.get(className);
+        if (ADAPTED_CLASSES.containsKey(className)) {
+            lookupClass = ADAPTED_CLASSES.get(className);
         } else {
             try {
                 lookupClass = (Class<Message>) Class.forName(className);
