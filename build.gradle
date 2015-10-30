@@ -59,7 +59,6 @@ task updateJavadoc(dependsOn: javadoc) {
         repo.add(patterns: ['javadoc/'])
         repo.add(patterns: ['javadoc/'], update: true)
         repo.commit(message: "Update Javadocs")
-        repo.push();
         repo.checkout(branch: currentBranch)
     }
 }
