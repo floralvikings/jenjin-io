@@ -25,8 +25,19 @@ dependencies {
 }
 
 test {
-    testLogging {
-        events "passed", "skipped", "failed", "standardOut", "standardError"
+    def debugOn = false;
+    if (project.hasProperty('logOptions')) {
+        if (logOptions instanceof String && ((String) logOptions) == "debug") {
+            debugOn = true;
+        }
+    }
+    if (debugOn) {
+        testLogging.events = ["passed", "skipped", "failed"]
+        // FIXME Doesn't seem to be working?
+        systemProperty 'java.util.logging.config.file', 'src/test/resources/logging.properties'
+        testLogging.showStandardStreams = true
+    } else {
+        testLogging.events = ["passed", "skipped", "failed"]
     }
 }
 
@@ -44,7 +55,8 @@ buildscript {
     }
 }
 
-import org.ajoberstar.grgit.*
+import org.ajoberstar.grgit.Grgit
+
 task updateJavadoc(dependsOn: javadoc) {
     def repo = Grgit.open(project.file('.'))
     def currentBranch = repo.branch.getCurrent().name
