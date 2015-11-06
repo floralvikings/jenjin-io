@@ -35,4 +35,34 @@ public class GsonDeserializerSpec extends Specification {
         then:
             thrown(JsonParseException)
     }
+
+    def "GsonMessageDeserializer should throw exception when invalid class is provided in JSON"() {
+        given:
+            def builder = new GsonBuilder();
+            builder.registerTypeAdapter(Message, new GsonMessageDeserializer())
+            def gson = builder.create();
+            def json = '{"class":"com.jenjinstudios.io.serialization.NopeMessage","fields":{"name":"foo"}}'
+
+        when:
+            def message = gson.fromJson(json, Message)
+
+        then:
+            thrown(JsonParseException)
+    }
+
+    def "GsonMessageDeserializer should attempt to deserialize to default when no fields provided"() {
+        given:
+            def builder = new GsonBuilder();
+            builder.registerTypeAdapter(Message, new GsonMessageDeserializer())
+            def gson = builder.create();
+            def json = '{"class":"com.jenjinstudios.io.serialization.TestMessage"}'
+
+        when:
+            def message = gson.fromJson(json, Message)
+
+        then:
+            message != null
+            message instanceof AdaptedMessage
+            ((AdaptedMessage) message).getName() == null
+    }
 }
