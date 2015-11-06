@@ -1,6 +1,7 @@
 package com.jenjinstudios.io.serialization
 
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonParseException
 import com.jenjinstudios.io.Message
 import spock.lang.Specification
 
@@ -19,5 +20,19 @@ public class GsonDeserializerSpec extends Specification {
         then:
             message instanceof AdaptedMessage
             ((AdaptedMessage) message).getName() == "foo"
+    }
+
+    def "GsonMessageDeserializer should throw exception when no class is provided in JSON"() {
+        given:
+            def builder = new GsonBuilder();
+            builder.registerTypeAdapter(Message, new GsonMessageDeserializer())
+            def gson = builder.create();
+            def json = '{"fields":{"name":"foo"}}'
+
+        when:
+            def message = gson.fromJson(json, Message)
+
+        then:
+            thrown(JsonParseException)
     }
 }
