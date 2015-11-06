@@ -26,7 +26,7 @@ public class GsonReaderSpec extends Specification {
 
         then:
             message instanceof AdaptedMessage
-            ((AdaptedMessage) message).getName().equals("foo");
+            ((AdaptedMessage) message).name == "foo";
 
         cleanup:
             reader.close()

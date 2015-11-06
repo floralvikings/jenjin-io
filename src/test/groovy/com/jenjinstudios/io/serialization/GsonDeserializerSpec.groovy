@@ -19,7 +19,7 @@ public class GsonDeserializerSpec extends Specification {
 
         then:
             message instanceof AdaptedMessage
-            ((AdaptedMessage) message).getName() == "foo"
+            ((AdaptedMessage) message).name == "foo"
     }
 
     def "GsonMessageDeserializer should throw exception when no class is provided in JSON"() {
@@ -63,6 +63,6 @@ public class GsonDeserializerSpec extends Specification {
         then:
             message != null
             message instanceof AdaptedMessage
-            ((AdaptedMessage) message).getName() == null
+            ((AdaptedMessage) message).name == null
     }
 }
