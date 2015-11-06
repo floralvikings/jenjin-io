@@ -14,7 +14,7 @@ public class WriteTaskSpec extends Specification {
             def task = new WriteTask(queue, writer)
 
         when:
-            queue.getOutgoingAndClear() >> [message, message2]
+            queue.outgoingAndClear >> [message, message2]
 
         and:
             task.run()
@@ -31,7 +31,7 @@ public class WriteTaskSpec extends Specification {
             def task = new WriteTask(queue, writer)
 
         when:
-            queue.getOutgoingAndClear() >> []
+            queue.outgoingAndClear >> []
 
         and:
             task.run()
