@@ -84,8 +84,10 @@ public class ConnectionBuilder
      * Build a connection with the given InputStream.
      *
      * @param inputStream The stream the Connection will use to read messages.
+     *
+     * @return This ConnectionBuilder
      */
-    public void withInputStream(InputStream inputStream) {
+    public ConnectionBuilder withInputStream(InputStream inputStream) {
         if (messageIOFactory == null) {
             throw new IllegalStateException("MessageIOFactory not set");
         }
@@ -94,14 +96,17 @@ public class ConnectionBuilder
         } else {
             throw new IllegalStateException("MessageReader is already set");
         }
+        return this;
     }
 
     /**
      * Build a connection with the given OutputStream.
      *
      * @param outputStream The output stream the Connection will use to write messages.
+     *
+     * @return This ConnectionBuilder
      */
-    public void withOutputStream(OutputStream outputStream) {
+    public ConnectionBuilder withOutputStream(OutputStream outputStream) {
         if (messageIOFactory == null) {
             throw new IllegalStateException("MessageIOFactory not set");
         }
@@ -110,6 +115,7 @@ public class ConnectionBuilder
         } else {
             throw new IllegalStateException("MessageWriter is already set");
         }
+        return this;
     }
 
     /**
