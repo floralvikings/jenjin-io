@@ -6,7 +6,7 @@ import spock.lang.Specification
 
 public class GsonDeserializerSpec extends Specification {
 
-    def "GsonMessageDeserializer should deserialize JSON message into correct class with properties"() {
+    def "GsonMessageDeserializer should deserialize JSON message into correct (adapted) class with properties"() {
         given:
             def builder = new GsonBuilder();
             builder.registerTypeAdapter(Message, new GsonMessageDeserializer())
