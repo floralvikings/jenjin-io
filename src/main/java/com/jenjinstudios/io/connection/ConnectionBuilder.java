@@ -210,10 +210,8 @@ public class ConnectionBuilder
      *
      * @return This ConnectionBuilder.
      */
-    public ConnectionBuilder withContextualTasks(Collection<Consumer<ExecutionContext>> tasks) {
-        for (Consumer<ExecutionContext> task : tasks) {
-            withContextualTask(task);
-        }
+    public ConnectionBuilder withContextualTasks(Iterable<Consumer<ExecutionContext>> tasks) {
+        tasks.forEach(this::withContextualTask);
         return this;
     }
 }
