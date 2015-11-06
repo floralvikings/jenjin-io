@@ -12,7 +12,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -198,7 +197,9 @@ public class ConnectionBuilder
      */
     @SafeVarargs
     public final ConnectionBuilder withContextualTasks(Consumer<ExecutionContext>... tasks) {
-        Collections.addAll(contextualTasks, tasks);
+        for (Consumer<ExecutionContext> task : tasks) {
+            withContextualTask(task);
+        }
         return this;
     }
 
@@ -210,7 +211,9 @@ public class ConnectionBuilder
      * @return This ConnectionBuilder.
      */
     public ConnectionBuilder withContextualTasks(Collection<Consumer<ExecutionContext>> tasks) {
-        contextualTasks.addAll(tasks);
+        for (Consumer<ExecutionContext> task : tasks) {
+            withContextualTask(task);
+        }
         return this;
     }
 }
