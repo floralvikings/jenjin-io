@@ -1,7 +1,5 @@
 package com.jenjinstudios.io.annotations;
 
-import com.jenjinstudios.io.Message;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -19,7 +17,7 @@ public @interface MessageAdapter
     /**
      * Specify the class from which the Message should be serialized.
      *
-     * @return The class from which the Message should be serialized.
+     * @return The name of the class from which the Message should be serialized.
      */
-    Class<? extends Message> adaptFrom();
+    String adaptFrom();
 }

@@ -9,7 +9,7 @@ import com.jenjinstudios.io.annotations.MessageAdapter;
  *
  * @author Caleb Brinkman
  */
-@MessageAdapter(adaptFrom = TestMessage.class)
+@MessageAdapter(adaptFrom = "com.jenjinstudios.io.serialization.TestMessage")
 public class AdaptedMessage implements Message
 {
     private String name;
