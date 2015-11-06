@@ -122,26 +122,31 @@ public class ConnectionBuilder
      * Build a connection with the given InputStream.
      *
      * @param reader The stream the Connection will use to read messages.
+     *
+     * @return This ConnectionBuilder
      */
-    public void withMessageReader(MessageReader reader) {
+    public ConnectionBuilder withMessageReader(MessageReader reader) {
         if (messageReader == null) {
             messageReader = reader;
         } else {
             throw new IllegalStateException("MessageReader is already set");
         }
+        return this;
     }
 
     /**
      * Build a connection with the given OutputStream.
      *
      * @param writer The output stream the Connection will use to write messages.
+     * @return This ConnectionBuilder
      */
-    public void withMessageWriter(MessageWriter writer) {
+    public ConnectionBuilder withMessageWriter(MessageWriter writer) {
         if (messageWriter == null) {
             messageWriter = writer;
         } else {
             throw new IllegalStateException("MessageWriter is already set");
         }
+        return this;
     }
 
     /**
