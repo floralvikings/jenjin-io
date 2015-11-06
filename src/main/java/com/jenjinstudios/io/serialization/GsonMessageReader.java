@@ -2,6 +2,8 @@ package com.jenjinstudios.io.serialization;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSyntaxException;
 import com.jenjinstudios.io.Message;
 import com.jenjinstudios.io.MessageReader;
 
@@ -34,7 +36,15 @@ public class GsonMessageReader implements MessageReader
         Gson gson = new GsonBuilder()
               .registerTypeAdapter(Message.class, gsonMessageDeserializer)
               .create();
-        return gson.fromJson(s, Message.class);
+        Message message;
+        try {
+            message = gson.fromJson(s, Message.class);
+        } catch (JsonSyntaxException ex) {
+            throw new IOException("Syntax error in message JSON", ex);
+        } catch (JsonParseException ex) {
+            throw new IOException("Unable to properly parse JSON data into Message object", ex);
+        }
+        return message;
     }
 
     @Override
