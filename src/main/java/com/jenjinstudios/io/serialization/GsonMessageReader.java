@@ -18,7 +18,7 @@ import java.io.InputStream;
  */
 public class GsonMessageReader implements MessageReader
 {
-    private final InputStream inputStream;
+    private final DataInputStream inputStream;
     private final Object gsonMessageDeserializer = new GsonMessageDeserializer();
 
     /**
@@ -27,12 +27,12 @@ public class GsonMessageReader implements MessageReader
      * @param inputStream The InputStream.
      */
     public GsonMessageReader(InputStream inputStream) {
-        this.inputStream = inputStream;
+        this.inputStream = new DataInputStream(inputStream);
     }
 
     @Override
     public Message read() throws IOException {
-        final String s = new DataInputStream(inputStream).readUTF();
+        final String s = inputStream.readUTF();
         Gson gson = new GsonBuilder()
               .registerTypeAdapter(Message.class, gsonMessageDeserializer)
               .create();
