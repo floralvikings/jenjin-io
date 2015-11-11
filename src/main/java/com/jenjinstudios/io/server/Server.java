@@ -56,7 +56,10 @@ public class Server
         executor = Executors.newScheduledThreadPool(EXECUTOR_THREADS);
         connections = Collections.synchronizedCollection(new LinkedList<>());
 
-        this.connectionBuilder.withShutdownCallback(connections::remove);
+        this.connectionBuilder.withShutdownCallback(connection -> {
+            connections.remove(connection);
+            connectionRemovedCallbacks.forEach(consumer -> consumer.accept(connection));
+        });
     }
 
     /**
@@ -74,12 +77,16 @@ public class Server
         } catch (IOException e) {
             LOGGER.warn("Error when closing ServerSocket", e);
         }
+
+        shutdownCallbacks.forEach(consumer -> consumer.accept(this));
     }
 
     /**
      * Start listening for inbound connections.
      */
     public void start() {
+        connectionBuilder.
+              withContextualTask(context -> this.contextualTasks.forEach(consumer -> consumer.accept(this, context)));
         executor.scheduleWithFixedDelay(() -> {
             try {
                 if (serverSocket.isClosed()) {
@@ -89,6 +96,8 @@ public class Server
                     if (socket != null) {
                         Connection connection = connectionBuilder.build(socket);
                         connections.add(connection);
+                        connectionAddedCallbacks.forEach(consumer -> consumer.accept(connection));
+                        connection.start();
                     } else {
                         LOGGER.warn("ServerSocket returned null connection");
                     }
