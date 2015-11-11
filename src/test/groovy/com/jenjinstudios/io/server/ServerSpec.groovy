@@ -129,19 +129,16 @@ public class ServerSpec extends Specification {
             def callback = Mock(Consumer)
             def callbacks = [callback]
             def server = new Server(serverSocket, connectionBuilder, [], [], callbacks, [], [])
+            connection.stop() >> { callback.accept(connection) }
 
         when: "The Server is started and a Connection is added"
             server.start()
+            Thread.sleep(100)
 
         and: "The connection is closed"
-            Thread.sleep(100); // Give threads time to catch up
-            connection.stop()
+            server.stop()
 
         then: "The callback should be invoked"
-            Thread.sleep(100); // Give threads time to catch up
             1 * callback.accept(connection)
-
-        cleanup: "Shutdown the server"
-            server.stop()
     }
 }
