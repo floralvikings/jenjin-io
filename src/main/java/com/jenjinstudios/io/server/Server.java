@@ -97,6 +97,8 @@ public class Server
                 LOGGER.error("Error when attempting to accept incoming connection", e);
             }
         }, 0, 10, TimeUnit.MILLISECONDS);
+
+        startupCallbacks.forEach(consumer -> consumer.accept(this));
     }
 
     public int getConnectionCount() { return connections.size(); }
