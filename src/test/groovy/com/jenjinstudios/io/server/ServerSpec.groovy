@@ -95,7 +95,7 @@ public class ServerSpec extends Specification {
         given: "A ServerSocket which returns a mocked connection"
             def serverSocket = Mock(ServerSocket)
             def socket = Mock(Socket)
-            serverSocket.accept() >> [socket, { while (true); }]
+            serverSocket.accept() >>> [socket, { while (true); }]
             def connection = Mock(Connection)
             def connectionBuilder = Mock(ReusableConnectionBuilder)
             connectionBuilder.build(socket) >> connection
@@ -107,6 +107,7 @@ public class ServerSpec extends Specification {
 
         when: "The Server is started and a Connection is added"
             server.start()
+            Thread.sleep(100) // Give Threads time to catch up
 
         then: "The callback should be invoked"
             1 * callback.accept(connection)
@@ -119,7 +120,7 @@ public class ServerSpec extends Specification {
         given: "A ServerSocket which returns a mocked connection"
             def serverSocket = Mock(ServerSocket)
             def socket = Mock(Socket)
-            serverSocket.accept() >> [socket, { while (true); }]
+            serverSocket.accept() >>> [socket, { while (true); }]
             def connection = Mock(Connection)
             def connectionBuilder = Mock(ReusableConnectionBuilder)
             connectionBuilder.build(socket) >> connection
