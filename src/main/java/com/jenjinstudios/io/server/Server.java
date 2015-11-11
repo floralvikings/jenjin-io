@@ -40,21 +40,28 @@ public class Server
     Server(
           ServerSocket serverSocket,
           ReusableConnectionBuilder connectionBuilder,
-          Collection<BiConsumer<Server, ExecutionContext>> contextualTasks,
-          Collection<Consumer<Connection>> addedCallbacks,
-          Collection<Consumer<Connection>> removedCallbacks,
-          Collection<Consumer<Server>> startupCallbacks,
-          Collection<Consumer<Server>> shutdownCallbacks)
+          Iterable<BiConsumer<Server, ExecutionContext>> contextualTasks,
+          Iterable<Consumer<Connection>> addedCallbacks,
+          Iterable<Consumer<Connection>> removedCallbacks,
+          Iterable<Consumer<Server>> startupCallbacks,
+          Iterable<Consumer<Server>> shutdownCallbacks)
     {
         this.serverSocket = serverSocket;
         this.connectionBuilder = connectionBuilder;
-        this.contextualTasks = new LinkedList<>(contextualTasks);
-        this.connectionAddedCallbacks = new LinkedList<>(addedCallbacks);
-        this.connectionRemovedCallbacks = new LinkedList<>(removedCallbacks);
-        this.startupCallbacks = new LinkedList<>(startupCallbacks);
-        this.shutdownCallbacks = new LinkedList<>(shutdownCallbacks);
+        this.contextualTasks = new LinkedList<>();
+        this.connectionAddedCallbacks = new LinkedList<>();
+        this.connectionRemovedCallbacks = new LinkedList<>();
+        this.startupCallbacks = new LinkedList<>();
+        this.shutdownCallbacks = new LinkedList<>();
+
         executor = Executors.newScheduledThreadPool(EXECUTOR_THREADS);
         connections = Collections.synchronizedCollection(new LinkedList<>());
+
+        contextualTasks.forEach(this.contextualTasks::add);
+        addedCallbacks.forEach(this.connectionAddedCallbacks::add);
+        removedCallbacks.forEach(this.connectionRemovedCallbacks::add);
+        startupCallbacks.forEach(this.startupCallbacks::add);
+        shutdownCallbacks.forEach(this.shutdownCallbacks::add);
 
         this.connectionBuilder.withShutdownCallback(connection -> {
             connections.remove(connection);
