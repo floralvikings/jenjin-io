@@ -9,8 +9,9 @@ import java.util.function.Consumer
 public class ServerSpec extends Specification {
     def "When started, Server should listen for and accept inbound connections"() {
         given: "A ServerSocket and Server"
+            def connectionBuilder = Mock(ReusableConnectionBuilder)
             def serverSocket = Mock(ServerSocket)
-            def server = new Server(serverSocket, null, [], [], [], [], [])
+            def server = new Server(serverSocket, connectionBuilder, [], [], [], [], [])
 
         when: "The server is started"
             server.start()
@@ -46,18 +47,18 @@ public class ServerSpec extends Specification {
             server.stop()
             Thread.sleep(100) // Give threads time to catch up
 
-        then: "The connection should be closed and removed"
+        then: "The connection should be closed"
             1 * connection.stop()
             1 * serverSocket.close()
-            server.connectionCount == 0
     }
 
     def "When Server starts, callback(s) should be invoked"() {
         given: "A Server with a start callback"
+            def connectionBuilder = Mock(ReusableConnectionBuilder)
             def serverSocket = Mock(ServerSocket)
             def callback = Mock(Consumer)
             def callbacks = [callback]
-            def server = new Server(serverSocket, null, [], [], [], callbacks, [])
+            def server = new Server(serverSocket, connectionBuilder, [], [], [], callbacks, [])
 
         when: "The Server is started"
             server.start()
@@ -71,10 +72,11 @@ public class ServerSpec extends Specification {
 
     def "When Server stops, callback(s) should be invoked"() {
         given: "A Server with a stop callback"
+            def connectionBuilder = Mock(ReusableConnectionBuilder)
             def serverSocket = Mock(ServerSocket)
             def callback = Mock(Consumer)
             def callbacks = [callback]
-            def server = new Server(serverSocket, null, [], [], [], [], callbacks)
+            def server = new Server(serverSocket, connectionBuilder, [], [], [], [], callbacks)
 
         when: "The Server is started"
             server.start()
