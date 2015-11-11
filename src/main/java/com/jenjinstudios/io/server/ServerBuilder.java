@@ -1,8 +1,10 @@
 package com.jenjinstudios.io.server;
 
+import com.jenjinstudios.io.ExecutionContext;
 import com.jenjinstudios.io.connection.ReusableConnectionBuilder;
 
 import java.net.ServerSocket;
+import java.util.function.BiConsumer;
 
 /**
  * Used to build Server objects.
@@ -41,6 +43,29 @@ public class ServerBuilder
      * @return This ServerBuilder.
      */
     public ServerBuilder withReusableConnectionBuilder(ReusableConnectionBuilder builder) {
+        return this;
+    }
+
+    /**
+     * Build a Server which will execute the given tasks each time a Connection executes its contextual tasks.
+     *
+     * @param tasks The tasks to be executed with access to this server and an ExecutionContext
+     *
+     * @return This ServerBuilder.
+     */
+    @SafeVarargs
+    public final ServerBuilder withContextualTasks(BiConsumer<Server, ExecutionContext>... tasks) {
+        return this;
+    }
+
+    /**
+     * Build a Server which will execute the given tasks each time a Connection executes its contextual tasks.
+     *
+     * @param tasks The tasks to be executed with access to this server and an ExecutionContext
+     *
+     * @return This ServerBuilder.
+     */
+    public ServerBuilder withContextualTasks(Iterable<BiConsumer<Server, ExecutionContext>> tasks) {
         return this;
     }
 }

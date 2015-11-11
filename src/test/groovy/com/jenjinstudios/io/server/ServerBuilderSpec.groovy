@@ -33,12 +33,33 @@ public class ServerBuilderSpec extends Specification {
             def connectionBuilder = Mock(ReusableConnectionBuilder)
             def serverSocket = Mock(ServerSocket)
             def builder = new ServerBuilder()
-            builder.withServerSocket(serverSocket).withReusableConnectionBuilder(connectionBuilder);
+            builder.withServerSocket(serverSocket).withReusableConnectionBuilder(connectionBuilder)
 
         when: "The Server is built"
             def server = builder.build()
 
         then: "Server should not be null"
             server != null
+    }
+
+    def "ServerBuilder should pass contextual tasks to built server"() {
+        given: "A ServerBuilder with a ServerSocket and ReusableConnectionBuilder"
+            def connectionBuilder = Mock(ReusableConnectionBuilder)
+            def serverSocket = Mock(ServerSocket)
+            def builder = new ServerBuilder()
+            builder.withServerSocket(serverSocket).withReusableConnectionBuilder(connectionBuilder)
+
+        and: "A callback"
+            def callbacks = Mock(Iterable)
+            builder.withContextualTasks(callbacks)
+
+        when: "The Server is built"
+            def server = builder.build()
+
+        then: "Server should not be null"
+            server != null
+
+        and: "Callbacks should have been iterated"
+            1 * callbacks.forEach(_)
     }
 }
