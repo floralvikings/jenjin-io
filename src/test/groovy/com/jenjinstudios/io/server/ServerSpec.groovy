@@ -84,7 +84,7 @@ public class ServerSpec extends Specification {
         then:
             0 * callback.accept(server)
 
-        and: "The Server stops"
+        when: "The Server stops"
             server.stop()
 
         then: "The callback should be invoked"
