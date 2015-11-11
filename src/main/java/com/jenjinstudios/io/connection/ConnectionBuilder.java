@@ -25,6 +25,7 @@ public class ConnectionBuilder
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionBuilder.class);
     private final Collection<Consumer<ExecutionContext>> contextualTasks = new LinkedList<>();
+    private final Collection<Consumer<Connection>> shutdownCallbacks = new LinkedList<>();
     private MessageIOFactory messageIOFactory;
     private MessageReader messageReader;
     private MessageWriter messageWriter;
@@ -41,7 +42,8 @@ public class ConnectionBuilder
         if (messageWriter == null) { throw new IllegalStateException("MessageWriter not set"); }
         if (executionContext == null) { throw new IllegalStateException("Execution Context not set"); }
 
-        return new Connection(executionContext, messageReader, messageWriter, errorCallback, contextualTasks);
+        return new Connection(executionContext, messageReader, messageWriter, errorCallback, contextualTasks,
+              shutdownCallbacks);
     }
 
     /**
@@ -49,8 +51,9 @@ public class ConnectionBuilder
      *
      * @param socket The socket over which the connection will be made.
      *
-     * @throws IOException If there is an exception when creating streams from the given socket.
      * @return This ConnectionBuilder.
+     *
+     * @throws IOException If there is an exception when creating streams from the given socket.
      */
     public ConnectionBuilder withSocket(Socket socket) throws IOException {
         final InputStream inputStream = socket.getInputStream();
@@ -65,6 +68,7 @@ public class ConnectionBuilder
      * streams.
      *
      * @param factory The MessageIOFactory.
+     *
      * @return This ConnectionBuilder.
      */
     public ConnectionBuilder withMessageIOFactory(MessageIOFactory factory) {
@@ -137,6 +141,7 @@ public class ConnectionBuilder
      * Build a connection with the given OutputStream.
      *
      * @param writer The output stream the Connection will use to write messages.
+     *
      * @return This ConnectionBuilder
      */
     public ConnectionBuilder withMessageWriter(MessageWriter writer) {
@@ -152,6 +157,7 @@ public class ConnectionBuilder
      * Build a connection with the given ExecutionContext.
      *
      * @param context The context in which the Connection will execute messages.
+     *
      * @return This ConnectionBuilder.
      */
     public ConnectionBuilder withExecutionContext(ExecutionContext context) {
@@ -212,6 +218,30 @@ public class ConnectionBuilder
      */
     public ConnectionBuilder withContextualTasks(Iterable<Consumer<ExecutionContext>> tasks) {
         tasks.forEach(this::withContextualTask);
+        return this;
+    }
+
+    /**
+     * Build a connection that will invoke the given consumers when shutting down with itself as a parameter.
+     *
+     * @param callbacks The consumers.
+     *
+     * @return This ConnectionBuilder.
+     */
+    public ConnectionBuilder withShutdownCallbacks(Iterable<Consumer<Connection>> callbacks) {
+        callbacks.forEach(this::withShutdownCallback);
+        return this;
+    }
+
+    /**
+     * Build a connection that will invoke the given consumer when shutting down with itself as a parameter.
+     *
+     * @param callback The consumer
+     *
+     * @return This ConnectionBuilder.
+     */
+    private ConnectionBuilder withShutdownCallback(Consumer<Connection> callback) {
+        shutdownCallbacks.add(callback);
         return this;
     }
 }

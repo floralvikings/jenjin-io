@@ -19,8 +19,9 @@ import java.util.function.Consumer;
  */
 public class ReusableConnectionBuilder
 {
-    private ExecutionContextFactory executionContextFactory;
     private final Collection<Consumer<ExecutionContext>> contextualTasks = new LinkedList<>();
+    private final Collection<Consumer<Connection>> shutdownCallbacks = new LinkedList<>();
+    private ExecutionContextFactory executionContextFactory;
     private BiConsumer<Connection, Throwable> errorCallback;
     private MessageIOFactory messageIOFactory;
 
@@ -40,6 +41,7 @@ public class ReusableConnectionBuilder
               .withContextualTasks(contextualTasks)
               .withExecutionContext(executionContextFactory.createInstance())
               .withSocket(socket)
+              .withShutdownCallbacks(shutdownCallbacks)
               .build();
     }
 
@@ -123,6 +125,18 @@ public class ReusableConnectionBuilder
      */
     public ReusableConnectionBuilder withContextualTasks(Collection<Consumer<ExecutionContext>> tasks) {
         contextualTasks.addAll(tasks);
+        return this;
+    }
+
+    /**
+     * Build a connection that will execute the given callback on shutdown.
+     *
+     * @param callback The callback to be invoked.
+     *
+     * @return This ReusableConnectionBuilder.
+     */
+    public ReusableConnectionBuilder withShutdownCallback(Consumer<Connection> callback) {
+        shutdownCallbacks.add(callback);
         return this;
     }
 }

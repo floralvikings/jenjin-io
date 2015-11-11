@@ -32,6 +32,7 @@ public class Connection<C extends ExecutionContext>
     private final MessageReader messageReader;
     private final MessageWriter messageWriter;
     private final Collection<Consumer<ExecutionContext>> contextualTasks;
+    private final Collection<Consumer<Connection>> shutdownCallbacks;
 
     /**
      * Construct a new connection.
@@ -42,25 +43,26 @@ public class Connection<C extends ExecutionContext>
      */
     Connection(C context, MessageReader messageReader, MessageWriter messageWriter)
     {
-        this(context, messageReader, messageWriter, null, Collections.<Consumer<ExecutionContext>>emptyList());
+        this(context, messageReader, messageWriter, null, Collections.emptyList(), Collections.emptyList());
     }
 
     /**
      * Construct a new connection.
-     *
-     * @param context The context in which messages should execute.
+     *  @param context The context in which messages should execute.
      * @param messageReader The stream from which messages should be read.
      * @param messageWriter The stream to which messages should be written.
+     * @param shutdownCallbacks The callbacks to be invoked when the connection is shut down.
      */
     Connection(
           C context,
           MessageReader messageReader,
           MessageWriter messageWriter,
           BiConsumer<Connection, Throwable> errorCallback,
-          Collection<Consumer<ExecutionContext>> contextualTasks
-    )
+          Collection<Consumer<ExecutionContext>> contextualTasks,
+          Collection<Consumer<Connection>> shutdownCallbacks)
     {
         this.contextualTasks = contextualTasks;
+        this.shutdownCallbacks = shutdownCallbacks;
         executor = Executors.newScheduledThreadPool(4);
         this.context = context;
         this.messageReader = messageReader;
@@ -100,6 +102,7 @@ public class Connection<C extends ExecutionContext>
         } catch (IOException e) {
             LOGGER.warn("Exception when closing output stream", e);
         }
+        shutdownCallbacks.forEach(consumer -> consumer.accept(this));
     }
 
     /**

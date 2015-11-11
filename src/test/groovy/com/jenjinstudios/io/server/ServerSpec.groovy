@@ -14,7 +14,7 @@ public class ServerSpec extends Specification {
 
         when: "The server is started"
             server.start()
-            Thread.sleep(100); // Give threads time to catch up
+            Thread.sleep(100) // Give threads time to catch up
 
         then: "The ServerSocket should be accepting connections"
             (1.._) * serverSocket.accept()
@@ -27,7 +27,7 @@ public class ServerSpec extends Specification {
         given: "A ServerSocket which returns a valid connection then blocks"
             def serverSocket = Mock(ServerSocket)
             def socket = Mock(Socket)
-            serverSocket.accept() >> [socket, { while (true); }]
+            serverSocket.accept() >>> [socket, null]
             def connection = Mock(Connection)
             def connectionBuilder = Mock(ReusableConnectionBuilder)
             connectionBuilder.build(socket) >> connection
@@ -37,15 +37,18 @@ public class ServerSpec extends Specification {
 
         when: "The server is started"
             server.start()
+            Thread.sleep(100) // Give threads time to catch up
 
         then: "One connection should be made"
             server.connectionCount == 1
 
         when: "The server is stopped"
             server.stop()
+            Thread.sleep(100) // Give threads time to catch up
 
         then: "The connection should be closed and removed"
-            1 * socket.close()
+            1 * connection.stop()
+            1 * serverSocket.close()
             server.connectionCount == 0
     }
 
