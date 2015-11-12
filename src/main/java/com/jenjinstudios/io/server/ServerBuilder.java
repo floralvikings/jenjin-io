@@ -74,9 +74,15 @@ public class ServerBuilder
      * @param builder The ReusableConnectionBuilder.
      *
      * @return This ServerBuilder.
+     *
+     * @throws IllegalStateException If the ReusableConnectionBuilder has already been set.
      */
     public ServerBuilder withReusableConnectionBuilder(ReusableConnectionBuilder builder) {
-        this.connectionBuilder = builder;
+        if (this.connectionBuilder == null) {
+            this.connectionBuilder = builder;
+        } else {
+            throw new IllegalStateException("ReusableConnectionBuilder already set");
+        }
         return this;
     }
 
