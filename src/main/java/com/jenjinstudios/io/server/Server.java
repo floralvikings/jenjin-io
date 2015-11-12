@@ -2,7 +2,7 @@ package com.jenjinstudios.io.server;
 
 import com.jenjinstudios.io.ExecutionContext;
 import com.jenjinstudios.io.connection.Connection;
-import com.jenjinstudios.io.connection.ReusableConnectionBuilder;
+import com.jenjinstudios.io.connection.MultiConnectionBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +29,7 @@ public class Server
     private static final int EXECUTOR_THREADS = 4;
     private final ScheduledExecutorService executor;
     private final ServerSocket serverSocket;
-    private final ReusableConnectionBuilder connectionBuilder;
+    private final MultiConnectionBuilder connectionBuilder;
     private final Collection<BiConsumer<Server, ExecutionContext>> contextualTasks;
     private final Collection<Consumer<Connection>> connectionAddedCallbacks;
     private final Collection<Consumer<Connection>> connectionRemovedCallbacks;
@@ -39,7 +39,7 @@ public class Server
 
     Server(
           ServerSocket serverSocket,
-          ReusableConnectionBuilder connectionBuilder,
+          MultiConnectionBuilder connectionBuilder,
           Iterable<BiConsumer<Server, ExecutionContext>> contextualTasks,
           Iterable<Consumer<Connection>> addedCallbacks,
           Iterable<Consumer<Connection>> removedCallbacks,

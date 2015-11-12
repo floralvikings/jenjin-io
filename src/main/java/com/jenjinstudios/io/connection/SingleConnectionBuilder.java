@@ -21,9 +21,9 @@ import java.util.function.Consumer;
  *
  * @author Caleb Brinkman
  */
-public class ConnectionBuilder
+public class SingleConnectionBuilder
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionBuilder.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SingleConnectionBuilder.class);
     private final Collection<Consumer<ExecutionContext>> contextualTasks = new LinkedList<>();
     private final Collection<Consumer<Connection>> shutdownCallbacks = new LinkedList<>();
     private MessageIOFactory messageIOFactory;
@@ -55,7 +55,7 @@ public class ConnectionBuilder
      *
      * @throws IOException If there is an exception when creating streams from the given socket.
      */
-    public ConnectionBuilder withSocket(Socket socket) throws IOException {
+    public SingleConnectionBuilder withSocket(Socket socket) throws IOException {
         final InputStream inputStream = socket.getInputStream();
         final OutputStream outputStream = socket.getOutputStream();
         withInputStream(inputStream);
@@ -71,7 +71,7 @@ public class ConnectionBuilder
      *
      * @return This ConnectionBuilder.
      */
-    public ConnectionBuilder withMessageIOFactory(MessageIOFactory factory) {
+    public SingleConnectionBuilder withMessageIOFactory(MessageIOFactory factory) {
         if (messageIOFactory == null) {
             if ((messageReader != null) || (messageWriter != null)) {
                 LOGGER.warn("Applying MessageIOFactory after one or both streams have already been set");
@@ -90,7 +90,7 @@ public class ConnectionBuilder
      *
      * @return This ConnectionBuilder
      */
-    public ConnectionBuilder withInputStream(InputStream inputStream) {
+    public SingleConnectionBuilder withInputStream(InputStream inputStream) {
         if (messageIOFactory == null) {
             throw new IllegalStateException("MessageIOFactory not set");
         }
@@ -109,7 +109,7 @@ public class ConnectionBuilder
      *
      * @return This ConnectionBuilder
      */
-    public ConnectionBuilder withOutputStream(OutputStream outputStream) {
+    public SingleConnectionBuilder withOutputStream(OutputStream outputStream) {
         if (messageIOFactory == null) {
             throw new IllegalStateException("MessageIOFactory not set");
         }
@@ -128,7 +128,7 @@ public class ConnectionBuilder
      *
      * @return This ConnectionBuilder
      */
-    public ConnectionBuilder withMessageReader(MessageReader reader) {
+    public SingleConnectionBuilder withMessageReader(MessageReader reader) {
         if (messageReader == null) {
             messageReader = reader;
         } else {
@@ -144,7 +144,7 @@ public class ConnectionBuilder
      *
      * @return This ConnectionBuilder
      */
-    public ConnectionBuilder withMessageWriter(MessageWriter writer) {
+    public SingleConnectionBuilder withMessageWriter(MessageWriter writer) {
         if (messageWriter == null) {
             messageWriter = writer;
         } else {
@@ -160,7 +160,7 @@ public class ConnectionBuilder
      *
      * @return This ConnectionBuilder.
      */
-    public ConnectionBuilder withExecutionContext(ExecutionContext context) {
+    public SingleConnectionBuilder withExecutionContext(ExecutionContext context) {
         if (executionContext == null) {
             executionContext = context;
         } else {
@@ -177,7 +177,7 @@ public class ConnectionBuilder
      *
      * @return This ConnectionBuilder.
      */
-    public ConnectionBuilder withErrorCallback(BiConsumer<Connection, Throwable> callback) {
+    public SingleConnectionBuilder withErrorCallback(BiConsumer<Connection, Throwable> callback) {
         this.errorCallback = callback;
         return this;
     }
@@ -189,7 +189,7 @@ public class ConnectionBuilder
      *
      * @return This ConnectionBuilder.
      */
-    public ConnectionBuilder withContextualTask(Consumer<ExecutionContext> task) {
+    public SingleConnectionBuilder withContextualTask(Consumer<ExecutionContext> task) {
         contextualTasks.add(task);
         return this;
     }
@@ -202,7 +202,7 @@ public class ConnectionBuilder
      * @return This ConnectionBuilder.
      */
     @SafeVarargs
-    public final ConnectionBuilder withContextualTasks(Consumer<ExecutionContext>... tasks) {
+    public final SingleConnectionBuilder withContextualTasks(Consumer<ExecutionContext>... tasks) {
         for (Consumer<ExecutionContext> task : tasks) {
             withContextualTask(task);
         }
@@ -216,7 +216,7 @@ public class ConnectionBuilder
      *
      * @return This ConnectionBuilder.
      */
-    public ConnectionBuilder withContextualTasks(Iterable<Consumer<ExecutionContext>> tasks) {
+    public SingleConnectionBuilder withContextualTasks(Iterable<Consumer<ExecutionContext>> tasks) {
         tasks.forEach(this::withContextualTask);
         return this;
     }
@@ -228,7 +228,7 @@ public class ConnectionBuilder
      *
      * @return This ConnectionBuilder.
      */
-    public ConnectionBuilder withShutdownCallbacks(Iterable<Consumer<Connection>> callbacks) {
+    public SingleConnectionBuilder withShutdownCallbacks(Iterable<Consumer<Connection>> callbacks) {
         callbacks.forEach(this::withShutdownCallback);
         return this;
     }
@@ -240,7 +240,7 @@ public class ConnectionBuilder
      *
      * @return This ConnectionBuilder.
      */
-    private ConnectionBuilder withShutdownCallback(Consumer<Connection> callback) {
+    private SingleConnectionBuilder withShutdownCallback(Consumer<Connection> callback) {
         shutdownCallbacks.add(callback);
         return this;
     }

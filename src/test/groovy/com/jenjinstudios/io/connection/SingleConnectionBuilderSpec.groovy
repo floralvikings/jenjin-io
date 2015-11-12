@@ -6,12 +6,12 @@ import spock.lang.Specification
 import java.util.function.BiConsumer
 import java.util.function.Consumer
 
-public class ConnectionBuilderSpec extends Specification {
+public class SingleConnectionBuilderSpec extends Specification {
     def "ConnectionBuilder should not build if MessageReader not set"() {
         given: "A ConnectionBuilder with all essential properties set except MessageReader"
             def writer = Mock(MessageWriter)
             def context = Mock(ExecutionContext)
-            def builder = new ConnectionBuilder()
+            def builder = new SingleConnectionBuilder()
             builder.withMessageWriter(writer)
                     .withExecutionContext(context)
 
@@ -26,7 +26,7 @@ public class ConnectionBuilderSpec extends Specification {
         given: "A ConnectionBuilder with all essential properties set except MessageWriter"
             def reader = Mock(MessageReader)
             def context = Mock(ExecutionContext)
-            def builder = new ConnectionBuilder()
+            def builder = new SingleConnectionBuilder()
             builder.withMessageReader(reader)
                     .withExecutionContext(context)
 
@@ -41,7 +41,7 @@ public class ConnectionBuilderSpec extends Specification {
         given: "A ConnectionBuilder with all essential properties set except ExecutionContext"
             def reader = Mock(MessageReader)
             def writer = Mock(MessageWriter)
-            def builder = new ConnectionBuilder()
+            def builder = new SingleConnectionBuilder()
             builder.withMessageReader(reader)
                     .withMessageWriter(writer)
 
@@ -57,7 +57,7 @@ public class ConnectionBuilderSpec extends Specification {
             def reader = Mock(MessageReader)
             def writer = Mock(MessageWriter)
             def context = Mock(ExecutionContext)
-            def builder = new ConnectionBuilder()
+            def builder = new SingleConnectionBuilder()
             builder.withMessageReader(reader)
                     .withMessageWriter(writer)
                     .withExecutionContext(context)
@@ -74,7 +74,7 @@ public class ConnectionBuilderSpec extends Specification {
         given: "A Socket, MessageIOFactory, and ConnectionBuilder"
             def socket = Mock(Socket)
             def factory = Mock(MessageIOFactory)
-            def builder = new ConnectionBuilder()
+            def builder = new SingleConnectionBuilder()
 
         when: "The MessageIOFactory and Socket are set"
             builder.withMessageIOFactory(factory)
@@ -88,7 +88,7 @@ public class ConnectionBuilderSpec extends Specification {
     def "ConnectionBuilder should throw exception when InputStream set with no IO factory"() {
         given:
             def input = Mock(InputStream)
-            def builder = new ConnectionBuilder()
+            def builder = new SingleConnectionBuilder()
 
         when:
             builder.withInputStream(input)
@@ -100,7 +100,7 @@ public class ConnectionBuilderSpec extends Specification {
     def "ConnectionBuilder should throw exception when OutputStream set with no IO factory"() {
         given:
             def output = Mock(OutputStream)
-            def builder = new ConnectionBuilder()
+            def builder = new SingleConnectionBuilder()
 
         when:
             builder.withOutputStream(output)
@@ -113,7 +113,7 @@ public class ConnectionBuilderSpec extends Specification {
         given: "A ConnectionBuilder, InputStream, and MessageIOFactory that returns a mocked reader"
             def factory = Mock(MessageIOFactory)
             def input = Mock(InputStream)
-            def builder = new ConnectionBuilder()
+            def builder = new SingleConnectionBuilder()
             factory.createReader(input) >> Mock(MessageReader)
 
         when: "Set both factory and input stream"
@@ -131,7 +131,7 @@ public class ConnectionBuilderSpec extends Specification {
         given: "A ConnectionBuilder, OutputStream, and MessageIOFactory that returns a mocked writer"
             def factory = Mock(MessageIOFactory)
             def output = Mock(OutputStream)
-            def builder = new ConnectionBuilder()
+            def builder = new SingleConnectionBuilder()
             factory.createWriter(output) >> Mock(MessageWriter)
 
         when: "Set both factory and output stream"
@@ -148,7 +148,7 @@ public class ConnectionBuilderSpec extends Specification {
     def "ConnectionBuilder should throw exception when setting MessageIOFactory while already set"() {
         given: "A ConnectionBuilder, OutputStream, and MessageIOFactory that returns a mocked writer"
             def factory = Mock(MessageIOFactory)
-            def builder = new ConnectionBuilder()
+            def builder = new SingleConnectionBuilder()
 
         when: "The factory is set"
             builder.withMessageIOFactory(factory)
@@ -163,7 +163,7 @@ public class ConnectionBuilderSpec extends Specification {
     def "ConnectionBuilder should throw exception when MessageReader set and already exists"() {
         given: "A ConnectionBuilder and MessageReader"
             def reader = Mock(MessageReader)
-            def builder = new ConnectionBuilder()
+            def builder = new SingleConnectionBuilder()
 
         when: "Set reader"
             builder.withMessageReader(reader)
@@ -178,7 +178,7 @@ public class ConnectionBuilderSpec extends Specification {
     def "ConnectionBuilder should throw exception when MessageWriter set and already exists"() {
         given: "A ConnectionBuilder and MessageWriter"
             def writer = Mock(MessageWriter)
-            def builder = new ConnectionBuilder()
+            def builder = new SingleConnectionBuilder()
 
         when: "Set writer"
             builder.withMessageWriter(writer)
@@ -193,7 +193,7 @@ public class ConnectionBuilderSpec extends Specification {
     def "ConnectionBuilder should throw exception when ExecutionContext set and already exists"() {
         given: "A ConnectionBuilder and ExecutionContext"
             def context = Mock(ExecutionContext)
-            def builder = new ConnectionBuilder()
+            def builder = new SingleConnectionBuilder()
 
         when: "Set context"
             builder.withExecutionContext(context)
@@ -207,7 +207,7 @@ public class ConnectionBuilderSpec extends Specification {
 
     def "ConnectionBuilder should properly pass callback to connection when built"() {
         given: "A ConnectionBuilder (with necessary properties) and BiConsumer<Connection, Throwable>"
-            def builder = new ConnectionBuilder()
+            def builder = new SingleConnectionBuilder()
             def reader = Mock(MessageReader)
             def writer = Mock(MessageWriter)
             def context = Mock(ExecutionContext)
@@ -239,7 +239,7 @@ public class ConnectionBuilderSpec extends Specification {
 
     def "ConnectionBuilder should properly pass contextual task to connection when built"() {
         given: "A ConnectionBuilder (with necessary properties) and Consumer"
-            def builder = new ConnectionBuilder()
+            def builder = new SingleConnectionBuilder()
             def reader = Mock(MessageReader)
             def writer = Mock(MessageWriter)
             def context = Mock(ExecutionContext)

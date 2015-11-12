@@ -17,7 +17,7 @@ import java.util.function.Consumer;
  *
  * @author Caleb Brinkman
  */
-public class ReusableConnectionBuilder
+public class MultiConnectionBuilder
 {
     private final Collection<Consumer<ExecutionContext>> contextualTasks = new LinkedList<>();
     private final Collection<Consumer<Connection>> shutdownCallbacks = new LinkedList<>();
@@ -35,7 +35,7 @@ public class ReusableConnectionBuilder
      * @throws IOException If there is an exception when building the connection.
      */
     public Connection build(Socket socket) throws IOException {
-        return new ConnectionBuilder()
+        return new SingleConnectionBuilder()
               .withMessageIOFactory(messageIOFactory)
               .withErrorCallback(errorCallback)
               .withContextualTasks(contextualTasks)
@@ -53,7 +53,7 @@ public class ReusableConnectionBuilder
      *
      * @return This ConnectionBuilder.
      */
-    public ReusableConnectionBuilder withErrorCallback(BiConsumer<Connection, Throwable> callback) {
+    public MultiConnectionBuilder withErrorCallback(BiConsumer<Connection, Throwable> callback) {
         this.errorCallback = callback;
         return this;
     }
@@ -66,7 +66,7 @@ public class ReusableConnectionBuilder
      *
      * @return This ConnectionBuilder.
      */
-    public ReusableConnectionBuilder withMessageIOFactory(MessageIOFactory factory) {
+    public MultiConnectionBuilder withMessageIOFactory(MessageIOFactory factory) {
         if (messageIOFactory == null) {
             this.messageIOFactory = factory;
         } else {
@@ -82,7 +82,7 @@ public class ReusableConnectionBuilder
      *
      * @return This ConnectionBuilder
      */
-    public ReusableConnectionBuilder withExecutionContextFactory(ExecutionContextFactory context) {
+    public MultiConnectionBuilder withExecutionContextFactory(ExecutionContextFactory context) {
         if (executionContextFactory == null) {
             executionContextFactory = context;
         } else {
@@ -98,7 +98,7 @@ public class ReusableConnectionBuilder
      *
      * @return This ConnectionBuilder.
      */
-    public ReusableConnectionBuilder withContextualTask(Consumer<ExecutionContext> task) {
+    public MultiConnectionBuilder withContextualTask(Consumer<ExecutionContext> task) {
         contextualTasks.add(task);
         return this;
     }
@@ -111,7 +111,7 @@ public class ReusableConnectionBuilder
      * @return This ConnectionBuilder.
      */
     @SafeVarargs
-    public final ReusableConnectionBuilder withContextualTasks(Consumer<ExecutionContext>... tasks) {
+    public final MultiConnectionBuilder withContextualTasks(Consumer<ExecutionContext>... tasks) {
         Collections.addAll(contextualTasks, tasks);
         return this;
     }
@@ -123,7 +123,7 @@ public class ReusableConnectionBuilder
      *
      * @return This ConnectionBuilder.
      */
-    public ReusableConnectionBuilder withContextualTasks(Collection<Consumer<ExecutionContext>> tasks) {
+    public MultiConnectionBuilder withContextualTasks(Collection<Consumer<ExecutionContext>> tasks) {
         contextualTasks.addAll(tasks);
         return this;
     }
@@ -135,7 +135,7 @@ public class ReusableConnectionBuilder
      *
      * @return This ReusableConnectionBuilder.
      */
-    public ReusableConnectionBuilder withShutdownCallback(Consumer<Connection> callback) {
+    public MultiConnectionBuilder withShutdownCallback(Consumer<Connection> callback) {
         shutdownCallbacks.add(callback);
         return this;
     }
