@@ -5,6 +5,8 @@ import com.jenjinstudios.io.connection.Connection;
 import com.jenjinstudios.io.connection.ReusableConnectionBuilder;
 
 import java.net.ServerSocket;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -16,8 +18,8 @@ import java.util.function.Consumer;
  */
 public class ServerBuilder
 {
-    private final Iterable<BiConsumer<Server, ExecutionContext>> contextualTasks = new LinkedList<>();
-    private final Iterable<Consumer<Connection>> addedCallbacks = new LinkedList<>();
+    private final Collection<BiConsumer<Server, ExecutionContext>> contextualTasks = new LinkedList<>();
+    private final Collection<Consumer<Connection>> addedCallbacks = new LinkedList<>();
     private final Iterable<Consumer<Connection>> removedCallbacks = new LinkedList<>();
     private final Iterable<Consumer<Server>> startupCallbacks = new LinkedList<>();
     private final Iterable<Consumer<Server>> shutdownCallbacks = new LinkedList<>();
@@ -95,6 +97,7 @@ public class ServerBuilder
      */
     @SafeVarargs
     public final ServerBuilder withContextualTasks(BiConsumer<Server, ExecutionContext>... tasks) {
+        this.withContextualTasks(Arrays.asList(tasks));
         return this;
     }
 
@@ -106,6 +109,7 @@ public class ServerBuilder
      * @return This ServerBuilder.
      */
     public ServerBuilder withContextualTasks(Iterable<BiConsumer<Server, ExecutionContext>> tasks) {
+        tasks.forEach(contextualTasks::add);
         return this;
     }
 
@@ -117,6 +121,7 @@ public class ServerBuilder
      * @return This ServerBuilder
      */
     public ServerBuilder withConnectionAddedCallbacks(Iterable<Consumer<Connection>> callbacks) {
+        callbacks.forEach(addedCallbacks::add);
         return this;
     }
 
@@ -129,6 +134,7 @@ public class ServerBuilder
      */
     @SafeVarargs
     public final ServerBuilder withConnectionAddedCallbacks(Consumer<Connection>... callbacks) {
+        this.withConnectionAddedCallbacks(Arrays.asList(callbacks));
         return this;
     }
 
