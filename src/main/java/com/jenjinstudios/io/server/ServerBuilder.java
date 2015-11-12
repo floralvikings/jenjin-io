@@ -169,7 +169,8 @@ public class ServerBuilder
      *
      * @return This ServerBuilder
      */
-    public ServerBuilder withStartupCallbacks(Iterable<Consumer<Connection>> callbacks) {
+    public ServerBuilder withStartupCallbacks(Iterable<Consumer<Server>> callbacks) {
+        callbacks.forEach(startupCallbacks::add);
         return this;
     }
 
@@ -181,8 +182,8 @@ public class ServerBuilder
      * @return This ServerBuilder
      */
     @SafeVarargs
-    public final ServerBuilder withStartupCallbacks(Consumer<Connection>... callbacks) {
-        return this;
+    public final ServerBuilder withStartupCallbacks(Consumer<Server>... callbacks) {
+        return withStartupCallbacks(Arrays.asList(callbacks));
     }
 
     /**
@@ -192,7 +193,7 @@ public class ServerBuilder
      *
      * @return This ServerBuilder
      */
-    public ServerBuilder withShutdownCallbacks(Iterable<Consumer<Connection>> callbacks) {
+    public ServerBuilder withShutdownCallbacks(Iterable<Consumer<Server>> callbacks) {
         return this;
     }
 
@@ -204,7 +205,7 @@ public class ServerBuilder
      * @return This ServerBuilder
      */
     @SafeVarargs
-    public final ServerBuilder withShutdownCallbacks(Consumer<Connection>... callbacks) {
+    public final ServerBuilder withShutdownCallbacks(Consumer<Server>... callbacks) {
         return this;
     }
 }
