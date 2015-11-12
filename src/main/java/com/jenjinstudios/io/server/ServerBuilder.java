@@ -51,14 +51,20 @@ public class ServerBuilder
     }
 
     /**
-     * Build a Server using the given ServerSocket.`
+     * Build a Server using the given ServerSocket.
      *
      * @param socket The ServerSocket.
      *
      * @return This ServerBuilder.
+     *
+     * @throws IllegalStateException If the ServerSocket has already been set.
      */
     public ServerBuilder withServerSocket(ServerSocket socket) {
-        this.serverSocket = socket;
+        if (this.serverSocket == null) {
+            this.serverSocket = socket;
+        } else {
+            throw new IllegalStateException("ServerSocket already set");
+        }
         return this;
     }
 
