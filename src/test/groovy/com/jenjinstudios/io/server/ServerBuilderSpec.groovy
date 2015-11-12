@@ -136,10 +136,10 @@ public class ServerBuilderSpec extends Specification {
             def callbacks = Mock(Iterable)
             builder.withServerSocket(serverSocket).withReusableConnectionBuilder(connectionBuilder)
 
-        and: "The builder is passed a callback"
+        when: "The builder is passed a callback"
             builder.withShutdownCallbacks(callbacks)
 
-        and: "Callbacks should have been iterated"
+        then: "Callbacks should have been iterated"
             1 * callbacks.forEach(_)
     }
 }

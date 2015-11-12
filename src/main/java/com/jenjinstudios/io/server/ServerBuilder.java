@@ -194,6 +194,7 @@ public class ServerBuilder
      * @return This ServerBuilder
      */
     public ServerBuilder withShutdownCallbacks(Iterable<Consumer<Server>> callbacks) {
+        callbacks.forEach(shutdownCallbacks::add);
         return this;
     }
 
@@ -206,6 +207,6 @@ public class ServerBuilder
      */
     @SafeVarargs
     public final ServerBuilder withShutdownCallbacks(Consumer<Server>... callbacks) {
-        return this;
+        return withShutdownCallbacks(Arrays.asList(callbacks));
     }
 }
