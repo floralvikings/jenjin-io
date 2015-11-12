@@ -15,6 +15,8 @@ import java.util.function.Consumer;
  */
 public class ServerBuilder
 {
+    private ServerSocket serverSocket;
+
     /**
      * Build a Server using the properties supplied to this builder.
      *
@@ -23,17 +25,21 @@ public class ServerBuilder
      * @throws IllegalStateException If the ServerSocket or ReusableConnectionBuilder are not set.
      */
     public Server build() {
+        if (serverSocket == null) {
+            throw new IllegalStateException("ServerSocket must be set to build server");
+        }
         return null;
     }
 
     /**
-     * Build a Server using the given ServerSocket.
+     * Build a Server using the given ServerSocket.`
      *
      * @param socket The ServerSocket.
      *
      * @return This ServerBuilder.
      */
     public ServerBuilder withServerSocket(ServerSocket socket) {
+        this.serverSocket = socket;
         return this;
     }
 
