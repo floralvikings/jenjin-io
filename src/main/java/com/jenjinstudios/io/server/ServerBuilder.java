@@ -5,6 +5,7 @@ import com.jenjinstudios.io.connection.Connection;
 import com.jenjinstudios.io.connection.ReusableConnectionBuilder;
 
 import java.net.ServerSocket;
+import java.util.LinkedList;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -15,6 +16,11 @@ import java.util.function.Consumer;
  */
 public class ServerBuilder
 {
+    private final Iterable<BiConsumer<Server, ExecutionContext>> contextualTasks = new LinkedList<>();
+    private final Iterable<Consumer<Connection>> addedCallbacks = new LinkedList<>();
+    private final Iterable<Consumer<Connection>> removedCallbacks = new LinkedList<>();
+    private final Iterable<Consumer<Server>> startupCallbacks = new LinkedList<>();
+    private final Iterable<Consumer<Server>> shutdownCallbacks = new LinkedList<>();
     private ServerSocket serverSocket;
     private ReusableConnectionBuilder connectionBuilder;
 
@@ -32,7 +38,16 @@ public class ServerBuilder
         if (connectionBuilder == null) {
             throw new IllegalStateException("ReusableConnectionBuilder must be set to build server");
         }
-        return null;
+
+        return new Server(
+              serverSocket,
+              connectionBuilder,
+              contextualTasks,
+              addedCallbacks,
+              removedCallbacks,
+              startupCallbacks,
+              shutdownCallbacks
+        );
     }
 
     /**
