@@ -73,19 +73,13 @@ public class ServerBuilderSpec extends Specification {
             def connectionBuilder = Mock(ReusableConnectionBuilder)
             def serverSocket = Mock(ServerSocket)
             def builder = new ServerBuilder()
+            def callbacks = Mock(Iterable)
             builder.withServerSocket(serverSocket).withReusableConnectionBuilder(connectionBuilder)
 
-        and: "A callback"
-            def callbacks = Mock(Iterable)
+        when: "The builder is passed a callback"
             builder.withContextualTasks(callbacks)
 
-        when: "The Server is built"
-            def server = builder.build()
-
-        then: "Server should not be null"
-            server != null
-
-        and: "Callbacks should have been iterated"
+        then: "Callbacks should have been iterated"
             1 * callbacks.forEach(_)
     }
 
@@ -94,19 +88,13 @@ public class ServerBuilderSpec extends Specification {
             def connectionBuilder = Mock(ReusableConnectionBuilder)
             def serverSocket = Mock(ServerSocket)
             def builder = new ServerBuilder()
+            def callbacks = Mock(Iterable)
             builder.withServerSocket(serverSocket).withReusableConnectionBuilder(connectionBuilder)
 
-        and: "A connection added callback"
-            def callbacks = Mock(Iterable)
+        when: "The builder is passed a callback"
             builder.withConnectionAddedCallbacks(callbacks)
 
-        when: "The Server is built"
-            def server = builder.build()
-
-        then: "Server should not be null"
-            server != null
-
-        and: "Callbacks should have been iterated"
+        then: "Callbacks should have been iterated"
             1 * callbacks.forEach(_)
     }
 
@@ -115,19 +103,13 @@ public class ServerBuilderSpec extends Specification {
             def connectionBuilder = Mock(ReusableConnectionBuilder)
             def serverSocket = Mock(ServerSocket)
             def builder = new ServerBuilder()
+            def callbacks = Mock(Iterable)
             builder.withServerSocket(serverSocket).withReusableConnectionBuilder(connectionBuilder)
 
-        and: "A connection removed callback"
-            def callbacks = Mock(Iterable)
+        when: "The builder is passed a callback"
             builder.withConnectionRemovedCallbacks(callbacks)
 
-        when: "The Server is built"
-            def server = builder.build()
-
-        then: "Server should not be null"
-            server != null
-
-        and: "Callbacks should have been iterated"
+        then: "Callbacks should have been iterated"
             1 * callbacks.forEach(_)
     }
 
@@ -136,19 +118,13 @@ public class ServerBuilderSpec extends Specification {
             def connectionBuilder = Mock(ReusableConnectionBuilder)
             def serverSocket = Mock(ServerSocket)
             def builder = new ServerBuilder()
+            def callbacks = Mock(Iterable)
             builder.withServerSocket(serverSocket).withReusableConnectionBuilder(connectionBuilder)
 
-        and: "A startup callback"
-            def callbacks = Mock(Iterable)
+        when: "The builder is passed a callback"
             builder.withStartupCallbacks(callbacks)
 
-        when: "The Server is built"
-            def server = builder.build()
-
-        then: "Server should not be null"
-            server != null
-
-        and: "Callbacks should have been iterated"
+        then: "Callbacks should have been iterated"
             1 * callbacks.forEach(_)
     }
 
@@ -157,17 +133,11 @@ public class ServerBuilderSpec extends Specification {
             def connectionBuilder = Mock(ReusableConnectionBuilder)
             def serverSocket = Mock(ServerSocket)
             def builder = new ServerBuilder()
+            def callbacks = Mock(Iterable)
             builder.withServerSocket(serverSocket).withReusableConnectionBuilder(connectionBuilder)
 
-        and: "A shutdown callback"
-            def callbacks = Mock(Iterable)
+        and: "The builder is passed a callback"
             builder.withShutdownCallbacks(callbacks)
-
-        when: "The Server is built"
-            def server = builder.build()
-
-        then: "Server should not be null"
-            server != null
 
         and: "Callbacks should have been iterated"
             1 * callbacks.forEach(_)
