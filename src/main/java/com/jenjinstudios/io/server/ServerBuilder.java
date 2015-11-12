@@ -20,9 +20,9 @@ public class ServerBuilder
 {
     private final Collection<BiConsumer<Server, ExecutionContext>> contextualTasks = new LinkedList<>();
     private final Collection<Consumer<Connection>> addedCallbacks = new LinkedList<>();
-    private final Iterable<Consumer<Connection>> removedCallbacks = new LinkedList<>();
-    private final Iterable<Consumer<Server>> startupCallbacks = new LinkedList<>();
-    private final Iterable<Consumer<Server>> shutdownCallbacks = new LinkedList<>();
+    private final Collection<Consumer<Connection>> removedCallbacks = new LinkedList<>();
+    private final Collection<Consumer<Server>> startupCallbacks = new LinkedList<>();
+    private final Collection<Consumer<Server>> shutdownCallbacks = new LinkedList<>();
     private ServerSocket serverSocket;
     private ReusableConnectionBuilder connectionBuilder;
 
@@ -146,6 +146,7 @@ public class ServerBuilder
      * @return This ServerBuilder
      */
     public ServerBuilder withConnectionRemovedCallbacks(Iterable<Consumer<Connection>> callbacks) {
+        callbacks.forEach(removedCallbacks::add);
         return this;
     }
 
@@ -158,7 +159,7 @@ public class ServerBuilder
      */
     @SafeVarargs
     public final ServerBuilder withConnectionRemovedCallbacks(Consumer<Connection>... callbacks) {
-        return this;
+        return withConnectionRemovedCallbacks(Arrays.asList(callbacks));
     }
 
     /**
