@@ -44,7 +44,7 @@ public class ExecutionTask implements Runnable
             if (response != null) {
                 messageQueue.queueOutgoing(response);
             }
+            contextualTasks.forEach(consumer -> consumer.accept(executionContext));
         });
-        contextualTasks.forEach(consumer -> consumer.accept(executionContext));
     }
 }
