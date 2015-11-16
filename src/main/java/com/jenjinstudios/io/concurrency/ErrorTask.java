@@ -3,6 +3,7 @@ package com.jenjinstudios.io.concurrency;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.EOFException;
 import java.util.function.Consumer;
 
 /**
@@ -30,7 +31,11 @@ public class ErrorTask implements Runnable
     @Override
     public void run() {
         messageQueue.getErrorsAndClear().forEach(t -> {
-            LOGGER.warn("Encountered error from MessageQueue", t);
+            if (t instanceof EOFException) {
+                LOGGER.warn("Encountered EOF from MessageQueue; message: {}", t.getLocalizedMessage());
+            } else {
+                LOGGER.warn("Encountered error from MessageQueue", t);
+            }
             errorCallback.accept(t);
         });
     }
