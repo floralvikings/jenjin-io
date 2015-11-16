@@ -33,7 +33,7 @@ public class ServerBuilderSpec extends Specification {
             def connectionBuilder = Mock(MultiConnectionBuilder)
             def serverSocket = Mock(ServerSocket)
             def builder = new ServerBuilder()
-            builder.withServerSocket(serverSocket).withReusableConnectionBuilder(connectionBuilder)
+            builder.withServerSocket(serverSocket).withMultiConnectionBuilder(connectionBuilder)
 
         when: "The Server is built"
             def server = builder.build()
@@ -59,10 +59,10 @@ public class ServerBuilderSpec extends Specification {
         given: "A ServerBuilder with a ReusableConnectionBuilder"
             def serverSocket = Mock(MultiConnectionBuilder)
             def builder = new ServerBuilder()
-            builder.withReusableConnectionBuilder(serverSocket)
+            builder.withMultiConnectionBuilder(serverSocket)
 
         when: "The ReusableConnectionBuilder is set again"
-            builder.withReusableConnectionBuilder(serverSocket)
+            builder.withMultiConnectionBuilder(serverSocket)
 
         then: "An IllegalStateException should be thrown"
             thrown(IllegalStateException)
@@ -74,7 +74,7 @@ public class ServerBuilderSpec extends Specification {
             def serverSocket = Mock(ServerSocket)
             def builder = new ServerBuilder()
             def callbacks = Mock(Iterable)
-            builder.withServerSocket(serverSocket).withReusableConnectionBuilder(connectionBuilder)
+            builder.withServerSocket(serverSocket).withMultiConnectionBuilder(connectionBuilder)
 
         when: "The builder is passed a callback"
             builder.withContextualTasks(callbacks)
@@ -89,7 +89,7 @@ public class ServerBuilderSpec extends Specification {
             def serverSocket = Mock(ServerSocket)
             def builder = new ServerBuilder()
             def callbacks = Mock(Iterable)
-            builder.withServerSocket(serverSocket).withReusableConnectionBuilder(connectionBuilder)
+            builder.withServerSocket(serverSocket).withMultiConnectionBuilder(connectionBuilder)
 
         when: "The builder is passed a callback"
             builder.withConnectionAddedCallbacks(callbacks)
@@ -104,7 +104,7 @@ public class ServerBuilderSpec extends Specification {
             def serverSocket = Mock(ServerSocket)
             def builder = new ServerBuilder()
             def callbacks = Mock(Iterable)
-            builder.withServerSocket(serverSocket).withReusableConnectionBuilder(connectionBuilder)
+            builder.withServerSocket(serverSocket).withMultiConnectionBuilder(connectionBuilder)
 
         when: "The builder is passed a callback"
             builder.withConnectionRemovedCallbacks(callbacks)
@@ -119,7 +119,7 @@ public class ServerBuilderSpec extends Specification {
             def serverSocket = Mock(ServerSocket)
             def builder = new ServerBuilder()
             def callbacks = Mock(Iterable)
-            builder.withServerSocket(serverSocket).withReusableConnectionBuilder(connectionBuilder)
+            builder.withServerSocket(serverSocket).withMultiConnectionBuilder(connectionBuilder)
 
         when: "The builder is passed a callback"
             builder.withStartupCallbacks(callbacks)
@@ -134,7 +134,7 @@ public class ServerBuilderSpec extends Specification {
             def serverSocket = Mock(ServerSocket)
             def builder = new ServerBuilder()
             def callbacks = Mock(Iterable)
-            builder.withServerSocket(serverSocket).withReusableConnectionBuilder(connectionBuilder)
+            builder.withServerSocket(serverSocket).withMultiConnectionBuilder(connectionBuilder)
 
         when: "The builder is passed a callback"
             builder.withShutdownCallbacks(callbacks)

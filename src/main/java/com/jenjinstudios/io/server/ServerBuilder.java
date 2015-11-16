@@ -79,7 +79,7 @@ public class ServerBuilder
      *
      * @throws IllegalStateException If the ReusableConnectionBuilder has already been set.
      */
-    public ServerBuilder withReusableConnectionBuilder(MultiConnectionBuilder builder) {
+    public ServerBuilder withMultiConnectionBuilder(MultiConnectionBuilder builder) {
         if (this.connectionBuilder == null) {
             this.connectionBuilder = builder;
         } else {
