@@ -32,7 +32,7 @@ public class GsonMessageReader implements MessageReader
 
     @Override
     public Message read() throws IOException {
-        final String s = (inputStream.available() > 0) ? inputStream.readUTF() : "";
+        final String s = inputStream.readUTF();
         Gson gson = new GsonBuilder()
               .registerTypeAdapter(Message.class, gsonMessageDeserializer)
               .create();
