@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -109,6 +110,8 @@ public class Server
                         LOGGER.warn("ServerSocket returned null connection");
                     }
                 }
+            } catch (SocketException e) {
+                LOGGER.info("SocketError encountered: " + e.getLocalizedMessage());
             } catch (IOException e) {
                 LOGGER.error("Error when attempting to accept incoming connection", e);
             }
