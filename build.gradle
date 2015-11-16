@@ -9,13 +9,29 @@ repositories {
     mavenCentral();
 }
 
+sourceSets {
+    integrationTest {
+        java {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+            srcDir file('src/integration-test/java')
+        }
+        resources.srcDir file('src/integration-test/resources')
+    }
+}
+
+configurations {
+    integrationTestCompile.extendsFrom testCompile
+    integrationTestRuntime.extendsFrom testRuntime
+}
+
 dependencies {
     compile 'org.slf4j:slf4j-api:1.7.12'
     compile 'org.reflections:reflections:0.9.9-RC1'
     compile 'com.google.code.gson:gson:2.3.1'
 
     // Test dependencies
-    testCompile 'org.testng:testng:6.8.7'
+    testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-all:2.0.2-beta'
     testCompile 'org.slf4j:slf4j-jdk14:1.7.12'
 
@@ -45,6 +61,22 @@ task wrapper(type: Wrapper) {
     gradleVersion = '2.6'
 }
 
+task integrationTest(type: Test) {
+    testClassesDir = sourceSets.integrationTest.output.classesDir
+    classpath = sourceSets.integrationTest.runtimeClasspath
+}
+
+integrationTest {
+    testLogging.events = ["passed", "skipped", "failed"]
+}
+
+check.dependsOn integrationTest
+integrationTest.mustRunAfter test
+
+tasks.withType(Test) {
+    reports.html.destination = file("${reporting.baseDir}/${name}")
+}
+
 // Javadoc copy to gh-pages
 buildscript {
     repositories {
@@ -58,7 +90,7 @@ buildscript {
 import org.ajoberstar.grgit.Grgit
 
 task updateJavadoc(dependsOn: javadoc) {
-    def repo = Grgit.open(project.file('.'))
+    def repo = Grgit.open(dir: project.file('.'))
     def currentBranch = repo.branch.getCurrent().name
     doFirst {
         repo.checkout(branch: 'gh-pages')
