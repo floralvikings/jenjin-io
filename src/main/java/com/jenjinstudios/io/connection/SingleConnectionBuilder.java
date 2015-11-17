@@ -21,7 +21,7 @@ import java.util.function.Consumer;
  *
  * @author Caleb Brinkman
  */
-public class SingleConnectionBuilder implements ConnectionBuilder
+public class SingleConnectionBuilder
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(SingleConnectionBuilder.class);
     private final Collection<Consumer<ExecutionContext>> contextualTasks = new LinkedList<>();
@@ -32,7 +32,11 @@ public class SingleConnectionBuilder implements ConnectionBuilder
     private ExecutionContext executionContext;
     private BiConsumer<Connection, Throwable> errorCallback;
 
-    @Override
+    /**
+     * Build a connection using all the values supplied to this builder.
+     *
+     * @return A connection built with all the values supplied to this builder.
+     */
     public Connection build() {
         if (messageReader == null) { throw new IllegalStateException("MessageReader not set"); }
         if (messageWriter == null) { throw new IllegalStateException("MessageWriter not set"); }
@@ -42,7 +46,15 @@ public class SingleConnectionBuilder implements ConnectionBuilder
               shutdownCallbacks);
     }
 
-    @Override
+    /**
+     * Construct a new ConnectionBuilder that will establish a connection over the given socket.
+     *
+     * @param socket The socket over which the connection will be made.
+     *
+     * @return This ConnectionBuilder.
+     *
+     * @throws IOException If there is an exception when creating streams from the given socket.
+     */
     public SingleConnectionBuilder withSocket(Socket socket) throws IOException {
         final InputStream inputStream = socket.getInputStream();
         final OutputStream outputStream = socket.getOutputStream();
@@ -51,8 +63,15 @@ public class SingleConnectionBuilder implements ConnectionBuilder
         return this;
     }
 
-    @Override
-    public ConnectionBuilder withMessageIOFactory(MessageIOFactory factory) {
+    /**
+     * Use the given MessageIOFactory to create MessageReader and MessageWriter instances from Java Input and Output
+     * streams.
+     *
+     * @param factory The MessageIOFactory.
+     *
+     * @return This ConnectionBuilder.
+     */
+    public SingleConnectionBuilder withMessageIOFactory(MessageIOFactory factory) {
         if (messageIOFactory == null) {
             if ((messageReader != null) || (messageWriter != null)) {
                 LOGGER.warn("Applying MessageIOFactory after one or both streams have already been set");
@@ -64,8 +83,14 @@ public class SingleConnectionBuilder implements ConnectionBuilder
         return this;
     }
 
-    @Override
-    public ConnectionBuilder withInputStream(InputStream inputStream) {
+    /**
+     * Build a connection with the given InputStream.
+     *
+     * @param inputStream The stream the Connection will use to read messages.
+     *
+     * @return This ConnectionBuilder
+     */
+    public SingleConnectionBuilder withInputStream(InputStream inputStream) {
         if (messageIOFactory == null) {
             throw new IllegalStateException("MessageIOFactory not set");
         }
@@ -77,8 +102,14 @@ public class SingleConnectionBuilder implements ConnectionBuilder
         return this;
     }
 
-    @Override
-    public ConnectionBuilder withOutputStream(OutputStream outputStream) {
+    /**
+     * Build a connection with the given OutputStream.
+     *
+     * @param outputStream The output stream the Connection will use to write messages.
+     *
+     * @return This ConnectionBuilder
+     */
+    public SingleConnectionBuilder withOutputStream(OutputStream outputStream) {
         if (messageIOFactory == null) {
             throw new IllegalStateException("MessageIOFactory not set");
         }
@@ -90,8 +121,14 @@ public class SingleConnectionBuilder implements ConnectionBuilder
         return this;
     }
 
-    @Override
-    public ConnectionBuilder withMessageReader(MessageReader reader) {
+    /**
+     * Build a connection with the given InputStream.
+     *
+     * @param reader The stream the Connection will use to read messages.
+     *
+     * @return This ConnectionBuilder
+     */
+    public SingleConnectionBuilder withMessageReader(MessageReader reader) {
         if (messageReader == null) {
             messageReader = reader;
         } else {
@@ -100,8 +137,14 @@ public class SingleConnectionBuilder implements ConnectionBuilder
         return this;
     }
 
-    @Override
-    public ConnectionBuilder withMessageWriter(MessageWriter writer) {
+    /**
+     * Build a connection with the given OutputStream.
+     *
+     * @param writer The output stream the Connection will use to write messages.
+     *
+     * @return This ConnectionBuilder
+     */
+    public SingleConnectionBuilder withMessageWriter(MessageWriter writer) {
         if (messageWriter == null) {
             messageWriter = writer;
         } else {
@@ -110,8 +153,14 @@ public class SingleConnectionBuilder implements ConnectionBuilder
         return this;
     }
 
-    @Override
-    public ConnectionBuilder withExecutionContext(ExecutionContext context) {
+    /**
+     * Build a connection with the given ExecutionContext.
+     *
+     * @param context The context in which the Connection will execute messages.
+     *
+     * @return This ConnectionBuilder.
+     */
+    public SingleConnectionBuilder withExecutionContext(ExecutionContext context) {
         if (executionContext == null) {
             executionContext = context;
         } else {
@@ -120,41 +169,78 @@ public class SingleConnectionBuilder implements ConnectionBuilder
         return this;
     }
 
-    @Override
-    public ConnectionBuilder withErrorCallback(BiConsumer<Connection, Throwable> callback) {
+    /**
+     * Build a connection with the given error callback function.
+     *
+     * @param callback The Consumer (accepting a Connection and Throwable) that will be invoked when an error is
+     * encountered.
+     *
+     * @return This ConnectionBuilder.
+     */
+    public SingleConnectionBuilder withErrorCallback(BiConsumer<Connection, Throwable> callback) {
         this.errorCallback = callback;
         return this;
     }
 
-    @Override
-    public ConnectionBuilder withContextualTask(Consumer<ExecutionContext> task) {
+    /**
+     * Build a connection that includes the given contextual task to be executed synchronously with message execution.
+     *
+     * @param task The task to be executed; a Consumer accepting an ExecutionContext.
+     *
+     * @return This ConnectionBuilder.
+     */
+    public SingleConnectionBuilder withContextualTask(Consumer<ExecutionContext> task) {
         contextualTasks.add(task);
         return this;
     }
 
-    @Override
+    /**
+     * Build a connection that includes the given contextual task to be executed synchronously with message execution.
+     *
+     * @param tasks The tasks to be executed; Consumers accepting an ExecutionContext.
+     *
+     * @return This ConnectionBuilder.
+     */
     @SafeVarargs
-    public final ConnectionBuilder withContextualTasks(Consumer<ExecutionContext>... tasks) {
+    public final SingleConnectionBuilder withContextualTasks(Consumer<ExecutionContext>... tasks) {
         for (Consumer<ExecutionContext> task : tasks) {
             withContextualTask(task);
         }
         return this;
     }
 
-    @Override
-    public ConnectionBuilder withContextualTasks(Iterable<Consumer<ExecutionContext>> tasks) {
+    /**
+     * Build a connection that includes the given contextual task to be executed synchronously with message execution.
+     *
+     * @param tasks The tasks to be executed; Consumers accepting an ExecutionContext.
+     *
+     * @return This ConnectionBuilder.
+     */
+    public SingleConnectionBuilder withContextualTasks(Iterable<Consumer<ExecutionContext>> tasks) {
         tasks.forEach(this::withContextualTask);
         return this;
     }
 
-    @Override
-    public ConnectionBuilder withShutdownCallbacks(Iterable<Consumer<Connection>> callbacks) {
+    /**
+     * Build a connection that will invoke the given consumers when shutting down with itself as a parameter.
+     *
+     * @param callbacks The consumers.
+     *
+     * @return This ConnectionBuilder.
+     */
+    public SingleConnectionBuilder withShutdownCallbacks(Iterable<Consumer<Connection>> callbacks) {
         callbacks.forEach(this::withShutdownCallback);
         return this;
     }
 
-    @Override
-    public ConnectionBuilder withShutdownCallback(Consumer<Connection> callback) {
+    /**
+     * Build a connection that will invoke the given consumer when shutting down with itself as a parameter.
+     *
+     * @param callback The consumer
+     *
+     * @return This ConnectionBuilder.
+     */
+    public SingleConnectionBuilder withShutdownCallback(Consumer<Connection> callback) {
         shutdownCallbacks.add(callback);
         return this;
     }

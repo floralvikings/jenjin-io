@@ -1,7 +1,6 @@
 package com.jenjinstudios.io;
 
 import com.jenjinstudios.io.connection.Connection;
-import com.jenjinstudios.io.connection.ConnectionBuilder;
 import com.jenjinstudios.io.connection.MultiConnectionBuilder;
 import com.jenjinstudios.io.connection.SingleConnectionBuilder;
 import com.jenjinstudios.io.serialization.GsonMessageIOFactory;
@@ -153,7 +152,7 @@ public final class JenjinIOTest
     }
 
     private static Connection<TestExecutionContext> buildConnection() throws IOException {
-        ConnectionBuilder connectionBuilder = new SingleConnectionBuilder();
+        SingleConnectionBuilder connectionBuilder = new SingleConnectionBuilder();
 
         Socket socket = new Socket(LOCALHOST, PORT);
 
