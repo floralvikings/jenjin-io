@@ -1,6 +1,10 @@
 # jenjin-io
 IO Utilities for Client/Server Connections
 
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/floralvikings/jenjin-io/master/LICENSE)
+[![Build Status](https://travis-ci.org/floralvikings/jenjin-io.svg?branch=master)](https://travis-ci.org/floralvikings/jenjin-io)
+[![Coverage Status](https://coveralls.io/repos/floralvikings/jenjin-io/badge.svg?branch=master&service=github)](https://coveralls.io/github/floralvikings/jenjin-io?branch=master)
+
 ## Usage
 
 The core of the Jenjin-IO Framework is the ```Connection``` class.  A ```Connection``` requires four components to
