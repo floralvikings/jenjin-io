@@ -8,12 +8,17 @@ buildscript {
     }
 }
 
+plugins {
+    id "com.github.kt3k.coveralls" version "2.4.0x"
+}
+
 description = 'Jenjin Core IO API'
 version = '0.0.0'
 
 // Core plugins
 apply plugin: 'java'
 apply plugin: 'groovy'
+apply plugin: 'jacoco'
 
 
 sourceSets {
@@ -72,6 +77,13 @@ tasks.withType(Test) {
 
     // Show starndard output streams from tests
     testLogging.showStandardStreams = true
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true // coveralls plugin depends on xml format report
+        html.enabled = true
+    }
 }
 
 repositories {
