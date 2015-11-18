@@ -1,6 +1,7 @@
 package com.jenjinstudios.io.server;
 
 import com.jenjinstudios.io.ExecutionContext;
+import com.jenjinstudios.io.Message;
 import com.jenjinstudios.io.connection.Connection;
 import com.jenjinstudios.io.connection.MultiConnectionBuilder;
 import org.slf4j.Logger;
@@ -16,8 +17,10 @@ import java.util.LinkedList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * Used to accept and manage incoming connections.
@@ -119,6 +122,33 @@ public class Server
         } catch (IOException e) {
             LOGGER.error("Error when attempting to accept incoming connection", e);
         }
+    }
+
+    /**
+     * Broadcast the given message to all connections.
+     *
+     * @param message The message to be broadcast.
+     */
+    public void broadcast(Message message) { this.broadcast(message, connection -> true); }
+
+    /**
+     * Broadcast a message to all connections that fulfill the given predicate.
+     *
+     * @param message The message to be broadcast.
+     * @param predicate The predicate which, if fulfilled, will cause a message to be broadcast by the given
+     * connection.
+     *
+     * @return The number of Connections to which the message was broadcast.
+     */
+    public int broadcast(Message message, Predicate<Connection> predicate) {
+        AtomicInteger sum = new AtomicInteger(0);
+        connections.forEach(connection -> {
+            if (predicate.test(connection)) {
+                connection.sendMessage(message);
+                sum.addAndGet(1);
+            }
+        });
+        return sum.get();
     }
 
     private void invokeContextualTasks(ExecutionContext context) {
