@@ -93,31 +93,36 @@ public class Server
      * Start listening for inbound connections.
      */
     public void start() {
-        connectionBuilder.
-              withContextualTask(context -> this.contextualTasks.forEach(consumer -> consumer.accept(this, context)));
-        executor.scheduleWithFixedDelay(() -> {
-            try {
-                if (serverSocket.isClosed()) {
-                    LOGGER.debug("Server Socket Closed");
-                } else {
-                    Socket socket = serverSocket.accept();
-                    if (socket != null) {
-                        Connection connection = connectionBuilder.build(socket);
-                        connections.add(connection);
-                        connectionAddedCallbacks.forEach(consumer -> consumer.accept(connection));
-                        connection.start();
-                    } else {
-                        LOGGER.warn("ServerSocket returned null connection");
-                    }
-                }
-            } catch (SocketException e) {
-                LOGGER.info("SocketError encountered: " + e.getLocalizedMessage());
-            } catch (IOException e) {
-                LOGGER.error("Error when attempting to accept incoming connection", e);
-            }
-        }, 0, 10, TimeUnit.MILLISECONDS);
+        connectionBuilder.withContextualTask(this::invokeContextualTasks);
+        executor.scheduleWithFixedDelay(this::listenForConnection, 0, 10, TimeUnit.MILLISECONDS);
 
         startupCallbacks.forEach(consumer -> consumer.accept(this));
+    }
+
+    private void listenForConnection() {
+        try {
+            if (serverSocket.isClosed()) {
+                LOGGER.debug("Server Socket Closed");
+            } else {
+                Socket socket = serverSocket.accept();
+                if (socket != null) {
+                    Connection connection = connectionBuilder.build(socket);
+                    connections.add(connection);
+                    connectionAddedCallbacks.forEach(consumer -> consumer.accept(connection));
+                    connection.start();
+                } else {
+                    LOGGER.warn("ServerSocket returned null connection");
+                }
+            }
+        } catch (SocketException e) {
+            LOGGER.info("SocketError encountered: " + e.getLocalizedMessage());
+        } catch (IOException e) {
+            LOGGER.error("Error when attempting to accept incoming connection", e);
+        }
+    }
+
+    private void invokeContextualTasks(ExecutionContext context) {
+        this.contextualTasks.forEach(consumer -> consumer.accept(this, context));
     }
 
     public int getConnectionCount() { return connections.size(); }
