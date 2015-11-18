@@ -16,6 +16,9 @@ operate:
 4. An optional ```BiConsumer``` that will be used as a callback function if an error is encountered when reading,
    writing, or executing a ```Message``` implementation.
    
+
+The best way to create a new Connection is with a ConnectionBuilder.
+
 When the ```start``` method is called, four threads are started with the following periodic tasks:
 
 1. **Read Thread**
