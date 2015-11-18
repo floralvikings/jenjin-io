@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
 
@@ -9,251 +9,104 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
 
     <title>Jenjin-io by floralvikings</title>
-</head>
+  </head>
 
-<body>
+  <body>
 
-<header>
-    <div class="container">
+    <header>
+      <div class="container">
         <h1>Jenjin-io</h1>
-
         <h2>IO Utilities for Client/Server Connections</h2>
 
         <section id="downloads">
-            <a href="https://github.com/floralvikings/jenjin-io/zipball/master" class="btn">Download as .zip</a>
-            <a href="https://github.com/floralvikings/jenjin-io/tarball/master" class="btn">Download as .tar.gz</a>
-            <a href="https://github.com/floralvikings/jenjin-io" class="btn btn-github"><span class="icon"></span>View
-                on GitHub</a>
+          <a href="https://github.com/floralvikings/jenjin-io/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/floralvikings/jenjin-io/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/floralvikings/jenjin-io" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
         </section>
-    </div>
-</header>
+      </div>
+    </header>
 
-<div class="container">
-    <section id="main_content">
+    <div class="container">
+      <section id="main_content">
         <h1>
-            <a id="jenjin-io" class="anchor" href="#jenjin-io" aria-hidden="true"><span
-                    class="octicon octicon-link"></span></a>jenjin-io</h1>
+<a id="jenjin-io" class="anchor" href="#jenjin-io" aria-hidden="true"><span class="octicon octicon-link"></span></a>jenjin-io</h1>
 
-        <p>IO Utilities for Client/Server Connections</p>
+<p>IO Utilities for Client/Server Connections</p>
 
-        <h2>
-            <a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage
-        </h2>
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
 
-        <p>The core of the Jenjin-IO Framework is the <code>Connection</code> class. A <code>Connection</code> requires
-            four components to
-            operate:</p>
+<p>The core of the Jenjin-IO Framework is the <code>Connection</code> class.  A <code>Connection</code> requires four components to
+operate:</p>
 
-        <ol>
-            <li>An <code>ExecutionContext</code> implementation - the <code>ExecutionContext</code> is a object storing
-                connection-specific data
-                that is persistent across messages. Since this object is accessed by multiple threads, you should take
-                care that any
-                data contained therein is thread-safe.
-            </li>
-            <li>A <code>MessageReader</code> that will read data from an <code>InputStream</code> and attempt to
-                deserialize it into an
-                implementation of the <code>Message</code> interface.
-            </li>
-            <li>A <code>MessageWriter</code> that will attempt to serialize an implementation of the
-                <code>Message</code> interface into a format
-                that can be written into an <code>OutputStream</code>.
-            </li>
-            <li>An optional <code>BiConsumer</code> that will be used as a callback function if an error is encountered
-                when reading,
-                writing, or executing a <code>Message</code> implementation.
-            </li>
-        </ol>
+<ol>
+<li>An <code>ExecutionContext</code> implementation - the <code>ExecutionContext</code> is a object storing connection-specific data
+that is persistent across messages.  Since this object is accessed by multiple threads, you should take care that any
+data contained therein is thread-safe.</li>
+<li>A <code>MessageReader</code> that will read data from an <code>InputStream</code> and attempt to deserialize it into an 
+implementation of the <code>Message</code> interface.</li>
+<li>A <code>MessageWriter</code> that will attempt to serialize an implementation of the <code>Message</code> interface into a format
+that can be written into an <code>OutputStream</code>.</li>
+<li>An optional <code>BiConsumer</code> that will be used as a callback function if an error is encountered when reading,
+writing, or executing a <code>Message</code> implementation.</li>
+</ol>
 
-        <p>When the <code>start</code> method is called, four threads are started with the following periodic tasks:</p>
+<p>When the <code>start</code> method is called, four threads are started with the following periodic tasks:</p>
 
-        <ol>
-            <li>
-                <strong>Read Thread</strong>
+<ol>
+<li>
+<strong>Read Thread</strong>
 
-                <ul>
-                    <li>Reads from the <code>MessageReader</code>, storing the resulting <code>Message</code> object in
-                        a special, thread-safe queue that
-                        is accessed by the other <code>Connection</code> threads.
-                    </li>
-                </ul>
-            </li>
-            <li>
-                <strong>Write Thread</strong>
+<ul>
+<li>Reads from the <code>MessageReader</code>, storing the resulting <code>Message</code> object in a special, thread-safe queue that
+is accessed by the other <code>Connection</code> threads.</li>
+</ul>
+</li>
+<li>
+<strong>Write Thread</strong>
 
-                <ul>
-                    <li>Writes any outgoing <code>Message</code> implementations created by the
-                        <code>ExecutionThread</code> to an <code>OutputStream</code>
-                        using the <code>MessageWriter</code>
-                    </li>
-                </ul>
-            </li>
-            <li>
-                <strong>Execution Thread</strong>
+<ul>
+<li>Writes any outgoing <code>Message</code> implementations created by the <code>ExecutionThread</code> to an <code>OutputStream</code>
+using the <code>MessageWriter</code>
+</li>
+</ul>
+</li>
+<li>
+<strong>Execution Thread</strong>
 
-                <ul>
-                    <li>Processes <code>Message</code> objects which have been read by the <strong>Read Thread</strong>
-                        by calling <code>execute</code> on them,
-                        passing in the <code>ExecutionContext</code> object. The return value of <code>execute</code> is
-                        then stored for the
-                        <strong>Write Thread</strong> to later write.
-                    </li>
-                </ul>
-            </li>
-            <li>
-                <strong>Error Thread</strong>
+<ul>
+<li>Processes <code>Message</code> objects which have been read by the <strong>Read Thread</strong> by calling <code>execute</code> on them, 
+passing in the <code>ExecutionContext</code> object.  The return value of <code>execute</code> is then stored for the 
+<strong>Write Thread</strong> to later write.</li>
+</ul>
+</li>
+<li>
+<strong>Error Thread</strong>
 
-                <ul>
-                    <li>Continually monitors the other threads for any thrown exceptions (by examining the shared queue)
-                        and logs them,
-                        then, if it exists, invokes the specified <code>BiConsumer</code> with the
-                        <code>Connection</code> and <code>Throwable</code>.
-                    </li>
-                </ul>
-            </li>
-        </ol>
+<ul>
+<li>Continually monitors the other threads for any thrown exceptions (by examining the shared queue) and logs them, 
+then, if it exists, invokes the specified <code>BiConsumer</code> with the <code>Connection</code> and  <code>Throwable</code>.</li>
+</ul>
+</li>
+</ol>
 
-        <h2>
-            <a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License
-        </h2>
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
 
-        <p>Jenjin-IO is licensed under the <a href="https://github.com/floralvikings/jenjin-io/blob/master/LICENSE">MIT
-            license</a></p>
+<p>Jenjin-IO is licensed under the <a href="https://github.com/floralvikings/jenjin-io/blob/master/LICENSE">MIT license</a></p>
+      </section>
+    </div>
 
-        <h2>
-            <a id="dendencies" class="anchor" href="#dendencies" aria-hidden="true"><span
-                    class="octicon octicon-link"></span></a>Dependencies</h2>
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-67700107-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
 
-        <p>Below is the entire set of dependencies (including <strong>test dependencies</strong> and <em>transitive
-            dependencies</em>):</p>
-
-        <table>
-            <thead>
-            <tr>
-                <th>Dependency</th>
-                <th>Version</th>
-                <th>Link</th>
-                <th>License</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>Gson</td>
-                <td>2.3.1</td>
-                <td><a href="https://github.com/google/gson">https://github.com/google/gson</a></td>
-                <td><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a></td>
-            </tr>
-            <tr>
-                <td>Reflections</td>
-                <td>0.9.9-RC1</td>
-                <td><a href="https://github.com/ronmamo/reflections">https://github.com/ronmamo/reflections</a></td>
-                <td><a href="http://www.wtfpl.net/">WTFPL</a></td>
-            </tr>
-            <tr>
-                <td>SLF4J</td>
-                <td>1.7.12</td>
-                <td><a href="http://www.slf4j.org/">http://www.slf4j.org/</a></td>
-                <td><a href="http://www.slf4j.org/license.html">MIT</a></td>
-            </tr>
-            <tr>
-                <td><strong>Mockito</strong></td>
-                <td>2.0.2-beta</td>
-                <td><a href="http://mockito.org/">http://mockito.org/</a></td>
-                <td><a href="https://github.com/mockito/mockito/blob/master/LICENSE">MIT</a></td>
-            </tr>
-            <tr>
-                <td><strong>TestNG</strong></td>
-                <td>6.8.7</td>
-                <td><a href="http://testng.org/doc/index.html">http://testng.org/doc/index.html</a></td>
-                <td><a href="http://testng.org/license/">Apache 2.0</a></td>
-            </tr>
-            <tr>
-                <td><strong>SLF4J JDK Binding</strong></td>
-                <td>1.7.12</td>
-                <td><a href="http://www.slf4j.org/">http://www.slf4j.org/</a></td>
-                <td><a href="http://www.slf4j.org/license.html">MIT</a></td>
-            </tr>
-            <tr>
-                <td><em>DOM4J</em></td>
-                <td>1.6.1</td>
-                <td><a href="https://dom4j.github.io/">https://dom4j.github.io/</a></td>
-                <td><a href="https://github.com/dom4j/dom4j/blob/master/LICENSE">BSD</a></td>
-            </tr>
-            <tr>
-                <td><em>xml-apis</em></td>
-                <td>1.0.b2</td>
-                <td><a href="http://mvnrepository.com/artifact/xml-apis/xml-apis">http://mvnrepository.com/artifact/xml-apis/xml-apis</a>
-                </td>
-                <td><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a></td>
-            </tr>
-            <tr>
-                <td><em>findbugs</em></td>
-                <td>1.3.9</td>
-                <td>
-                    <a href="https://github.com/findbugsproject/findbugs">https://github.com/findbugsproject/findbugs</a>
-                </td>
-                <td><a href="http://www.gnu.org/licenses/lgpl.html">LGPL</a></td>
-            </tr>
-            <tr>
-                <td><em>Guava</em></td>
-                <td>11.0.2</td>
-                <td><a href="https://github.com/google/guava">https://github.com/google/guava</a></td>
-                <td><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a></td>
-            </tr>
-            <tr>
-                <td><em>Javassist</em></td>
-                <td>3.16.1-GA</td>
-                <td>
-                    <a href="http://jboss-javassist.github.io/javassist/">http://jboss-javassist.github.io/javassist/</a>
-                </td>
-                <td><a href="https://www.mozilla.org/en-US/MPL/2.0/">MPL</a></td>
-            </tr>
-            <tr>
-                <td><strong><em>BeanShell</em></strong></td>
-                <td>2.0b4</td>
-                <td><a href="http://www.beanshell.org/">http://www.beanshell.org/</a></td>
-                <td><a href="http://www.beanshell.org/license.html">Sun Public License/LGPL</a></td>
-            </tr>
-            <tr>
-                <td><strong><em>Hamcrest</em></strong></td>
-                <td>1.1</td>
-                <td><a href="https://github.com/hamcrest/JavaHamcrest">https://github.com/hamcrest/JavaHamcrest</a></td>
-                <td><a href="https://github.com/hamcrest/JavaHamcrest/blob/master/LICENSE.txt">BSD</a></td>
-            </tr>
-            <tr>
-                <td><strong><em>JCommander</em></strong></td>
-                <td>1.27</td>
-                <td><a href="http://jcommander.org/">http://jcommander.org/</a></td>
-                <td><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a></td>
-            </tr>
-            <tr>
-                <td><strong><em>JUnit</em></strong></td>
-                <td>4.10</td>
-                <td><a href="http://junit.org/">http://junit.org/</a></td>
-                <td><a href="http://junit.org/license.html">EPL</a></td>
-            </tr>
-            <tr>
-                <td><strong><em>SnakeYAML</em></strong></td>
-                <td>1.12</td>
-                <td><a href="https://bitbucket.org/asomov/snakeyaml">https://bitbucket.org/asomov/snakeyaml</a></td>
-                <td><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a></td>
-            </tr>
-            </tbody>
-        </table>
-    </section>
-</div>
-
-<script type="text/javascript">
-    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-    try {
-        var pageTracker = _gat._getTracker("UA-67700107-1");
-        pageTracker._trackPageview();
-    } catch (err) {
-    }
-</script>
-
-</body>
+  </body>
 </html>
