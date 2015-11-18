@@ -1,13 +1,20 @@
-description = 'Jenjin Core IO API'
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        // Used for gh-pages branch auto-update
+        classpath 'org.ajoberstar:gradle-git:1.3.2'
+    }
+}
 
-apply plugin: 'java'
-apply plugin: 'groovy'
-sourceCompatibility = 1.8
+description = 'Jenjin Core IO API'
 version = '0.0.0'
 
-repositories {
-    mavenCentral();
-}
+// Core plugins
+apply plugin: 'java'
+apply plugin: 'groovy'
+
 
 sourceSets {
     integrationTest {
@@ -20,73 +27,20 @@ sourceSets {
     }
 }
 
-configurations {
-    integrationTestCompile.extendsFrom testCompile
-    integrationTestRuntime.extendsFrom testRuntime
-}
-
-dependencies {
-    compile 'org.slf4j:slf4j-api:1.7.12'
-    compile 'org.reflections:reflections:0.9.9-RC1'
-    compile 'com.google.code.gson:gson:2.3.1'
-
-    // Test dependencies
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-all:2.0.2-beta'
-    testCompile 'org.slf4j:slf4j-jdk14:1.7.12'
-
-    // Spock Changeover
-    testCompile 'org.spockframework:spock-maven:0.7-groovy-2.0'
-    testCompile 'cglib:cglib:3.2.0'
-}
-
-test {
-    def debugOn = false;
-    if (project.hasProperty('logOptions')) {
-        if (logOptions instanceof String && ((String) logOptions) == "debug") {
-            debugOn = true;
-        }
-    }
-    if (debugOn) {
-        testLogging.events = ["passed", "skipped", "failed"]
-        // FIXME Doesn't seem to be working?
-        systemProperty 'java.util.logging.config.file', 'src/test/resources/logging.properties'
-        testLogging.showStandardStreams = true
-    } else {
-        testLogging.events = ["passed", "skipped", "failed"]
-    }
-}
-
 task wrapper(type: Wrapper) {
     gradleVersion = '2.6'
 }
 
+// Run integration tests
 task integrationTest(type: Test) {
     testClassesDir = sourceSets.integrationTest.output.classesDir
     classpath = sourceSets.integrationTest.runtimeClasspath
 }
 
-integrationTest {
-    testLogging.events = ["passed", "skipped", "failed"]
-}
-
 check.dependsOn integrationTest
 integrationTest.mustRunAfter test
 
-tasks.withType(Test) {
-    reports.html.destination = file("${reporting.baseDir}/${name}")
-}
-
-// Javadoc copy to gh-pages
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'org.ajoberstar:gradle-git:1.3.2'
-    }
-}
-
+// Generate updated javadoc and commit it to the gh-pages branch
 import org.ajoberstar.grgit.Grgit
 
 task updateJavadoc(dependsOn: javadoc) {
@@ -105,4 +59,43 @@ task updateJavadoc(dependsOn: javadoc) {
         repo.commit(message: "Update Javadocs")
         repo.checkout(branch: currentBranch)
     }
+}
+
+tasks.withType(Test) {
+    // Integration and Unit tests write reports to separate diretory
+    reports.html.destination = file("${reporting.baseDir}/${name}")
+
+    // Show test events
+    testLogging.events = ["passed", "skipped", "failed"]
+    // Show all logging levels // FIXME Doesn't seem to be working?
+    systemProperty 'java.util.logging.config.file', 'src/test/resources/logging.properties'
+
+    // Show starndard output streams from tests
+    testLogging.showStandardStreams = true
+}
+
+repositories {
+    mavenCentral();
+}
+
+configurations {
+    integrationTestCompile.extendsFrom testCompile
+    integrationTestRuntime.extendsFrom testRuntime
+}
+
+dependencies {
+    compile 'org.slf4j:slf4j-api:1.7.12'
+    compile 'org.reflections:reflections:0.9.9-RC1'
+    compile 'com.google.code.gson:gson:2.3.1'
+
+    // Test Dependencies
+    testCompile 'org.slf4j:slf4j-jdk14:1.7.12' // For logging purposes
+
+    // Integration Test dependencies
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-all:2.0.2-beta'
+
+    // Unit Test Dependencies
+    testCompile 'org.spockframework:spock-maven:0.7-groovy-2.0'
+    testCompile 'cglib:cglib:3.2.0'
 }
