@@ -33,6 +33,10 @@
 
 <p>IO Utilities for Client/Server Connections</p>
 
+<p><a href="https://raw.githubusercontent.com/floralvikings/jenjin-io/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="GitHub license"></a>
+<a href="https://travis-ci.org/floralvikings/jenjin-io"><img src="https://travis-ci.org/floralvikings/jenjin-io.svg?branch=master" alt="Build Status"></a>
+<a href="https://coveralls.io/github/floralvikings/jenjin-io?branch=master"><img src="https://coveralls.io/repos/floralvikings/jenjin-io/badge.svg?branch=master&amp;service=github" alt="Coverage Status"></a></p>
+
 <h2>
 <a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
 
@@ -50,6 +54,8 @@ that can be written into an <code>OutputStream</code>.</li>
 <li>An optional <code>BiConsumer</code> that will be used as a callback function if an error is encountered when reading,
 writing, or executing a <code>Message</code> implementation.</li>
 </ol>
+
+<p>The best way to create a new Connection is with a ConnectionBuilder.</p>
 
 <p>When the <code>start</code> method is called, four threads are started with the following periodic tasks:</p>
 
