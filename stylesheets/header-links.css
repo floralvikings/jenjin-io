@@ -1,0 +1,10 @@
+.header-link {
+    position: relative;
+    left: -0.5em;
+    opacity: 1;
+}
+
+.fa-link,
+.fa{
+    color: gray;
+}

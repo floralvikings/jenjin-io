@@ -1,0 +1,28 @@
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-67700107-1");
+        pageTracker._trackPageview();
+    } catch (err) {
+    }
+</script>
+
+
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script>
+    $(function() {
+        return $("h2").each(function(i, el) {
+            var $el, icon, id;
+            $el = $(el);
+            id = $el.attr('id');
+            icon = '<i class="fa fa-link"></i>';
+            if (id) {
+                return $el.prepend($("<a />").addClass("header-link").attr("href", "#" + id).html(icon));
+            }
+        });
+    });
+</script>
