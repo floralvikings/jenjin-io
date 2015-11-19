@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <title>Jenjin-io by floralvikings</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Jenjin-io</h1>
+        <h2>IO Utilities for Client/Server Connections</h2>
+
+        <section id="downloads">
+          <a href="https://github.com/floralvikings/jenjin-io/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/floralvikings/jenjin-io/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/floralvikings/jenjin-io" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h1>
+<a id="jenjin-io" class="anchor" href="#jenjin-io" aria-hidden="true"><span class="octicon octicon-link"></span></a>jenjin-io</h1>
+
+<p>IO Utilities for Client/Server Connections</p>
+
+<p><a href="https://raw.githubusercontent.com/floralvikings/jenjin-io/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="GitHub license"></a>
+<a href="https://travis-ci.org/floralvikings/jenjin-io"><img src="https://travis-ci.org/floralvikings/jenjin-io.svg?branch=master" alt="Build Status"></a>
+<a href="https://coveralls.io/github/floralvikings/jenjin-io?branch=master"><img src="https://coveralls.io/repos/floralvikings/jenjin-io/badge.svg?branch=master&amp;service=github" alt="Coverage Status"></a></p>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>The core of the Jenjin-IO Framework is the <code>Connection</code> class.  A <code>Connection</code> requires four components to
+operate:</p>
+
+<ol>
+<li>An <code>ExecutionContext</code> implementation - the <code>ExecutionContext</code> is a object storing connection-specific data
+that is persistent across messages.  Since this object is accessed by multiple threads, you should take care that any
+data contained therein is thread-safe.</li>
+<li>A <code>MessageReader</code> that will read data from an <code>InputStream</code> and attempt to deserialize it into an 
+implementation of the <code>Message</code> interface.</li>
+<li>A <code>MessageWriter</code> that will attempt to serialize an implementation of the <code>Message</code> interface into a format
+that can be written into an <code>OutputStream</code>.</li>
+<li>An optional <code>BiConsumer</code> that will be used as a callback function if an error is encountered when reading,
+writing, or executing a <code>Message</code> implementation.</li>
+</ol>
+
+<p>The best way to create a new Connection is with a ConnectionBuilder.</p>
+
+<p>When the <code>start</code> method is called, four threads are started with the following periodic tasks:</p>
+
+<ol>
+<li>
+<strong>Read Thread</strong>
+
+<ul>
+<li>Reads from the <code>MessageReader</code>, storing the resulting <code>Message</code> object in a special, thread-safe queue that
+is accessed by the other <code>Connection</code> threads.</li>
+</ul>
+</li>
+<li>
+<strong>Write Thread</strong>
+
+<ul>
+<li>Writes any outgoing <code>Message</code> implementations created by the <code>ExecutionThread</code> to an <code>OutputStream</code>
+using the <code>MessageWriter</code>
+</li>
+</ul>
+</li>
+<li>
+<strong>Execution Thread</strong>
+
+<ul>
+<li>Processes <code>Message</code> objects which have been read by the <strong>Read Thread</strong> by calling <code>execute</code> on them, 
+passing in the <code>ExecutionContext</code> object.  The return value of <code>execute</code> is then stored for the 
+<strong>Write Thread</strong> to later write.</li>
+</ul>
+</li>
+<li>
+<strong>Error Thread</strong>
+
+<ul>
+<li>Continually monitors the other threads for any thrown exceptions (by examining the shared queue) and logs them, 
+then, if it exists, invokes the specified <code>BiConsumer</code> with the <code>Connection</code> and  <code>Throwable</code>.</li>
+</ul>
+</li>
+</ol>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>Jenjin-IO is licensed under the <a href="https://github.com/floralvikings/jenjin-io/blob/master/LICENSE">MIT license</a></p>
+      </section>
+    </div>
+
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-67700107-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
