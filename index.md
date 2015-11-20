@@ -124,7 +124,7 @@ building a ```Connection``` that are of interest:
   
 > **Note:** These methods will be called internally by ```withSocket```, ```withInputStream``` 
 
-* ```withErrorCallback(BiConsumer<Connection, Throwable>)```
+* ```withErrorCallback```
   * This method will cause the built ```Connection``` to invoke the specified ```BiConsumer``` if it encounters an 
   error; it is recommended that the ```stop``` method be called on the ```Connection``` at the end of this callback
   so that the ```Connection``` closes as cleanly as possible.
@@ -220,7 +220,7 @@ The ```ServerBuilder``` class has several methods that help with configuring a `
 > **Important:** If the ```build``` method is called without the ```MultiConectionBuilder``` being set, an
   ```IllegalStateException``` will be thrown.
   
-* ```withContextualTasks(BiConsumer<Server, ExecutionContext>...)```
+* ```withContextualTasks```
   * This method allows for contextual callbacks in a similar fashion to the 
   ```SingleConnectionBuilder#withContextualTasks``` method, but allows for access to the ```Server``` object.  
   * Use of this method is helpful for things like broadcasting a message to all connections, without giving the 
