@@ -43,4 +43,17 @@ public class MultiConnectionBuilderSpec extends Specification {
         cleanup: "Close connection"
             connection.stop()
     }
+
+    def "MultiConnectionBuilder should throw IOException if MessageIOFactory set twice"() {
+        given: "A MultiConnectionBuilder and mock MessageIOFactory"
+            def builder = new MultiConnectionBuilder()
+            def factory = Mock(MessageIOFactory)
+
+        when: "MessageIOFactory is set twice"
+            builder.withMessageIOFactory(factory)
+                    .withMessageIOFactory(factory)
+
+        then: "An IllegalStateException should be thrown"
+            thrown(IllegalStateException)
+    }
 }
