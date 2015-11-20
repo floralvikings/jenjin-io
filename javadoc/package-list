@@ -3,3 +3,4 @@ com.jenjinstudios.io.annotations
 com.jenjinstudios.io.concurrency
 com.jenjinstudios.io.connection
 com.jenjinstudios.io.serialization
+com.jenjinstudios.io.server
