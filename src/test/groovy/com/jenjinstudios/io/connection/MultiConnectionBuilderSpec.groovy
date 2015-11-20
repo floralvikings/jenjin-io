@@ -6,9 +6,7 @@ import spock.lang.Specification
 import java.util.function.BiConsumer
 
 public class MultiConnectionBuilderSpec extends Specification {
-
-
-    def "ConnectionBuilder should properly pass callback to connection when built"() {
+    def "MultiConnectionBuilder should properly pass callback to connection when built"() {
         given: "A MultiConnectionBuilder (with necessary properties) and BiConsumer<Connection, Throwable>"
             def builder = new MultiConnectionBuilder()
             def ioFactory = Mock(MessageIOFactory)
