@@ -222,7 +222,7 @@ The ```ServerBuilder``` class has several methods that help with configuring a `
   
 * ```withContextualTasks```
   * This method allows for contextual callbacks in a similar fashion to the 
-  ```SingleConnectionBuilder#withContextualTasks``` method, but allows for access to the ```Server``` object.  
+  ```withContextualTasks``` method of ```SingleConnectionBuilder```, but allows for access to the ```Server``` object.  
   * Use of this method is helpful for things like broadcasting a message to all connections, without giving the 
   ```Connection``` objects direct access to the ```Server```.
   
