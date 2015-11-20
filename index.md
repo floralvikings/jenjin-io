@@ -129,14 +129,14 @@ building a ```Connection``` that are of interest:
   error; it is recommended that the ```stop``` method be called on the ```Connection``` at the end of this callback
   so that the ```Connection``` closes as cleanly as possible.
   
-* ```withContextualTasks(Consumer<ExecutionContext>...)``` 
+* ```withContextualTasks``` 
   * This method takes in one or more ```Consumers``` that accept an ```ExecutionContext``` parameter, which will be 
   invoked by the built ```Connection``` after each incoming message is executed.  
   * This callback is useful when there are parts of your application that need to access the ```ExecutionContext``` of 
   a ```Connection``` but should not be accessible from a ```Message```.  (UI components updating based on the current 
   state of the context may be an example)
 
-* ```withShutdownCallback(Consumer<Connection>)```
+* ```withShutdownCallback```
   * This method takes in a ```Consumer``` that accepts a ```Connection```, which is invoked after the built 
   ```Connection``` has halted its threads and attempted to close its backing streams.
   * This method can also take an ```Iterable<Connection>``` or be invoked multiple times if multiple callbacks are 
@@ -226,22 +226,22 @@ The ```ServerBuilder``` class has several methods that help with configuring a `
   * Use of this method is helpful for things like broadcasting a message to all connections, without giving the 
   ```Connection``` objects direct access to the ```Server```.
   
-* ```withConnectionAddedCallbacks(Consumer<Connection>...)```
+* ```withConnectionAddedCallbacks```
   * This method accepts one or more ```Consumer<Connection>``` parameters, which are invoked any time a new 
   ```Connection``` is added to the server.
   * These callbacks are useful for when you want to perform an action (such as logging) whenever a new ```Connection```
   is made.
   
-* ```withConnectionRemovedCallbacks(Consumer<Connection>...)```
+* ```withConnectionRemovedCallbacks```
   * This method accepts one or more ```Consumer<Connection>``` parameters, which are invoked any time a ```Connection```
   is removed from the ```Server```
   * Once again, these are useful when you need to be notified of a ```Connection``` being removed from the ```Server```.
   
-* ```withStartupCallbacks(Consumer<Server>...)```
+* ```withStartupCallbacks```
   * This method accepts one or more ```Consumer<Server>``` parameters, which are invoked after the ```Server``` has been
   started.
   
-* ```withShutdownCallbacks(Consumer<Server>...)```
+* ```withShutdownCallbacks```
   * This method accepts one or more ```Consumer<Server>``` parameters, which are invoked after the ```Server``` has 
   attempted to shut down and gracefully close all existing ```Connections```.
   
