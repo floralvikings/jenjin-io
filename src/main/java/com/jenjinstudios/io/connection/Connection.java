@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -25,6 +26,7 @@ import java.util.function.Consumer;
 public class Connection<C extends ExecutionContext>
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(Connection.class);
+    private final String id = UUID.randomUUID().toString();
     private final BiConsumer<Connection, Throwable> errorCallback;
     private final MessageQueue messageQueue;
     private final ScheduledExecutorService executor;
@@ -48,7 +50,8 @@ public class Connection<C extends ExecutionContext>
 
     /**
      * Construct a new connection.
-     *  @param context The context in which messages should execute.
+     *
+     * @param context The context in which messages should execute.
      * @param messageReader The stream from which messages should be read.
      * @param messageWriter The stream to which messages should be written.
      * @param shutdownCallbacks The callbacks to be invoked when the connection is shut down.
@@ -104,6 +107,8 @@ public class Connection<C extends ExecutionContext>
         }
         shutdownCallbacks.forEach(consumer -> consumer.accept(this));
     }
+
+    public String getId() { return id; }
 
     /**
      * This method is an "emergency stop" in the event that a fatal error is encountered by the error checking thread.
