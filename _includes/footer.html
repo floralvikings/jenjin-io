@@ -14,8 +14,9 @@
 
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script>
+    // Add link next to headers
     $(function() {
-        return $("h2").each(function(i, el) {
+        return $("h2, h3, h4").each(function(i, el) {
             var $el, icon, id;
             $el = $(el);
             id = $el.attr('id');
@@ -25,4 +26,11 @@
             }
         });
     });
+    $("strong").each(function(i) {
+        if($(this).html() == "Important:") {
+            $(this).css("color","#CC0000");
+        }else if($(this).html() == "Note:") {
+            $(this).css("color","#00FFFF");
+        }
+    })
 </script>

@@ -12,7 +12,7 @@ body {
 
 .container {
   width: 90%;
-  max-width: 600px;
+  max-width: 792px;
   margin: 0 auto;
 }
 
@@ -124,6 +124,20 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0 0 5px 0;
 }
 
+#main_content code {
+    font-size: 16px;
+    color: #a6a6a6
+}
+
+#main_content a code {
+    font-size: 16px;
+    color: #b5e853
+}
+
+#main_content blockquote .highlight {
+    margin-right: 10px;
+}
+
 dt {
   font-style: italic;
   font-weight: bold;
@@ -145,7 +159,11 @@ ul li:before {
 
 blockquote {
   color: #aaa;
+  background-color: #000000;
+  margin-left: 10px;
+  margin-right: 10px;
   padding-left: 10px;
+  padding-bottom: 1px;
   border-left: 1px dotted #666;
 }
 
@@ -226,9 +244,9 @@ hr {
    a, a:hover, a:visited
 */
 
-a {
-  color: #63c0f5;
-  text-shadow: 0 0 5px rgba(104, 182, 255, 0.5);
+a{
+  color: #b5e853;
+  text-shadow: 0 0 5px rgba(112, 158, 75, 0.5);
 }
 
 /* Clearfix */
