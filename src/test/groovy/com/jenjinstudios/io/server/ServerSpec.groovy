@@ -1,5 +1,6 @@
 package com.jenjinstudios.io.server
 
+import com.jenjinstudios.io.Message
 import com.jenjinstudios.io.connection.Connection
 import com.jenjinstudios.io.connection.MultiConnectionBuilder
 import spock.lang.Specification
@@ -18,7 +19,7 @@ public class ServerSpec extends Specification {
             Thread.sleep(100) // Give threads time to catch up
 
         then: "The ServerSocket should be accepting connections"
-            (1.._) * serverSocket.accept()
+            1 * serverSocket.accept() >>> [{ while (true); }]
 
         cleanup: "Stop the server"
             server.stop()
@@ -28,7 +29,7 @@ public class ServerSpec extends Specification {
         given: "A ServerSocket which returns a valid connection then blocks"
             def serverSocket = Mock(ServerSocket)
             def socket = Mock(Socket)
-            serverSocket.accept() >>> [socket, null]
+            serverSocket.accept() >>> [socket, { while (true); }]
             def connection = Mock(Connection)
             def connectionBuilder = Mock(MultiConnectionBuilder)
             connectionBuilder.build(socket) >> connection
@@ -56,6 +57,7 @@ public class ServerSpec extends Specification {
         given: "A Server with a start callback"
             def connectionBuilder = Mock(MultiConnectionBuilder)
             def serverSocket = Mock(ServerSocket)
+            serverSocket.accept() >>> [{ while (true); }]
             def callback = Mock(Consumer)
             def callbacks = [callback]
             def server = new Server(serverSocket, connectionBuilder, [], [], [], callbacks, [])
@@ -74,6 +76,7 @@ public class ServerSpec extends Specification {
         given: "A Server with a stop callback"
             def connectionBuilder = Mock(MultiConnectionBuilder)
             def serverSocket = Mock(ServerSocket)
+            serverSocket.accept() >>> [{ while (true); }]
             def callback = Mock(Consumer)
             def callbacks = [callback]
             def server = new Server(serverSocket, connectionBuilder, [], [], [], [], callbacks)
@@ -140,5 +143,31 @@ public class ServerSpec extends Specification {
 
         then: "The callback should be invoked"
             1 * callback.accept(connection)
+    }
+
+    def "When Server broadcasts, all connections should send message"() {
+        given: "A ServerSocket which returns two mocked connections"
+            def serverSocket = Mock(ServerSocket)
+            def socket = Mock(Socket)
+            def message = Mock(Message)
+            serverSocket.accept() >>> [socket, socket, { while (true); }]
+            def connection1 = Mock(Connection)
+            def connection2 = Mock(Connection);
+            def connectionBuilder = Mock(MultiConnectionBuilder)
+            connectionBuilder.build(socket) >>> [connection1, connection2]
+
+        and: "A Server using the given socket, and a connection removed callback"
+            def server = new Server(serverSocket, connectionBuilder, [], [], [], [], [])
+
+        when: "The Server is started and Connections are added"
+            server.start()
+            Thread.sleep(100)
+
+        and: "The server sends a broadcast"
+            server.broadcast(message)
+
+        then: "The message should be sent by all connections"
+            1 * connection1.sendMessage(message)
+            1 * connection2.sendMessage(message)
     }
 }
