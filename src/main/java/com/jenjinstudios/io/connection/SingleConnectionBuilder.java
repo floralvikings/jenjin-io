@@ -255,6 +255,14 @@ public class SingleConnectionBuilder
      * @return This SingleConnectionBuilder.
      */
     public SingleConnectionBuilder withMessageReaderFactory(MessageReaderFactory factory) {
+        if (this.messageReaderFactory == null) {
+            if (messageReader != null) {
+                LOGGER.warn("Applying MessageReaderFactory after stream has already been set: " + messageReader);
+            }
+            this.messageReaderFactory = factory;
+        } else {
+            throw new IllegalStateException("MessageReaderFactory already set");
+        }
         return this;
     }
 
@@ -266,6 +274,14 @@ public class SingleConnectionBuilder
      * @return This SingleConnectionBuilder.
      */
     public SingleConnectionBuilder withMessageWriterFactory(MessageWriterFactory factory) {
+        if (this.messageWriterFactory == null) {
+            if (messageWriter != null) {
+                LOGGER.warn("Applying MessageWriterFactorygit after stream has already been set: " + messageWriter);
+            }
+            this.messageWriterFactory = factory;
+        } else {
+            throw new IllegalStateException("MessageWriterFactory already set");
+        }
         return this;
     }
 }
