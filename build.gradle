@@ -13,13 +13,14 @@ plugins {
 }
 
 description = 'Jenjin Core IO API'
+group = 'com.jenjinstudios.jenjin-io'
 version = '0.0.0-alpha'
 
 // Core plugins
 apply plugin: 'java'
 apply plugin: 'groovy'
 apply plugin: 'jacoco'
-
+apply plugin: 'signing'
 
 sourceSets {
     integrationTest {
@@ -46,6 +47,27 @@ task fatJar(type: Jar) {
     baseName = project.name + '-all'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from tasks.javadoc.destinationDir
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+artifacts {
+    archives jar
+
+    archives javadocJar
+    archives sourcesJar
+}
+
+signing {
+    sign configurations.archives
 }
 
 check.dependsOn integrationTest
@@ -116,4 +138,44 @@ dependencies {
     // Unit Test Dependencies
     testCompile 'org.spockframework:spock-maven:0.7-groovy-2.0'
     testCompile 'cglib:cglib:3.2.0'
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: sonatypeUsername, password: sonatypePassword)
+            }
+
+            pom.project {
+                name 'Jenjin-IO'
+                packaging 'jar'
+                description 'Jenjin-IO is a simple tool for creating stateful client-server connections'
+                url 'http://floralvikings.github.io/jenjin-io/'
+
+                scm {
+                    url 'scm:git@github.com:floralvikings/jenjin-io.git'
+                    connection 'scm:git@github.com:floralvikings/jenjin-io.git'
+                    developerConnection 'scm:git@github.com:floralvikings/jenjin-io.git'
+                }
+
+                licenses {
+                    license {
+                        name 'The MIT License (MIT)'
+                        url 'https://raw.githubusercontent.com/floralvikings/jenjin-io/master/LICENSE'
+                        distribution 'repo'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'floralvikings'
+                        name 'Caleb Brinkman'
+                    }
+                }
+            }
+        }
+    }
 }
