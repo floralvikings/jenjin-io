@@ -13,7 +13,7 @@ plugins {
 }
 
 description = 'Jenjin Core IO API'
-version = '0.0.0'
+version = '0.0.0-alpha'
 
 // Core plugins
 apply plugin: 'java'
