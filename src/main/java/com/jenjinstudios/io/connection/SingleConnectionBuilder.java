@@ -1,9 +1,6 @@
 package com.jenjinstudios.io.connection;
 
-import com.jenjinstudios.io.ExecutionContext;
-import com.jenjinstudios.io.MessageIOFactory;
-import com.jenjinstudios.io.MessageReader;
-import com.jenjinstudios.io.MessageWriter;
+import com.jenjinstudios.io.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +23,8 @@ public class SingleConnectionBuilder
     private static final Logger LOGGER = LoggerFactory.getLogger(SingleConnectionBuilder.class);
     private final Collection<Consumer<ExecutionContext>> contextualTasks = new LinkedList<>();
     private final Collection<Consumer<Connection>> shutdownCallbacks = new LinkedList<>();
-    private MessageIOFactory messageIOFactory;
+    private MessageReaderFactory messageReaderFactory;
+    private MessageWriterFactory messageWriterFactory;
     private MessageReader messageReader;
     private MessageWriter messageWriter;
     private ExecutionContext executionContext;
@@ -72,13 +70,17 @@ public class SingleConnectionBuilder
      * @return This ConnectionBuilder.
      */
     public SingleConnectionBuilder withMessageIOFactory(MessageIOFactory factory) {
-        if (messageIOFactory == null) {
+        if ((messageReaderFactory == null) && (messageWriterFactory == null)) {
             if ((messageReader != null) || (messageWriter != null)) {
                 LOGGER.warn("Applying MessageIOFactory after one or both streams have already been set");
             }
-            this.messageIOFactory = factory;
+            this.messageReaderFactory = factory;
+            this.messageWriterFactory = factory;
         } else {
-            throw new IllegalStateException("MessageIOFactory already set");
+            if (messageReaderFactory != null) {
+                throw new IllegalStateException("MessageReaderFactory already set: " + messageReaderFactory);
+            }
+            throw new IllegalStateException("MessageWriterFactory already set" + messageWriterFactory);
         }
         return this;
     }
@@ -91,11 +93,11 @@ public class SingleConnectionBuilder
      * @return This ConnectionBuilder
      */
     public SingleConnectionBuilder withInputStream(InputStream inputStream) {
-        if (messageIOFactory == null) {
-            throw new IllegalStateException("MessageIOFactory not set");
+        if (messageReaderFactory == null) {
+            throw new IllegalStateException("MessageReaderFactory not set");
         }
         if (messageReader == null) {
-            messageReader = messageIOFactory.createReader(inputStream);
+            messageReader = messageReaderFactory.createReader(inputStream);
         } else {
             throw new IllegalStateException("MessageReader is already set");
         }
@@ -110,11 +112,11 @@ public class SingleConnectionBuilder
      * @return This ConnectionBuilder
      */
     public SingleConnectionBuilder withOutputStream(OutputStream outputStream) {
-        if (messageIOFactory == null) {
+        if (messageWriterFactory == null) {
             throw new IllegalStateException("MessageIOFactory not set");
         }
         if (messageWriter == null) {
-            messageWriter = messageIOFactory.createWriter(outputStream);
+            messageWriter = messageWriterFactory.createWriter(outputStream);
         } else {
             throw new IllegalStateException("MessageWriter is already set");
         }
