@@ -160,6 +160,36 @@ public class SingleConnectionBuilderSpec extends Specification {
             thrown(IllegalStateException)
     }
 
+    def "ConnectionBuilder should throw exception when setting MessageReaderFactory while already set"() {
+        given: "A ConnectionBuilder, and MessageReaderFactory"
+            def factory = Mock(MessageReaderFactory)
+            def builder = new SingleConnectionBuilder()
+
+        when: "The factory is set"
+            builder.withMessageReaderFactory(factory)
+
+        and: "The factory is set again"
+            builder.withMessageReaderFactory(factory)
+
+        then: "An IllegalStateException should be thrown"
+            thrown(IllegalStateException)
+    }
+
+    def "ConnectionBuilder should throw exception when setting MessageWriterFactory while already set"() {
+        given: "A ConnectionBuilder, and MessageWriterFactory"
+            def factory = Mock(MessageWriterFactory)
+            def builder = new SingleConnectionBuilder()
+
+        when: "The factory is set"
+            builder.withMessageWriterFactory(factory)
+
+        and: "The factory is set again"
+            builder.withMessageWriterFactory(factory)
+
+        then: "An IllegalStateException should be thrown"
+            thrown(IllegalStateException)
+    }
+
     def "ConnectionBuilder should throw exception when MessageReader set and already exists"() {
         given: "A ConnectionBuilder and MessageReader"
             def reader = Mock(MessageReader)
