@@ -80,24 +80,24 @@ sent.
 This class is used to build a single ```Connection```; there are a few different configurations that can be done when 
 building a ```Connection``` that are of interest:
 
-* ```withExecutionContext```
+*  `withExecutionContext`
   * This method is used to pass an ```ExecutionContext``` into the ```Connection``` when it is built.
 
-* ```withSocket```
+* `withSocket`
   * This method is used to set the ```MessageReader``` and ```MessageWriter``` from the input and output streams 
   belonging to the given socket
   * This method will throw an ```IllegalStateException``` if the ```MessageIOFactory``` has not been set
   * This method will throw an ```IllegalStateException``` if the ```MessageReader``` or ```MessageWriter``` have already
   been set
 
-* ```withInputStream``` and ```withOutputStream```
+* `withInputStream` and `withOutputStream`
   * These methods is used to set the ```MessageReader``` or ```MessageWriter``` (respectively) from the given 
   ```InputStream``` or ```OutputStream```
   * These methods will throw an ```IllegalStateException``` if the ```MessageIOFactory``` has not been set
   * These methods will throw an ```IllegalStateException``` if the ```MessageReader``` or ```MessageWriter``` 
   (respectively) has already been set
 
-* ```withMessageIOFactory```
+* `withMessageIOFactory`
   * This method accepts a ```MessageIOFactory```, which is used to create a ```MessageReader``` and/or 
   ```MessageWriter``` from a raw ```InputStream``` and/or ```OutputStream```.
   * ```withSocket```, ```withInputStream``` and ```withOutputStream``` will all throw an ```IllegalStateException``` if
@@ -106,11 +106,10 @@ building a ```Connection``` that are of interest:
   convenience; implementing your own is not necessary (though it is encouraged to better suit the needs of your 
   application)
 
-* ```withMessageReader``` and ```withMessageWriter```
+* `withMessageReader` and ```withMessageWriter```
   * These methods directly set the ```MessageReader``` and ```MessageWriter``` to be used by the built ```Connection```.
   (for ```withMessageReader```) and ```withOutputStream``` (for ```MessageWriter```).
-  * If the ```MessageReader``` or ```MessageWriter``` has already been set, these methods will throw an 
-  ```IllegalStateException```.
+  * If the ```MessageReader``` or ```MessageWriter``` has already been set, these methods will throw an ```IllegalStateException```.
   
 > **Important:** These methods must both be invoked with non-null values (either explicitly, or by calling 
   ```withSocket``` or ```withInputStream``` and ```withOutputStream```) before the ```build``` method is called, or an
@@ -118,19 +117,19 @@ building a ```Connection``` that are of interest:
   
 > **Note:** These methods will be called internally by ```withSocket```, ```withInputStream``` 
 
-* ```withErrorCallback```
+* `withErrorCallback`
   * This method will cause the built ```Connection``` to invoke the specified ```BiConsumer``` if it encounters an 
   error; it is recommended that the ```stop``` method be called on the ```Connection``` at the end of this callback
   so that the ```Connection``` closes as cleanly as possible.
   
-* ```withContextualTasks``` 
+* `withContextualTasks` 
   * This method takes in one or more ```Consumers``` that accept an ```ExecutionContext``` parameter, which will be 
   invoked by the built ```Connection``` after each incoming message is executed.  
   * This callback is useful when there are parts of your application that need to access the ```ExecutionContext``` of 
   a ```Connection``` but should not be accessible from a ```Message```.  (UI components updating based on the current 
   state of the context may be an example)
 
-* ```withShutdownCallback```
+* `withShutdownCallback`
   * This method takes in a ```Consumer``` that accepts a ```Connection```, which is invoked after the built 
   ```Connection``` has halted its threads and attempted to close its backing streams.
   * This method can also take an ```Iterable<Connection>``` or be invoked multiple times if multiple callbacks are 
@@ -140,8 +139,7 @@ Once you've configured your connection, you can build it with the ```build``` me
 
 > **Important:** If the ```MessageReader```, ```MessageWriter```, or ```ExecutionContext``` are not set, the ```build```
 method will throw an IllegalStateException.  The ```MessageReader``` is set automatically if the ```withInputStream```
-or ```getSocket``` methods are used; similarly, the ```MessageWriter``` is set automatically if the 
-```withOutputStream``` or ```withSocket``` methods are used.
+or ```getSocket``` methods are used; similarly, the ```MessageWriter``` is set automatically if the ```withOutputStream``` or ```withSocket``` methods are used.
 
 ```Java
 Connection connection = builder.build();
@@ -169,16 +167,14 @@ differences:
   * Each time ```build``` is called, a **new** ```Connection``` will be created from the given Socket.
 2. There is a new ```withExecutionContextFactory``` method, that accepts an ```ExecutionContextFactory``` that will be 
 used to generate a new ```ExecutionContext``` for each ```Connection``` built with this builder.
-3. The ```withMessageReader```, ```withMessageWriter```, ```withInputStream```, ```withOutputStream``` and 
-```withExecutionContext``` methods are not present
+3. The ```withMessageReader```, ```withMessageWriter```, ```withInputStream```, ```withOutputStream``` and ```withExecutionContext``` methods are not present
 
 > **Important:** The callbacks (```Consumers```, ```BiConsumers```) passed into a ```MultiConnectionBuilder``` should be
   **immutable**, as each callback will be passed into every connection rather than being copied.
 
 ### [Server](javadoc/com/jenjinstudios/io/server/Server.html)
 
-The ```Server``` class is a convenience class provided by Jenjin-IO that is capable of accepting multiple client 
-```Connections```.  It is not terribly robust, so it may be prudent to examine the source and create your own 
+The ```Server``` class is a convenience class provided by Jenjin-IO that is capable of accepting multiple client ```Connections```.  It is not terribly robust, so it may be prudent to examine the source and create your own 
 implementation that better suits your needs.
 
 A ```Server``` requires the following objects (which are supplied from a ```ServerBuilder```:
@@ -190,8 +186,7 @@ A ```Server``` requires the following objects (which are supplied from a ```Serv
   * Necessary for building a new ```Connection``` for each inbound socket.
   
 This class has two ```broadcast``` methods, one which takes a single ```Message``` parameter, which is broadcast to
-all existing ```Connections```, and a second which takes both a ```Message``` parameter and a 
-```Predicate<Connection>``` parameter, which broadcasts to all ```Connections``` which fulfill the ```Predicate```.
+all existing ```Connections```, and a second which takes both a ```Message``` parameter and a ```Predicate<Connection>``` parameter, which broadcasts to all ```Connections``` which fulfill the ```Predicate```.
 
 #### [ServerBuilder](javadoc/com/jenjinstudios/io/server/ServerBuilder.html)
 
@@ -200,42 +195,42 @@ responsible for configuring and building a ```Server```.
 
 The ```ServerBuilder``` class has several methods that help with configuring a ```Server```:
 
-* ```withServerSocket```
+* `withServerSocket`
   * This method takes in a Java ```ServerSocket```, which will be used by the built ```Server``` to accept inbound 
   connections.
 
 > **Important:** If the ```build``` method is called without the ```ServerSocket``` being set, an 
   ```IllegalStateException``` will be thrown.
 
-* ```withMultiConnectionBuilder```
+* `withMultiConnectionBuilder`
   * This method takes in a ```MultiConnectionBuilder``` that is used by the built ```Server``` to generate new 
   ```Connections``` from inbound sockets.
 
 > **Important:** If the ```build``` method is called without the ```MultiConectionBuilder``` being set, an
   ```IllegalStateException``` will be thrown.
   
-* ```withContextualTasks```
+* `withContextualTasks`
   * This method allows for contextual callbacks in a similar fashion to the 
   ```withContextualTasks``` method of ```SingleConnectionBuilder```, but allows for access to the ```Server``` object.  
   * Use of this method is helpful for things like broadcasting a message to all connections, without giving the 
   ```Connection``` objects direct access to the ```Server```.
   
-* ```withConnectionAddedCallbacks```
+* `withConnectionAddedCallbacks`
   * This method accepts one or more ```Consumer<Connection>``` parameters, which are invoked any time a new 
   ```Connection``` is added to the server.
   * These callbacks are useful for when you want to perform an action (such as logging) whenever a new ```Connection```
   is made.
   
-* ```withConnectionRemovedCallbacks```
+* `withConnectionRemovedCallbacks`
   * This method accepts one or more ```Consumer<Connection>``` parameters, which are invoked any time a ```Connection```
   is removed from the ```Server```
   * Once again, these are useful when you need to be notified of a ```Connection``` being removed from the ```Server```.
   
-* ```withStartupCallbacks```
+* `withStartupCallbacks`
   * This method accepts one or more ```Consumer<Server>``` parameters, which are invoked after the ```Server``` has been
   started.
   
-* ```withShutdownCallbacks```
+* `withShutdownCallbacks`
   * This method accepts one or more ```Consumer<Server>``` parameters, which are invoked after the ```Server``` has 
   attempted to shut down and gracefully close all existing ```Connections```.
   
