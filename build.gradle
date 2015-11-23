@@ -20,6 +20,7 @@ version = '0.0.0-alpha'
 apply plugin: 'java'
 apply plugin: 'groovy'
 apply plugin: 'jacoco'
+apply plugin: 'maven'
 apply plugin: 'signing'
 
 sourceSets {
@@ -139,6 +140,10 @@ dependencies {
     testCompile 'org.spockframework:spock-maven:0.7-groovy-2.0'
     testCompile 'cglib:cglib:3.2.0'
 }
+
+def sonatypeUsername = hasProperty('sonatypeUsername') ? sonatypeUsername : System.getenv('sonatypeUsername')
+def sonatypePassword = hasProperty('sonatypePassword') ? sonatypePassword : System.getenv('sonatypePassword')
+
 
 uploadArchives {
     repositories {
