@@ -73,8 +73,7 @@ storing any non-null return values in the "outgoing" message queue.
 sent.
 
 ```Connections``` can either be built manually (for client-side or peer-to-peer connections) using the 
-```SingleConnectionBuilder``` class, or they can be built automatically by a ```Server``` using a 
-```MultiConnectionBuilder```.
+```SingleConnectionBuilder``` class, or they can be built automatically by a ```Server``` using a ```MultiConnectionBuilder```.
 
 #### [SingleConnectionBuilder](javadoc/com/jenjinstudios/io/connection/SingleConnectionBuilder.html)
 
