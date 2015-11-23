@@ -1,8 +1,6 @@
 package com.jenjinstudios.io.connection;
 
-import com.jenjinstudios.io.ExecutionContext;
-import com.jenjinstudios.io.ExecutionContextFactory;
-import com.jenjinstudios.io.MessageIOFactory;
+import com.jenjinstudios.io.*;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -21,9 +19,10 @@ public class MultiConnectionBuilder
 {
     private final Collection<Consumer<ExecutionContext>> contextualTasks = new LinkedList<>();
     private final Collection<Consumer<Connection>> shutdownCallbacks = new LinkedList<>();
+    private MessageReaderFactory messageReaderFactory;
+    private MessageWriterFactory messageWriterFactory;
     private ExecutionContextFactory executionContextFactory;
     private BiConsumer<Connection, Throwable> errorCallback;
-    private MessageIOFactory messageIOFactory;
 
     /**
      * Build a connection using the given socket.
@@ -36,7 +35,8 @@ public class MultiConnectionBuilder
      */
     public Connection build(Socket socket) throws IOException {
         return new SingleConnectionBuilder()
-              .withMessageIOFactory(messageIOFactory)
+              .withMessageReaderFactory(messageReaderFactory)
+              .withMessageWriterFactory(messageWriterFactory)
               .withErrorCallback(errorCallback)
               .withContextualTasks(contextualTasks)
               .withExecutionContext(executionContextFactory.createInstance())
@@ -67,10 +67,14 @@ public class MultiConnectionBuilder
      * @return This ConnectionBuilder.
      */
     public MultiConnectionBuilder withMessageIOFactory(MessageIOFactory factory) {
-        if (messageIOFactory == null) {
-            this.messageIOFactory = factory;
+        if ((messageReaderFactory == null) && (messageWriterFactory == null)) {
+            this.messageReaderFactory = factory;
+            this.messageWriterFactory = factory;
         } else {
-            throw new IllegalStateException("MessageIOFactory already set");
+            if (messageReaderFactory != null) {
+                throw new IllegalStateException("MessageReaderFactory already set: " + messageReaderFactory);
+            }
+            throw new IllegalStateException("MessageWriterFactory already set: " + messageWriterFactory);
         }
         return this;
     }
