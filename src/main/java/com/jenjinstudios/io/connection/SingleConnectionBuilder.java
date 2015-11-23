@@ -246,4 +246,26 @@ public class SingleConnectionBuilder
         shutdownCallbacks.add(callback);
         return this;
     }
+
+    /**
+     * Use the specified MessageReaderFactory to build a MessageReader from any InputStreams.
+     *
+     * @param factory The MessageReaderFactory.
+     *
+     * @return This SingleConnectionBuilder.
+     */
+    public SingleConnectionBuilder withMessageReaderFactory(MessageReaderFactory factory) {
+        return this;
+    }
+
+    /**
+     * Use the specified MessageWriterFactory to build a MessageWriter from any OutputStreams.
+     *
+     * @param factory The MessageWriterFactory.
+     *
+     * @return This SingleConnectionBuilder.
+     */
+    public SingleConnectionBuilder withMessageWriterFactory(MessageWriterFactory factory) {
+        return this;
+    }
 }
