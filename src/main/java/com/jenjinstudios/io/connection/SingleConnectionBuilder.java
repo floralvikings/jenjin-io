@@ -276,7 +276,7 @@ public class SingleConnectionBuilder
     public SingleConnectionBuilder withMessageWriterFactory(MessageWriterFactory factory) {
         if (this.messageWriterFactory == null) {
             if (messageWriter != null) {
-                LOGGER.warn("Applying MessageWriterFactorygit after stream has already been set: " + messageWriter);
+                LOGGER.warn("Applying MessageWriterFactory after stream has already been set: " + messageWriter);
             }
             this.messageWriterFactory = factory;
         } else {
