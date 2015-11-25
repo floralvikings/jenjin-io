@@ -18,11 +18,11 @@ import java.util.function.Consumer;
 public class MultiConnectionBuilder<T extends ExecutionContext>
 {
     private final Collection<Consumer<T>> contextualTasks = new LinkedList<>();
-    private final Collection<Consumer<Connection>> shutdownCallbacks = new LinkedList<>();
+    private final Collection<Consumer<Connection<T>>> shutdownCallbacks = new LinkedList<>();
     private MessageReaderFactory messageReaderFactory;
     private MessageWriterFactory messageWriterFactory;
     private ExecutionContextFactory<T> executionContextFactory;
-    private BiConsumer<Connection, Throwable> errorCallback;
+    private BiConsumer<Connection<T>, Throwable> errorCallback;
 
     /**
      * Build a connection using the given socket.
@@ -53,7 +53,7 @@ public class MultiConnectionBuilder<T extends ExecutionContext>
      *
      * @return This ConnectionBuilder.
      */
-    public MultiConnectionBuilder withErrorCallback(BiConsumer<Connection, Throwable> callback) {
+    public MultiConnectionBuilder withErrorCallback(BiConsumer<Connection<T>, Throwable> callback) {
         this.errorCallback = callback;
         return this;
     }
@@ -139,7 +139,7 @@ public class MultiConnectionBuilder<T extends ExecutionContext>
      *
      * @return This ReusableConnectionBuilder.
      */
-    public MultiConnectionBuilder withShutdownCallback(Consumer<Connection> callback) {
+    public MultiConnectionBuilder withShutdownCallback(Consumer<Connection<T>> callback) {
         shutdownCallbacks.add(callback);
         return this;
     }

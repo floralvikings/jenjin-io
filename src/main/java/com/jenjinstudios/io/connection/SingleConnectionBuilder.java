@@ -22,13 +22,13 @@ public class SingleConnectionBuilder<T extends ExecutionContext>
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(SingleConnectionBuilder.class);
     private final Collection<Consumer<T>> contextualTasks = new LinkedList<>();
-    private final Collection<Consumer<Connection>> shutdownCallbacks = new LinkedList<>();
+    private final Collection<Consumer<Connection<T>>> shutdownCallbacks = new LinkedList<>();
     private MessageReaderFactory messageReaderFactory;
     private MessageWriterFactory messageWriterFactory;
     private MessageReader messageReader;
     private MessageWriter messageWriter;
     private T executionContext;
-    private BiConsumer<Connection, Throwable> errorCallback;
+    private BiConsumer<Connection<T>, Throwable> errorCallback;
 
     /**
      * Build a connection using all the values supplied to this builder.
@@ -179,7 +179,7 @@ public class SingleConnectionBuilder<T extends ExecutionContext>
      *
      * @return This ConnectionBuilder.
      */
-    public SingleConnectionBuilder<T> withErrorCallback(BiConsumer<Connection, Throwable> callback) {
+    public SingleConnectionBuilder<T> withErrorCallback(BiConsumer<Connection<T>, Throwable> callback) {
         this.errorCallback = callback;
         return this;
     }
@@ -230,7 +230,7 @@ public class SingleConnectionBuilder<T extends ExecutionContext>
      *
      * @return This ConnectionBuilder.
      */
-    public SingleConnectionBuilder<T> withShutdownCallbacks(Iterable<Consumer<Connection>> callbacks) {
+    public SingleConnectionBuilder<T> withShutdownCallbacks(Iterable<Consumer<Connection<T>>> callbacks) {
         callbacks.forEach(this::withShutdownCallback);
         return this;
     }
@@ -242,7 +242,7 @@ public class SingleConnectionBuilder<T extends ExecutionContext>
      *
      * @return This ConnectionBuilder.
      */
-    public SingleConnectionBuilder<T> withShutdownCallback(Consumer<Connection> callback) {
+    public SingleConnectionBuilder<T> withShutdownCallback(Consumer<Connection<T>> callback) {
         shutdownCallbacks.add(callback);
         return this;
     }
