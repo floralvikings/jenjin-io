@@ -12,11 +12,11 @@ import java.util.function.Consumer;
  *
  * @author Caleb Brinkman
  */
-public class ExecutionTask implements Runnable
+public class ExecutionTask<T extends ExecutionContext> implements Runnable
 {
     private final MessageQueue messageQueue;
-    private final ExecutionContext executionContext;
-    private final Collection<Consumer<ExecutionContext>> contextualTasks;
+    private final T executionContext;
+    private final Collection<Consumer<T>> contextualTasks;
 
     /**
      * Construct a new ExecuteTask that will execute messages from the given MessageQueue.
@@ -25,11 +25,7 @@ public class ExecutionTask implements Runnable
      * @param executionContext The context in which messages should execute.
      * @param contextualTasks Tasks which should be invoked in synchronous fashion with the execution context.
      */
-    public ExecutionTask(
-          MessageQueue messageQueue,
-          ExecutionContext executionContext,
-          Collection<Consumer<ExecutionContext>> contextualTasks
-    )
+    public ExecutionTask(MessageQueue messageQueue, T executionContext, Collection<Consumer<T>> contextualTasks)
     {
         this.messageQueue = messageQueue;
         this.executionContext = executionContext;
