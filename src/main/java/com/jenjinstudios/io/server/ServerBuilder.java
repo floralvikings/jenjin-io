@@ -16,15 +16,15 @@ import java.util.function.Consumer;
  *
  * @author Caleb Brinkman
  */
-public class ServerBuilder
+public class ServerBuilder<T extends ExecutionContext>
 {
-    private final Collection<BiConsumer<Server, ExecutionContext>> contextualTasks = new LinkedList<>();
-    private final Collection<Consumer<Connection>> addedCallbacks = new LinkedList<>();
-    private final Collection<Consumer<Connection>> removedCallbacks = new LinkedList<>();
-    private final Collection<Consumer<Server>> startupCallbacks = new LinkedList<>();
-    private final Collection<Consumer<Server>> shutdownCallbacks = new LinkedList<>();
+    private final Collection<BiConsumer<Server, T>> contextualTasks = new LinkedList<>();
+    private final Collection<Consumer<Connection<T>>> addedCallbacks = new LinkedList<>();
+    private final Collection<Consumer<Connection<T>>> removedCallbacks = new LinkedList<>();
+    private final Collection<Consumer<Server<T>>> startupCallbacks = new LinkedList<>();
+    private final Collection<Consumer<Server<T>>> shutdownCallbacks = new LinkedList<>();
     private ServerSocket serverSocket;
-    private MultiConnectionBuilder connectionBuilder;
+    private MultiConnectionBuilder<T> connectionBuilder;
 
     /**
      * Build a Server using the properties supplied to this builder.
@@ -61,7 +61,7 @@ public class ServerBuilder
      *
      * @throws IllegalStateException If the ServerSocket has already been set.
      */
-    public ServerBuilder withServerSocket(ServerSocket socket) {
+    public ServerBuilder<T> withServerSocket(ServerSocket socket) {
         if (this.serverSocket == null) {
             this.serverSocket = socket;
         } else {
@@ -79,7 +79,7 @@ public class ServerBuilder
      *
      * @throws IllegalStateException If the ReusableConnectionBuilder has already been set.
      */
-    public ServerBuilder withMultiConnectionBuilder(MultiConnectionBuilder builder) {
+    public ServerBuilder<T> withMultiConnectionBuilder(MultiConnectionBuilder<T> builder) {
         if (this.connectionBuilder == null) {
             this.connectionBuilder = builder;
         } else {
@@ -96,7 +96,7 @@ public class ServerBuilder
      * @return This ServerBuilder.
      */
     @SafeVarargs
-    public final ServerBuilder withContextualTasks(BiConsumer<Server, ExecutionContext>... tasks) {
+    public final ServerBuilder<T> withContextualTasks(BiConsumer<Server, T>... tasks) {
         this.withContextualTasks(Arrays.asList(tasks));
         return this;
     }
@@ -108,7 +108,7 @@ public class ServerBuilder
      *
      * @return This ServerBuilder.
      */
-    public ServerBuilder withContextualTasks(Iterable<BiConsumer<Server, ExecutionContext>> tasks) {
+    public ServerBuilder<T> withContextualTasks(Iterable<BiConsumer<Server, T>> tasks) {
         tasks.forEach(contextualTasks::add);
         return this;
     }
@@ -120,7 +120,7 @@ public class ServerBuilder
      *
      * @return This ServerBuilder
      */
-    public ServerBuilder withConnectionAddedCallbacks(Iterable<Consumer<Connection>> callbacks) {
+    public ServerBuilder<T> withConnectionAddedCallbacks(Iterable<Consumer<Connection<T>>> callbacks) {
         callbacks.forEach(addedCallbacks::add);
         return this;
     }
@@ -133,7 +133,7 @@ public class ServerBuilder
      * @return This ServerBuilder
      */
     @SafeVarargs
-    public final ServerBuilder withConnectionAddedCallbacks(Consumer<Connection>... callbacks) {
+    public final ServerBuilder<T> withConnectionAddedCallbacks(Consumer<Connection<T>>... callbacks) {
         this.withConnectionAddedCallbacks(Arrays.asList(callbacks));
         return this;
     }
@@ -145,7 +145,7 @@ public class ServerBuilder
      *
      * @return This ServerBuilder
      */
-    public ServerBuilder withConnectionRemovedCallbacks(Iterable<Consumer<Connection>> callbacks) {
+    public ServerBuilder<T> withConnectionRemovedCallbacks(Iterable<Consumer<Connection<T>>> callbacks) {
         callbacks.forEach(removedCallbacks::add);
         return this;
     }
@@ -158,7 +158,7 @@ public class ServerBuilder
      * @return This ServerBuilder
      */
     @SafeVarargs
-    public final ServerBuilder withConnectionRemovedCallbacks(Consumer<Connection>... callbacks) {
+    public final ServerBuilder<T> withConnectionRemovedCallbacks(Consumer<Connection<T>>... callbacks) {
         return withConnectionRemovedCallbacks(Arrays.asList(callbacks));
     }
 
@@ -169,7 +169,7 @@ public class ServerBuilder
      *
      * @return This ServerBuilder
      */
-    public ServerBuilder withStartupCallbacks(Iterable<Consumer<Server>> callbacks) {
+    public ServerBuilder<T> withStartupCallbacks(Iterable<Consumer<Server<T>>> callbacks) {
         callbacks.forEach(startupCallbacks::add);
         return this;
     }
@@ -182,7 +182,7 @@ public class ServerBuilder
      * @return This ServerBuilder
      */
     @SafeVarargs
-    public final ServerBuilder withStartupCallbacks(Consumer<Server>... callbacks) {
+    public final ServerBuilder<T> withStartupCallbacks(Consumer<Server<T>>... callbacks) {
         return withStartupCallbacks(Arrays.asList(callbacks));
     }
 
@@ -193,7 +193,7 @@ public class ServerBuilder
      *
      * @return This ServerBuilder
      */
-    public ServerBuilder withShutdownCallbacks(Iterable<Consumer<Server>> callbacks) {
+    public ServerBuilder<T> withShutdownCallbacks(Iterable<Consumer<Server<T>>> callbacks) {
         callbacks.forEach(shutdownCallbacks::add);
         return this;
     }
@@ -206,7 +206,7 @@ public class ServerBuilder
      * @return This ServerBuilder
      */
     @SafeVarargs
-    public final ServerBuilder withShutdownCallbacks(Consumer<Server>... callbacks) {
+    public final ServerBuilder<T> withShutdownCallbacks(Consumer<Server<T>>... callbacks) {
         return withShutdownCallbacks(Arrays.asList(callbacks));
     }
 }

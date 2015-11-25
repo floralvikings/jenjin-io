@@ -27,14 +27,14 @@ import java.util.function.Predicate;
  *
  * @author Caleb Brinkman
  */
-public class Server
+public class Server<T extends ExecutionContext>
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(Server.class);
     private static final int EXECUTOR_THREADS = 4;
     private final ScheduledExecutorService executor;
     private final ServerSocket serverSocket;
-    private final MultiConnectionBuilder connectionBuilder;
-    private final Collection<BiConsumer<Server, ExecutionContext>> contextualTasks;
+    private final MultiConnectionBuilder<T> connectionBuilder;
+    private final Collection<BiConsumer<Server, T>> contextualTasks;
     private final Collection<Consumer<Connection>> connectionAddedCallbacks;
     private final Collection<Consumer<Connection>> connectionRemovedCallbacks;
     private final Collection<Consumer<Server>> startupCallbacks;
@@ -44,7 +44,7 @@ public class Server
     Server(
           ServerSocket serverSocket,
           MultiConnectionBuilder connectionBuilder,
-          Iterable<BiConsumer<Server, ExecutionContext>> contextualTasks,
+          Iterable<BiConsumer<Server, T>> contextualTasks,
           Iterable<Consumer<Connection>> addedCallbacks,
           Iterable<Consumer<Connection>> removedCallbacks,
           Iterable<Consumer<Server>> startupCallbacks,
@@ -151,7 +151,7 @@ public class Server
         return sum.get();
     }
 
-    private void invokeContextualTasks(ExecutionContext context) {
+    private void invokeContextualTasks(T context) {
         this.contextualTasks.forEach(consumer -> consumer.accept(this, context));
     }
 

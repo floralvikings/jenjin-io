@@ -18,24 +18,24 @@ import java.util.function.Consumer;
  *
  * @author Caleb Brinkman
  */
-public class SingleConnectionBuilder
+public class SingleConnectionBuilder<T extends ExecutionContext>
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(SingleConnectionBuilder.class);
-    private final Collection<Consumer<ExecutionContext>> contextualTasks = new LinkedList<>();
-    private final Collection<Consumer<Connection>> shutdownCallbacks = new LinkedList<>();
+    private final Collection<Consumer<T>> contextualTasks = new LinkedList<>();
+    private final Collection<Consumer<Connection<T>>> shutdownCallbacks = new LinkedList<>();
     private MessageReaderFactory messageReaderFactory;
     private MessageWriterFactory messageWriterFactory;
     private MessageReader messageReader;
     private MessageWriter messageWriter;
-    private ExecutionContext executionContext;
-    private BiConsumer<Connection, Throwable> errorCallback;
+    private T executionContext;
+    private BiConsumer<Connection<T>, Throwable> errorCallback;
 
     /**
      * Build a connection using all the values supplied to this builder.
      *
      * @return A connection built with all the values supplied to this builder.
      */
-    public Connection build() {
+    public Connection<T> build() {
         if (messageReader == null) { throw new IllegalStateException("MessageReader not set"); }
         if (messageWriter == null) { throw new IllegalStateException("MessageWriter not set"); }
         if (executionContext == null) { throw new IllegalStateException("Execution Context not set"); }
@@ -53,7 +53,7 @@ public class SingleConnectionBuilder
      *
      * @throws IOException If there is an exception when creating streams from the given socket.
      */
-    public SingleConnectionBuilder withSocket(Socket socket) throws IOException {
+    public SingleConnectionBuilder<T> withSocket(Socket socket) throws IOException {
         final InputStream inputStream = socket.getInputStream();
         final OutputStream outputStream = socket.getOutputStream();
         withInputStream(inputStream);
@@ -69,7 +69,7 @@ public class SingleConnectionBuilder
      *
      * @return This ConnectionBuilder.
      */
-    public SingleConnectionBuilder withMessageIOFactory(MessageIOFactory factory) {
+    public SingleConnectionBuilder<T> withMessageIOFactory(MessageIOFactory factory) {
         if ((messageReaderFactory == null) && (messageWriterFactory == null)) {
             if ((messageReader != null) || (messageWriter != null)) {
                 LOGGER.warn("Applying MessageIOFactory after one or both streams have already been set");
@@ -92,7 +92,7 @@ public class SingleConnectionBuilder
      *
      * @return This ConnectionBuilder
      */
-    public SingleConnectionBuilder withInputStream(InputStream inputStream) {
+    public SingleConnectionBuilder<T> withInputStream(InputStream inputStream) {
         if (messageReaderFactory == null) {
             throw new IllegalStateException("MessageReaderFactory not set");
         }
@@ -111,7 +111,7 @@ public class SingleConnectionBuilder
      *
      * @return This ConnectionBuilder
      */
-    public SingleConnectionBuilder withOutputStream(OutputStream outputStream) {
+    public SingleConnectionBuilder<T> withOutputStream(OutputStream outputStream) {
         if (messageWriterFactory == null) {
             throw new IllegalStateException("MessageIOFactory not set");
         }
@@ -130,7 +130,7 @@ public class SingleConnectionBuilder
      *
      * @return This ConnectionBuilder
      */
-    public SingleConnectionBuilder withMessageReader(MessageReader reader) {
+    public SingleConnectionBuilder<T> withMessageReader(MessageReader reader) {
         if (messageReader == null) {
             messageReader = reader;
         } else {
@@ -146,7 +146,7 @@ public class SingleConnectionBuilder
      *
      * @return This ConnectionBuilder
      */
-    public SingleConnectionBuilder withMessageWriter(MessageWriter writer) {
+    public SingleConnectionBuilder<T> withMessageWriter(MessageWriter writer) {
         if (messageWriter == null) {
             messageWriter = writer;
         } else {
@@ -162,7 +162,7 @@ public class SingleConnectionBuilder
      *
      * @return This ConnectionBuilder.
      */
-    public SingleConnectionBuilder withExecutionContext(ExecutionContext context) {
+    public SingleConnectionBuilder<T> withExecutionContext(T context) {
         if (executionContext == null) {
             executionContext = context;
         } else {
@@ -179,7 +179,7 @@ public class SingleConnectionBuilder
      *
      * @return This ConnectionBuilder.
      */
-    public SingleConnectionBuilder withErrorCallback(BiConsumer<Connection, Throwable> callback) {
+    public SingleConnectionBuilder<T> withErrorCallback(BiConsumer<Connection<T>, Throwable> callback) {
         this.errorCallback = callback;
         return this;
     }
@@ -191,7 +191,7 @@ public class SingleConnectionBuilder
      *
      * @return This ConnectionBuilder.
      */
-    public SingleConnectionBuilder withContextualTask(Consumer<ExecutionContext> task) {
+    public SingleConnectionBuilder<T> withContextualTask(Consumer<T> task) {
         contextualTasks.add(task);
         return this;
     }
@@ -204,8 +204,8 @@ public class SingleConnectionBuilder
      * @return This ConnectionBuilder.
      */
     @SafeVarargs
-    public final SingleConnectionBuilder withContextualTasks(Consumer<ExecutionContext>... tasks) {
-        for (Consumer<ExecutionContext> task : tasks) {
+    public final SingleConnectionBuilder<T> withContextualTasks(Consumer<T>... tasks) {
+        for (Consumer<T> task : tasks) {
             withContextualTask(task);
         }
         return this;
@@ -218,7 +218,7 @@ public class SingleConnectionBuilder
      *
      * @return This ConnectionBuilder.
      */
-    public SingleConnectionBuilder withContextualTasks(Iterable<Consumer<ExecutionContext>> tasks) {
+    public SingleConnectionBuilder<T> withContextualTasks(Iterable<Consumer<T>> tasks) {
         tasks.forEach(this::withContextualTask);
         return this;
     }
@@ -230,7 +230,7 @@ public class SingleConnectionBuilder
      *
      * @return This ConnectionBuilder.
      */
-    public SingleConnectionBuilder withShutdownCallbacks(Iterable<Consumer<Connection>> callbacks) {
+    public SingleConnectionBuilder<T> withShutdownCallbacks(Iterable<Consumer<Connection<T>>> callbacks) {
         callbacks.forEach(this::withShutdownCallback);
         return this;
     }
@@ -242,7 +242,7 @@ public class SingleConnectionBuilder
      *
      * @return This ConnectionBuilder.
      */
-    public SingleConnectionBuilder withShutdownCallback(Consumer<Connection> callback) {
+    public SingleConnectionBuilder<T> withShutdownCallback(Consumer<Connection<T>> callback) {
         shutdownCallbacks.add(callback);
         return this;
     }
@@ -254,7 +254,7 @@ public class SingleConnectionBuilder
      *
      * @return This SingleConnectionBuilder.
      */
-    public SingleConnectionBuilder withMessageReaderFactory(MessageReaderFactory factory) {
+    public SingleConnectionBuilder<T> withMessageReaderFactory(MessageReaderFactory factory) {
         if (this.messageReaderFactory == null) {
             if (messageReader != null) {
                 LOGGER.warn("Applying MessageReaderFactory after stream has already been set: " + messageReader);
@@ -273,10 +273,10 @@ public class SingleConnectionBuilder
      *
      * @return This SingleConnectionBuilder.
      */
-    public SingleConnectionBuilder withMessageWriterFactory(MessageWriterFactory factory) {
+    public SingleConnectionBuilder<T> withMessageWriterFactory(MessageWriterFactory factory) {
         if (this.messageWriterFactory == null) {
             if (messageWriter != null) {
-                LOGGER.warn("Applying MessageWriterFactorygit after stream has already been set: " + messageWriter);
+                LOGGER.warn("Applying MessageWriterFactory after stream has already been set: " + messageWriter);
             }
             this.messageWriterFactory = factory;
         } else {

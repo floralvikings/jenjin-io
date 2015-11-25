@@ -33,7 +33,7 @@ public class Connection<C extends ExecutionContext>
     private final C context;
     private final MessageReader messageReader;
     private final MessageWriter messageWriter;
-    private final Collection<Consumer<ExecutionContext>> contextualTasks;
+    private final Collection<Consumer<C>> contextualTasks;
     private final Collection<Consumer<Connection>> shutdownCallbacks;
 
     /**
@@ -61,7 +61,7 @@ public class Connection<C extends ExecutionContext>
           MessageReader messageReader,
           MessageWriter messageWriter,
           BiConsumer<Connection, Throwable> errorCallback,
-          Collection<Consumer<ExecutionContext>> contextualTasks,
+          Collection<Consumer<C>> contextualTasks,
           Collection<Consumer<Connection>> shutdownCallbacks)
     {
         this.contextualTasks = contextualTasks;
