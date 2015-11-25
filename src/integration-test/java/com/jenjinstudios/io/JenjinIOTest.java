@@ -29,26 +29,26 @@ import static org.mockito.Mockito.*;
 public final class JenjinIOTest
 {
     // Callbacks in the order in which they should be invoked
-    private static final Consumer<Server> SERVER_STARTUP_CALLBACK = mock(Consumer.class);
+    private static final Consumer<Server<TestContext>> SERVER_STARTUP_CALLBACK = mock(Consumer.class);
 
-    private static final Consumer<Connection> SERVER_CONN_ADDED_CALLBACK = mock(Consumer.class);
+    private static final Consumer<Connection<TestContext>> SERVER_CONN_ADDED_CALLBACK = mock(Consumer.class);
 
-    private static final Consumer<ExecutionContext> MESSAGE_EXEC_TEST_CALLBACK = mock(Consumer.class);
-    private static final BiConsumer<Server, ExecutionContext> SERVER_CONTEXT_TASK = mock(BiConsumer.class);
-    private static final Consumer<ExecutionContext> SERVER_CONN_CONTEXT_TASK = mock(Consumer.class);
+    private static final Consumer<TestContext> MESSAGE_EXEC_TEST_CALLBACK = mock(Consumer.class);
+    private static final BiConsumer<Server, TestContext> SERVER_CONTEXT_TASK = mock(BiConsumer.class);
+    private static final Consumer<TestContext> SERVER_CONN_CONTEXT_TASK = mock(Consumer.class);
 
-    private static final Consumer<Connection> CLIENT_00_SHUTDOWN_CALLBACK = mock(Consumer.class);
-    private static final Consumer<Connection> CLIENT_01_SHUTDOWN_CALLBACK = mock(Consumer.class);
-    private static final BiConsumer<Connection, Throwable> SERVER_ERROR_CALLBACK = mock(BiConsumer.class);
-    private static final Consumer<Connection<ExecutionContext>> SERVER_CONN_SHUTDOWN_CALLBACK = mock(Consumer.class);
-    private static final Consumer<Connection> SERVER_CONN_REMOVED_CALLBACK = mock(Consumer.class);
+    private static final Consumer<Connection<TestContext>> CLIENT_00_SHUTDOWN_CALLBACK = mock(Consumer.class);
+    private static final Consumer<Connection<TestContext>> CLIENT_01_SHUTDOWN_CALLBACK = mock(Consumer.class);
+    private static final BiConsumer<Connection<TestContext>, Throwable> SERVER_ERROR_CALLBACK = mock(BiConsumer.class);
+    private static final Consumer<Connection<TestContext>> SERVER_CONN_SHUTDOWN_CALLBACK = mock(Consumer.class);
+    private static final Consumer<Connection<TestContext>> SERVER_CONN_REMOVED_CALLBACK = mock(Consumer.class);
 
-    private static final Consumer<ExecutionContext> CLIENT_00_CONTEXT_TASK = mock(Consumer.class);
-    private static final Consumer<ExecutionContext> CLIENT_01_CONTEXT_TASK = mock(Consumer.class);
+    private static final Consumer<TestContext> CLIENT_00_CONTEXT_TASK = mock(Consumer.class);
+    private static final Consumer<TestContext> CLIENT_01_CONTEXT_TASK = mock(Consumer.class);
 
-    private static final BiConsumer<Connection, Throwable> CLIENT_00_ERROR_CALLBACK = mock(BiConsumer.class);
-    private static final BiConsumer<Connection, Throwable> CLIENT_01_ERROR_CALLBACK = mock(BiConsumer.class);
-    private static final Consumer<Server> SERVER_SHUTDOWN_CALLBACK = mock(Consumer.class);
+    private static final BiConsumer<Connection<TestContext>, Throwable> CLIENT_00_ERROR_CALLBACK = mock(BiConsumer.class);
+    private static final BiConsumer<Connection<TestContext>, Throwable> CLIENT_01_ERROR_CALLBACK = mock(BiConsumer.class);
+    private static final Consumer<Server<TestContext>> SERVER_SHUTDOWN_CALLBACK = mock(Consumer.class);
 
     private static final int PORT = 51015;
     private static final String LOCALHOST = "127.0.0.1";
@@ -144,7 +144,7 @@ public final class JenjinIOTest
     private static Server buildServer() throws IOException {
         ServerSocket serverSocket = new ServerSocket(PORT);
 
-        MultiConnectionBuilder<ExecutionContext> connectionBuilder = new MultiConnectionBuilder();
+        MultiConnectionBuilder<TestContext> connectionBuilder = new MultiConnectionBuilder();
 
         connectionBuilder.withMessageIOFactory(new GsonMessageIOFactory())
               .withExecutionContextFactory(TestContext::new)
@@ -155,7 +155,7 @@ public final class JenjinIOTest
               })
               .withShutdownCallback(SERVER_CONN_SHUTDOWN_CALLBACK);
 
-        ServerBuilder serverBuilder = new ServerBuilder();
+        ServerBuilder<TestContext> serverBuilder = new ServerBuilder();
         serverBuilder.withServerSocket(serverSocket)
               .withMultiConnectionBuilder(connectionBuilder)
               .withStartupCallbacks(SERVER_STARTUP_CALLBACK)
