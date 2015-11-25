@@ -40,7 +40,7 @@ public final class JenjinIOTest
     private static final Consumer<Connection> CLIENT_00_SHUTDOWN_CALLBACK = mock(Consumer.class);
     private static final Consumer<Connection> CLIENT_01_SHUTDOWN_CALLBACK = mock(Consumer.class);
     private static final BiConsumer<Connection, Throwable> SERVER_ERROR_CALLBACK = mock(BiConsumer.class);
-    private static final Consumer<Connection> SERVER_CONN_SHUTDOWN_CALLBACK = mock(Consumer.class);
+    private static final Consumer<Connection<ExecutionContext>> SERVER_CONN_SHUTDOWN_CALLBACK = mock(Consumer.class);
     private static final Consumer<Connection> SERVER_CONN_REMOVED_CALLBACK = mock(Consumer.class);
 
     private static final Consumer<ExecutionContext> CLIENT_00_CONTEXT_TASK = mock(Consumer.class);
@@ -144,7 +144,7 @@ public final class JenjinIOTest
     private static Server buildServer() throws IOException {
         ServerSocket serverSocket = new ServerSocket(PORT);
 
-        MultiConnectionBuilder connectionBuilder = new MultiConnectionBuilder();
+        MultiConnectionBuilder<ExecutionContext> connectionBuilder = new MultiConnectionBuilder();
 
         connectionBuilder.withMessageIOFactory(new GsonMessageIOFactory())
               .withExecutionContextFactory(TestExecutionContext::new)
