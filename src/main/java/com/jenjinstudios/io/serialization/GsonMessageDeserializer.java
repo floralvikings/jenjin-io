@@ -32,8 +32,10 @@ public class GsonMessageDeserializer implements JsonDeserializer<Message>
             Annotation annotation = messageClass.getAnnotation(MessageAdapter.class);
             if (annotation != null) {
                 String adaptFromClass = ((MessageAdapter) annotation).adaptFrom();
-                LOGGER.debug("Registering adapter class: " + adaptFromClass);
-                ADAPTED_CLASSES.put(adaptFromClass, messageClass);
+                if (!adaptFromClass.isEmpty()) {
+                    LOGGER.debug("Registering adapter class: " + adaptFromClass);
+                    ADAPTED_CLASSES.put(adaptFromClass, messageClass);
+                }
             }
         }
         LOGGER.debug("Registered Message Classes: {}", ADAPTED_CLASSES);
