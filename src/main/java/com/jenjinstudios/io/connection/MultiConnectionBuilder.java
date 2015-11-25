@@ -33,7 +33,7 @@ public class MultiConnectionBuilder<T extends ExecutionContext>
      *
      * @throws IOException If there is an exception when building the connection.
      */
-    public Connection build(Socket socket) throws IOException {
+    public Connection<T> build(Socket socket) throws IOException {
         return new SingleConnectionBuilder<T>()
               .withMessageReaderFactory(messageReaderFactory)
               .withMessageWriterFactory(messageWriterFactory)
@@ -53,7 +53,7 @@ public class MultiConnectionBuilder<T extends ExecutionContext>
      *
      * @return This ConnectionBuilder.
      */
-    public MultiConnectionBuilder withErrorCallback(BiConsumer<Connection<T>, Throwable> callback) {
+    public MultiConnectionBuilder<T> withErrorCallback(BiConsumer<Connection<T>, Throwable> callback) {
         this.errorCallback = callback;
         return this;
     }
@@ -66,7 +66,7 @@ public class MultiConnectionBuilder<T extends ExecutionContext>
      *
      * @return This ConnectionBuilder.
      */
-    public MultiConnectionBuilder withMessageIOFactory(MessageIOFactory factory) {
+    public MultiConnectionBuilder<T> withMessageIOFactory(MessageIOFactory factory) {
         if ((messageReaderFactory == null) && (messageWriterFactory == null)) {
             this.messageReaderFactory = factory;
             this.messageWriterFactory = factory;
@@ -86,7 +86,7 @@ public class MultiConnectionBuilder<T extends ExecutionContext>
      *
      * @return This ConnectionBuilder
      */
-    public MultiConnectionBuilder withExecutionContextFactory(ExecutionContextFactory context) {
+    public MultiConnectionBuilder<T> withExecutionContextFactory(ExecutionContextFactory context) {
         if (executionContextFactory == null) {
             executionContextFactory = context;
         } else {
@@ -102,7 +102,7 @@ public class MultiConnectionBuilder<T extends ExecutionContext>
      *
      * @return This ConnectionBuilder.
      */
-    public MultiConnectionBuilder withContextualTask(Consumer<T> task) {
+    public MultiConnectionBuilder<T> withContextualTask(Consumer<T> task) {
         contextualTasks.add(task);
         return this;
     }
@@ -115,7 +115,7 @@ public class MultiConnectionBuilder<T extends ExecutionContext>
      * @return This ConnectionBuilder.
      */
     @SafeVarargs
-    public final MultiConnectionBuilder withContextualTasks(Consumer<T>... tasks) {
+    public final MultiConnectionBuilder<T> withContextualTasks(Consumer<T>... tasks) {
         Collections.addAll(contextualTasks, tasks);
         return this;
     }
@@ -127,7 +127,7 @@ public class MultiConnectionBuilder<T extends ExecutionContext>
      *
      * @return This ConnectionBuilder.
      */
-    public MultiConnectionBuilder withContextualTasks(Collection<Consumer<T>> tasks) {
+    public MultiConnectionBuilder<T> withContextualTasks(Collection<Consumer<T>> tasks) {
         contextualTasks.addAll(tasks);
         return this;
     }
@@ -139,7 +139,7 @@ public class MultiConnectionBuilder<T extends ExecutionContext>
      *
      * @return This ReusableConnectionBuilder.
      */
-    public MultiConnectionBuilder withShutdownCallback(Consumer<Connection<T>> callback) {
+    public MultiConnectionBuilder<T> withShutdownCallback(Consumer<Connection<T>> callback) {
         shutdownCallbacks.add(callback);
         return this;
     }
