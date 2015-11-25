@@ -147,7 +147,7 @@ public final class JenjinIOTest
         MultiConnectionBuilder<ExecutionContext> connectionBuilder = new MultiConnectionBuilder();
 
         connectionBuilder.withMessageIOFactory(new GsonMessageIOFactory())
-              .withExecutionContextFactory(TestExecutionContext::new)
+              .withExecutionContextFactory(TestContext::new)
               .withContextualTask(SERVER_CONN_CONTEXT_TASK)
               .withErrorCallback((connection, throwable) -> {
                   SERVER_ERROR_CALLBACK.accept(connection, throwable);
@@ -168,14 +168,14 @@ public final class JenjinIOTest
         return serverBuilder.build();
     }
 
-    private static Connection<TestExecutionContext> buildConnection(int clientNum) throws IOException {
+    private static Connection<TestContext> buildConnection(int clientNum) throws IOException {
         SingleConnectionBuilder connectionBuilder = new SingleConnectionBuilder();
 
         Socket socket = new Socket(LOCALHOST, PORT);
 
         connectionBuilder.withMessageIOFactory(new GsonMessageIOFactory())
               .withSocket(socket)
-              .withExecutionContext(new TestExecutionContext());
+              .withExecutionContext(new TestContext());
 
 
         if (clientNum == 0) {
@@ -204,7 +204,7 @@ public final class JenjinIOTest
     /**
      * Testing ExecutionContext.
      */
-    public static class TestExecutionContext implements ExecutionContext
+    public static class TestContext implements ExecutionContext
     {
         private int testValue;
 
@@ -216,14 +216,14 @@ public final class JenjinIOTest
     /**
      * Test message from client to server.
      */
-    public static class TestMessage implements Message<TestExecutionContext>
+    public static class TestMessage implements Message<TestContext>
     {
         private int value;
 
         public void setValue(int value) { this.value = value; }
 
         @Override
-        public Message execute(TestExecutionContext context) {
+        public Message execute(TestContext context) {
             MESSAGE_EXEC_TEST_CALLBACK.accept(context);
             TestMessage response = null;
             if (value > 0) {
