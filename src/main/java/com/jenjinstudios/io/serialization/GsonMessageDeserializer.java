@@ -39,7 +39,7 @@ public class GsonMessageDeserializer implements JsonDeserializer<Message>
                 }
             }
         }
-        LOGGER.debug("Registered Message Classes: {}", ADAPT_FROM);
+        LOGGER.debug("Registered \"adaptFrom\" Message Classes: {}", ADAPT_FROM);
     }
 
     @Override
