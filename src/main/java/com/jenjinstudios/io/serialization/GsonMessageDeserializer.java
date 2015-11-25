@@ -21,7 +21,7 @@ import java.util.Set;
 public class GsonMessageDeserializer implements JsonDeserializer<Message>
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(GsonMessageDeserializer.class);
-    private static final Map<String, Class> ADAPTED_CLASSES = new HashMap<>(10);
+    private static final Map<String, Class> ADAPT_FROM = new HashMap<>(10);
 
     static {
         LOGGER.debug("Scanning for message classes");
@@ -31,12 +31,15 @@ public class GsonMessageDeserializer implements JsonDeserializer<Message>
             LOGGER.debug("Registering message class: " + messageClass.getName());
             Annotation annotation = messageClass.getAnnotation(MessageAdapter.class);
             if (annotation != null) {
-                String adaptFromClass = ((MessageAdapter) annotation).adaptFrom();
-                LOGGER.debug("Registering adapter class: " + adaptFromClass);
-                ADAPTED_CLASSES.put(adaptFromClass, messageClass);
+                final MessageAdapter messageAdapter = (MessageAdapter) annotation;
+                String adaptFromClass = messageAdapter.adaptFrom();
+                if (!adaptFromClass.isEmpty()) {
+                    LOGGER.debug("Registering adapter class: " + adaptFromClass);
+                    ADAPT_FROM.put(adaptFromClass, messageClass);
+                }
             }
         }
-        LOGGER.debug("Registered Message Classes: {}", ADAPTED_CLASSES);
+        LOGGER.debug("Registered \"adaptFrom\" Message Classes: {}", ADAPT_FROM);
     }
 
     @Override
@@ -50,8 +53,8 @@ public class GsonMessageDeserializer implements JsonDeserializer<Message>
         }
         String className = classElement.getAsString();
         Class<Message> lookupClass;
-        if (ADAPTED_CLASSES.containsKey(className)) {
-            lookupClass = ADAPTED_CLASSES.get(className);
+        if (ADAPT_FROM.containsKey(className)) {
+            lookupClass = ADAPT_FROM.get(className);
         } else {
             try {
                 lookupClass = (Class<Message>) Class.forName(className);

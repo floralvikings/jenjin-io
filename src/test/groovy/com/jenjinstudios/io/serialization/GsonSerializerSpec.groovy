@@ -22,4 +22,22 @@ public class GsonSerializerSpec extends Specification {
         then:
             json == expectedJson
     }
+
+    def "GsonMessageSerializer should properly adapt message objects when serializing"() {
+        given: "An AdaptToMessage and a GsonBuilder"
+            def expectedJson = '{"class":"com.jenjinstudios.io.serialization.TestMessage","fields":{"name":"bar"}}';
+            def message = new AdaptToMessage()
+            message.name = "bar"
+            def builder = new GsonBuilder()
+
+        when: "The GsonMessageSerializer is registered"
+            builder.registerTypeAdapter(Message.class, new GsonMessageSerializer())
+            def gson = builder.create();
+
+        and: "The message is serialized"
+            def json = gson.toJson(message, Message)
+
+        then: "The message should be adapted from AdaptToMessage into TestMessage"
+            json == expectedJson
+    }
 }

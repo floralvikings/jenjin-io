@@ -19,5 +19,12 @@ public @interface MessageAdapter
      *
      * @return The name of the class from which the Message should be serialized.
      */
-    String adaptFrom();
+    String adaptFrom() default "";
+
+    /**
+     * Specify the class to which the Message should be serialized.
+     *
+     * @return The name of the class to which the Message should be serialized.
+     */
+    String adaptTo() default "";
 }
