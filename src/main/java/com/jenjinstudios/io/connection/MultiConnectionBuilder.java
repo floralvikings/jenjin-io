@@ -15,13 +15,13 @@ import java.util.function.Consumer;
  *
  * @author Caleb Brinkman
  */
-public class MultiConnectionBuilder
+public class MultiConnectionBuilder<T extends ExecutionContext>
 {
-    private final Collection<Consumer<ExecutionContext>> contextualTasks = new LinkedList<>();
+    private final Collection<Consumer<T>> contextualTasks = new LinkedList<>();
     private final Collection<Consumer<Connection>> shutdownCallbacks = new LinkedList<>();
     private MessageReaderFactory messageReaderFactory;
     private MessageWriterFactory messageWriterFactory;
-    private ExecutionContextFactory executionContextFactory;
+    private ExecutionContextFactory<T> executionContextFactory;
     private BiConsumer<Connection, Throwable> errorCallback;
 
     /**
@@ -34,7 +34,7 @@ public class MultiConnectionBuilder
      * @throws IOException If there is an exception when building the connection.
      */
     public Connection build(Socket socket) throws IOException {
-        return new SingleConnectionBuilder()
+        return new SingleConnectionBuilder<T>()
               .withMessageReaderFactory(messageReaderFactory)
               .withMessageWriterFactory(messageWriterFactory)
               .withErrorCallback(errorCallback)
@@ -102,7 +102,7 @@ public class MultiConnectionBuilder
      *
      * @return This ConnectionBuilder.
      */
-    public MultiConnectionBuilder withContextualTask(Consumer<ExecutionContext> task) {
+    public MultiConnectionBuilder withContextualTask(Consumer<T> task) {
         contextualTasks.add(task);
         return this;
     }
@@ -115,7 +115,7 @@ public class MultiConnectionBuilder
      * @return This ConnectionBuilder.
      */
     @SafeVarargs
-    public final MultiConnectionBuilder withContextualTasks(Consumer<ExecutionContext>... tasks) {
+    public final MultiConnectionBuilder withContextualTasks(Consumer<T>... tasks) {
         Collections.addAll(contextualTasks, tasks);
         return this;
     }
@@ -127,7 +127,7 @@ public class MultiConnectionBuilder
      *
      * @return This ConnectionBuilder.
      */
-    public MultiConnectionBuilder withContextualTasks(Collection<Consumer<ExecutionContext>> tasks) {
+    public MultiConnectionBuilder withContextualTasks(Collection<Consumer<T>> tasks) {
         contextualTasks.addAll(tasks);
         return this;
     }
