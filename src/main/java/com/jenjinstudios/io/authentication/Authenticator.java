@@ -72,8 +72,7 @@ public interface Authenticator<T extends ExecutionContext>
 
     /**
      * Authenticate the user with the given unique id and valid credentials and, if successful, populating the given
-     * ExecutionContext with the user data from the backing data store.  By default, this method behaves in the
-     * following fashion:
+     * ExecutionContext with the user data from the backing data store.  A suggested method behavior is:
      * <pre>
      * {@code boolean canLogin =
      *       this.userExists(id) && !this.isAuthenticated(id) && this.credentialsValid(id,credentials);
@@ -96,13 +95,7 @@ public interface Authenticator<T extends ExecutionContext>
      *
      * @throws AuthenticationException If there is an exception when authenticating the user.
      */
-    default boolean authenticate(T context, String id, Map<String, String> credentials) throws AuthenticationException {
-        boolean canLogin = this.userExists(id) && !this.isAuthenticated(id) && this.credentialsValid(id, credentials);
-        if (canLogin) {
-            populate(context, id);
-        }
-        return canLogin;
-    }
+    boolean authenticate(T context, String id, Map<String, String> credentials) throws AuthenticationException;
 
     /**
      * Authenticate the user with the given unique id and valid password and, if successful, populating the given
