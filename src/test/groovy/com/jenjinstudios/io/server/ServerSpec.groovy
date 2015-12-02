@@ -98,7 +98,7 @@ public class ServerSpec extends Specification {
         given: "A ServerSocket which returns a mocked connection"
             def serverSocket = Mock(ServerSocket)
             def socket = Mock(Socket)
-            serverSocket.accept() >>> [socket, {Thread.sleep(100000); null}]
+            serverSocket.accept() >>> [socket, { block() }]
             def connection = Mock(Connection)
             def connectionBuilder = Mock(MultiConnectionBuilder)
             connectionBuilder.build(socket) >> connection
@@ -169,5 +169,11 @@ public class ServerSpec extends Specification {
         then: "The message should be sent by all connections"
             1 * connection1.sendMessage(message)
             1 * connection2.sendMessage(message)
+    }
+
+    def block() {
+        println 'Blocking'
+        Thread.sleep(100000)
+        return null
     }
 }
