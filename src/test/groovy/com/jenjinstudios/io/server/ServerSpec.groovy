@@ -98,7 +98,7 @@ public class ServerSpec extends Specification {
         given: "A ServerSocket which returns a mocked connection"
             def serverSocket = Mock(ServerSocket)
             def socket = Mock(Socket)
-            serverSocket.accept() >>> [socket, {Thread.sleep(10000); null}]
+            serverSocket.accept() >>> [socket, {Thread.sleep(100000); null}]
             def connection = Mock(Connection)
             def connectionBuilder = Mock(MultiConnectionBuilder)
             connectionBuilder.build(socket) >> connection
