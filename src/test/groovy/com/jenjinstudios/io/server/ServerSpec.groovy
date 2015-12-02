@@ -98,7 +98,7 @@ public class ServerSpec extends Specification {
         given: "A ServerSocket which returns a mocked connection"
             def serverSocket = Mock(ServerSocket)
             def socket = Mock(Socket)
-            serverSocket.accept() >>> [socket, { block() }]
+            serverSocket.accept() >> { args -> socket } >> m_block
             def connection = Mock(Connection)
             def connectionBuilder = Mock(MultiConnectionBuilder)
             connectionBuilder.build(socket) >> connection
@@ -171,9 +171,8 @@ public class ServerSpec extends Specification {
             1 * connection2.sendMessage(message)
     }
 
-    def block() {
-        println 'Blocking'
-        Thread.sleep(100000)
-        return null
+    def m_block = {
+        Thread.sleep(10000)
+        null;
     }
 }
