@@ -171,5 +171,5 @@ public class ServerSpec extends Specification {
             1 * connection2.sendMessage(message)
     }
 
-    def m_block = {}
+    def m_block = { while (true); }
 }
