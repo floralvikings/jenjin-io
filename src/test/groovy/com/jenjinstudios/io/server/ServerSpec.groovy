@@ -171,8 +171,5 @@ public class ServerSpec extends Specification {
             1 * connection2.sendMessage(message)
     }
 
-    def m_block = {
-        Thread.sleep(10000)
-        null;
-    }
+    def m_block = {}
 }
