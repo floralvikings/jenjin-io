@@ -156,4 +156,11 @@ public interface Authenticator<T extends ExecutionContext>
      * @throws AuthenticationException If there is an exception during the update.
      */
     boolean update(T context, String id) throws AuthenticationException;
+
+    /**
+     * Close the backing database connection.
+     *
+     * @throws AuthenticationException If there is an exception when closing the backing database connection.
+     */
+    void close() throws AuthenticationException;
 }
