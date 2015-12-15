@@ -36,6 +36,7 @@ public class ErrorTask implements Runnable
             } else {
                 LOGGER.warn("Encountered error from MessageQueue", t);
             }
+            LOGGER.debug("Invoking error callback function");
             errorCallback.accept(t);
         });
     }
