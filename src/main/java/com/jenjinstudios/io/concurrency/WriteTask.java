@@ -35,6 +35,9 @@ public class WriteTask implements Runnable
         final List<Message> outgoing = messageQueue.getOutgoingAndClear();
         outgoing.forEach(message -> {
             try {
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Attempting to write message.  (Type: {})" + message.getClass().getName());
+                }
                 messageWriter.write(message);
             } catch (IOException e) {
                 messageQueue.errorEncountered(e);
