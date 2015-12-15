@@ -2,6 +2,8 @@ package com.jenjinstudios.io.concurrency;
 
 import com.jenjinstudios.io.ExecutionContext;
 import com.jenjinstudios.io.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.List;
@@ -14,6 +16,7 @@ import java.util.function.Consumer;
  */
 public class ExecutionTask<T extends ExecutionContext> implements Runnable
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExecutionTask.class);
     private final MessageQueue messageQueue;
     private final T executionContext;
     private final Collection<Consumer<T>> contextualTasks;
@@ -36,11 +39,19 @@ public class ExecutionTask<T extends ExecutionContext> implements Runnable
     public void run() {
         final List<Message> incoming = messageQueue.getIncomingAndClear();
         incoming.forEach(message -> {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Executing message (Type: {})", message.getClass().getName());
+            }
             Message response = message.execute(executionContext);
             if (response != null) {
                 messageQueue.queueOutgoing(response);
             }
-            contextualTasks.forEach(consumer -> consumer.accept(executionContext));
+            contextualTasks.forEach(consumer -> {
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Executing contextual task: {}", consumer);
+                }
+                consumer.accept(executionContext);
+            });
         });
     }
 }
