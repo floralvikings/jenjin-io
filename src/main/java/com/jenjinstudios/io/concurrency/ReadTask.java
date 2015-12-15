@@ -36,6 +36,9 @@ public class ReadTask implements Runnable
         try {
             if (noError) {
                 final Message message = messageReader.read();
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Read Message (Type: {})", message.getClass().getName());
+                }
                 messageQueue.messageReceived(message);
             }
         } catch (IOException e) {
