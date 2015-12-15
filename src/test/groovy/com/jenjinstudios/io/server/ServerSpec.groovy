@@ -98,7 +98,7 @@ public class ServerSpec extends Specification {
         given: "A ServerSocket which returns a mocked connection"
             def serverSocket = Mock(ServerSocket)
             def socket = Mock(Socket)
-            serverSocket.accept() >>> [socket, { while (true); }]
+            serverSocket.accept() >> { args -> socket } >> m_block
             def connection = Mock(Connection)
             def connectionBuilder = Mock(MultiConnectionBuilder)
             connectionBuilder.build(socket) >> connection
@@ -170,4 +170,6 @@ public class ServerSpec extends Specification {
             1 * connection1.sendMessage(message)
             1 * connection2.sendMessage(message)
     }
+
+    def m_block = { while (true); }
 }
