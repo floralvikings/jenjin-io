@@ -1,5 +1,6 @@
 com.jenjinstudios.io
 com.jenjinstudios.io.annotations
+com.jenjinstudios.io.authentication
 com.jenjinstudios.io.concurrency
 com.jenjinstudios.io.connection
 com.jenjinstudios.io.serialization
