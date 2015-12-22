@@ -28,7 +28,7 @@ public class Connection<C extends ExecutionContext>
     private static final Logger LOGGER = LoggerFactory.getLogger(Connection.class);
     private final String id = UUID.randomUUID().toString();
     private final BiConsumer<Connection, Throwable> errorCallback;
-    private final MessageQueue messageQueue;
+    private final MessageQueue<C> messageQueue;
     private final ScheduledExecutorService executor;
     private final C context;
     private final MessageReader messageReader;
@@ -70,7 +70,7 @@ public class Connection<C extends ExecutionContext>
         this.context = context;
         this.messageReader = messageReader;
         this.messageWriter = messageWriter;
-        messageQueue = new MessageQueue();
+        messageQueue = new MessageQueue<>();
         this.errorCallback = errorCallback;
     }
 
@@ -81,7 +81,7 @@ public class Connection<C extends ExecutionContext>
         Runnable executionTask = new ExecutionTask(messageQueue, context, contextualTasks);
         Runnable writeTask = new WriteTask(messageQueue, messageWriter);
         Runnable readTask = new ReadTask(messageQueue, messageReader);
-        Runnable errorTask = new ErrorTask(messageQueue, this::errorEncountered);
+        Runnable errorTask = new ErrorTask<>(messageQueue, this::errorEncountered);
 
         executor.scheduleWithFixedDelay(errorTask, 0, 10, TimeUnit.MILLISECONDS);
         executor.scheduleWithFixedDelay(readTask, 0, 10, TimeUnit.MILLISECONDS);
