@@ -2,7 +2,6 @@ package com.jenjinstudios.io;
 
 import com.jenjinstudios.io.connection.Connection;
 import com.jenjinstudios.io.connection.ConnectionBuilder;
-import com.jenjinstudios.io.connection.SingleConnectionBuilder;
 import com.jenjinstudios.io.serialization.GsonMessageIOFactory;
 import com.jenjinstudios.io.server.Server;
 import com.jenjinstudios.io.server.ServerBuilder;
@@ -189,28 +188,27 @@ public final class JenjinIOTest
     }
 
     private static Connection<TestContext> buildConnection(int clientNum) throws IOException {
-        SingleConnectionBuilder connectionBuilder = new SingleConnectionBuilder();
+        ConnectionBuilder<TestContext> connectionBuilder = new ConnectionBuilder();
 
         Socket socket = new Socket(LOCALHOST, PORT);
 
         connectionBuilder.withMessageIOFactory(new GsonMessageIOFactory())
-              .withSocket(socket)
-              .withExecutionContext(new TestContext());
+              .withExecutionContextFactory(TestContext::new);
 
 
         if (clientNum == 0) {
             connectionBuilder
-                  .withContextualTask(CLIENT_00_CONTEXT_TASK)
+                  .withContextualTasks(CLIENT_00_CONTEXT_TASK)
                   .withErrorCallback(CLIENT_00_ERROR_CALLBACK)
-                  .withShutdownCallback(CLIENT_00_SHUTDOWN_CALLBACK);
+                  .withShutdownCallbacks(CLIENT_00_SHUTDOWN_CALLBACK);
         } else if (clientNum == 1) {
             connectionBuilder
-                  .withContextualTask(CLIENT_01_CONTEXT_TASK)
+                  .withContextualTasks(CLIENT_01_CONTEXT_TASK)
                   .withErrorCallback(CLIENT_01_ERROR_CALLBACK)
-                  .withShutdownCallback(CLIENT_01_SHUTDOWN_CALLBACK);
+                  .withShutdownCallbacks(CLIENT_01_SHUTDOWN_CALLBACK);
         }
 
-        return connectionBuilder.build();
+        return connectionBuilder.build(socket);
     }
 
     /**
