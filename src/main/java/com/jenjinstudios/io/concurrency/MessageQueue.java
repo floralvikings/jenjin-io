@@ -1,5 +1,6 @@
 package com.jenjinstudios.io.concurrency;
 
+import com.jenjinstudios.io.ExecutionContext;
 import com.jenjinstudios.io.Message;
 
 import java.util.Collection;
@@ -11,7 +12,7 @@ import java.util.List;
  *
  * @author Caleb Brinkman
  */
-public class MessageQueue
+public class MessageQueue<T extends ExecutionContext>
 {
     private final Collection<Message> incoming = new LinkedList<>();
     private final Collection<Message> outgoing = new LinkedList<>();
