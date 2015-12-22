@@ -4,8 +4,10 @@ import com.jenjinstudios.io.ExecutionContext;
 import com.jenjinstudios.io.Message;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Queues incoming and outgoing messages in a thread-safe manner.
@@ -14,6 +16,7 @@ import java.util.List;
  */
 public class MessageQueue<T extends ExecutionContext>
 {
+    private final Collection<Consumer<T>> recurringTasks = new LinkedList<>();
     private final Collection<Message> incoming = new LinkedList<>();
     private final Collection<Message> outgoing = new LinkedList<>();
     private final Collection<Throwable> errors = new LinkedList<>();
@@ -96,4 +99,6 @@ public class MessageQueue<T extends ExecutionContext>
         }
         return temp;
     }
+
+    public Collection<Consumer<T>> getRecurringTasks() { return Collections.unmodifiableCollection(recurringTasks); }
 }
