@@ -5,10 +5,10 @@ import spock.lang.Specification
 
 import java.util.function.BiConsumer
 
-public class MultiConnectionBuilderSpec extends Specification {
+public class ConnectionBuilderSpec extends Specification {
     def "MultiConnectionBuilder should properly pass callback to connection when built"() {
         given: "A MultiConnectionBuilder (with necessary properties) and BiConsumer<Connection, Throwable>"
-            def builder = new MultiConnectionBuilder()
+            def builder = new ConnectionBuilder()
             def ioFactory = Mock(MessageIOFactory)
             def contextFactory = Mock(ExecutionContextFactory)
             def reader = Mock(MessageReader)
@@ -46,7 +46,7 @@ public class MultiConnectionBuilderSpec extends Specification {
 
     def "MultiConnectionBuilder should throw IOException if MessageIOFactory set twice"() {
         given: "A MultiConnectionBuilder and mock MessageIOFactory"
-            def builder = new MultiConnectionBuilder()
+            def builder = new ConnectionBuilder()
             def factory = Mock(MessageIOFactory)
 
         when: "MessageIOFactory is set twice"

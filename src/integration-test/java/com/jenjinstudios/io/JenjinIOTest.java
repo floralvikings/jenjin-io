@@ -1,13 +1,12 @@
 package com.jenjinstudios.io;
 
 import com.jenjinstudios.io.connection.Connection;
-import com.jenjinstudios.io.connection.MultiConnectionBuilder;
+import com.jenjinstudios.io.connection.ConnectionBuilder;
 import com.jenjinstudios.io.connection.SingleConnectionBuilder;
 import com.jenjinstudios.io.serialization.GsonMessageIOFactory;
 import com.jenjinstudios.io.server.Server;
 import com.jenjinstudios.io.server.ServerBuilder;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -165,16 +164,16 @@ public final class JenjinIOTest
     private static Server buildServer() throws IOException {
         ServerSocket serverSocket = new ServerSocket(PORT);
 
-        MultiConnectionBuilder<TestContext> connectionBuilder = new MultiConnectionBuilder();
+        ConnectionBuilder<com.jenjinstudios.io.JenjinIOTest.TestContext> connectionBuilder = new ConnectionBuilder<>();
 
         connectionBuilder.withMessageIOFactory(new GsonMessageIOFactory())
               .withExecutionContextFactory(TestContext::new)
-              .withContextualTask(SERVER_CONN_CONTEXT_TASK)
+              .withContextualTasks(SERVER_CONN_CONTEXT_TASK)
               .withErrorCallback((connection, throwable) -> {
                   SERVER_ERROR_CALLBACK.accept(connection, throwable);
                   connection.stop();
               })
-              .withShutdownCallback(SERVER_CONN_SHUTDOWN_CALLBACK);
+              .withShutdownCallbacks(SERVER_CONN_SHUTDOWN_CALLBACK);
 
         ServerBuilder<TestContext> serverBuilder = new ServerBuilder();
         serverBuilder.withServerSocket(serverSocket)
