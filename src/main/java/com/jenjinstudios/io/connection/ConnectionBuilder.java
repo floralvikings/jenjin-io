@@ -37,7 +37,7 @@ public class ConnectionBuilder<T extends ExecutionContext>
      *
      * @throws IOException If there is an error retrieving input and output streams from the Socket.
      */
-    public final Connection<T> build(Socket socket) throws IOException {
+    public Connection<T> build(Socket socket) throws IOException {
         return build(socket.getInputStream(), socket.getOutputStream());
     }
 
@@ -49,7 +49,7 @@ public class ConnectionBuilder<T extends ExecutionContext>
      *
      * @return The built connection.
      */
-    public final Connection<T> build(InputStream inputStream, OutputStream outputStream) {
+    public Connection<T> build(InputStream inputStream, OutputStream outputStream) {
         return build(readerFactory.createReader(inputStream), writerFactory.createWriter(outputStream));
     }
 
@@ -61,7 +61,7 @@ public class ConnectionBuilder<T extends ExecutionContext>
      *
      * @return The built connection.
      */
-    public final Connection<T> build(MessageReader reader, MessageWriter writer) {
+    public Connection<T> build(MessageReader reader, MessageWriter writer) {
         return new Connection(
               executionContextFactory.createInstance(),
               reader,
@@ -81,7 +81,7 @@ public class ConnectionBuilder<T extends ExecutionContext>
      *
      * @return This ConnectionBuilder.
      */
-    public final ConnectionBuilder<T> withMessageIOFactory(MessageIOFactory factory) {
+    public ConnectionBuilder<T> withMessageIOFactory(MessageIOFactory factory) {
         if((readerFactory == null) && (writerFactory == null)) {
             readerFactory = factory;
             writerFactory = factory;
@@ -100,7 +100,7 @@ public class ConnectionBuilder<T extends ExecutionContext>
      *
      * @return This SingleConnectionBuilder.
      */
-    public final ConnectionBuilder<T> withMessageReaderFactory(MessageReaderFactory factory) {
+    public ConnectionBuilder<T> withMessageReaderFactory(MessageReaderFactory factory) {
         if (this.readerFactory == null) {
             this.readerFactory = factory;
         } else {
@@ -116,7 +116,7 @@ public class ConnectionBuilder<T extends ExecutionContext>
      *
      * @return This SingleConnectionBuilder.
      */
-    public final ConnectionBuilder<T> withMessageWriterFactory(MessageWriterFactory factory) {
+    public ConnectionBuilder<T> withMessageWriterFactory(MessageWriterFactory factory) {
         if (this.writerFactory == null) {
             this.writerFactory = factory;
         } else {
@@ -133,7 +133,7 @@ public class ConnectionBuilder<T extends ExecutionContext>
      *
      * @return This ConnectionBuilder.
      */
-    public final ConnectionBuilder<T> withErrorCallback(BiConsumer<Connection<T>, Throwable> callback) {
+    public ConnectionBuilder<T> withErrorCallback(BiConsumer<Connection<T>, Throwable> callback) {
         this.errorCallback = callback;
         return this;
     }
@@ -145,8 +145,7 @@ public class ConnectionBuilder<T extends ExecutionContext>
      *
      * @return This ConnectionBuilder.
      */
-    @SafeVarargs
-    public final ConnectionBuilder<T> withContextualTasks(Consumer<T>... callbacks) {
+    public ConnectionBuilder<T> withContextualTasks(Consumer<T>... callbacks) {
         Collections.addAll(contextualTasks, callbacks);
         return this;
     }
@@ -158,8 +157,7 @@ public class ConnectionBuilder<T extends ExecutionContext>
      *
      * @return This ConnectionBuilder.
      */
-    @SafeVarargs
-    public final ConnectionBuilder<T> withShutdownCallbacks(Consumer<Connection<T>>... tasks) {
+    public ConnectionBuilder<T> withShutdownCallbacks(Consumer<Connection<T>>... tasks) {
         Collections.addAll(shutdownCallbacks, tasks);
         return this;
     }
@@ -171,7 +169,7 @@ public class ConnectionBuilder<T extends ExecutionContext>
      *
      * @return This ConnectionBuilder
      */
-    public final ConnectionBuilder<T> withExecutionContextFactory(ExecutionContextFactory<T> context) {
+    public ConnectionBuilder<T> withExecutionContextFactory(ExecutionContextFactory<T> context) {
         if (executionContextFactory == null) {
             executionContextFactory = context;
         } else {
