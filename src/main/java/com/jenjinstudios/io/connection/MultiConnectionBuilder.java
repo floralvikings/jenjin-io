@@ -86,7 +86,7 @@ public class MultiConnectionBuilder<T extends ExecutionContext>
      *
      * @return This ConnectionBuilder
      */
-    public MultiConnectionBuilder<T> withExecutionContextFactory(ExecutionContextFactory context) {
+    public MultiConnectionBuilder<T> withExecutionContextFactory(ExecutionContextFactory<T> context) {
         if (executionContextFactory == null) {
             executionContextFactory = context;
         } else {
