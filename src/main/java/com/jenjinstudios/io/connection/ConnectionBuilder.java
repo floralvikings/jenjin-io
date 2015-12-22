@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -82,12 +81,12 @@ public class ConnectionBuilder<T extends ExecutionContext>
      * @return This ConnectionBuilder.
      */
     public ConnectionBuilder<T> withMessageIOFactory(MessageIOFactory factory) {
-        if((readerFactory == null) && (writerFactory == null)) {
+        if ((readerFactory == null) && (writerFactory == null)) {
             readerFactory = factory;
             writerFactory = factory;
-        }else if(readerFactory == null) {
+        } else if (readerFactory == null) {
             throw new IllegalStateException("MessageWriterFactory already set");
-        }else {
+        } else {
             throw new IllegalStateException("MessageReaderFactory already set");
         }
         return this;
@@ -147,6 +146,24 @@ public class ConnectionBuilder<T extends ExecutionContext>
      */
     public ConnectionBuilder<T> withContextualTasks(Consumer<T>... tasks) {
         Collections.addAll(contextualTasks, tasks);
+        return this;
+    }
+
+    /**
+     * Build a connection that include the given recurring tasks; these tasks are executed synchronously with message
+     * execution, and at regular (although undefined) intervals.
+     * <p>
+     * These tasks are likely to be executed very frequently (on the order of 100 times per second) so they should be
+     * kept as short as possible.
+     * <p>
+     * It also should be noted that there is no way to "cancel" one of these tasks.
+     *
+     * @param tasks The tasks to be executed repeatedly.
+     *
+     * @return This ConnectionBuilder.
+     */
+    public ConnectionBuilder<T> withRecurringTasks(Consumer<T>... tasks) {
+        Collections.addAll(recurringTasks, tasks);
         return this;
     }
 
