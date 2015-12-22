@@ -22,6 +22,7 @@ public class SingleConnectionBuilder<T extends ExecutionContext>
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(SingleConnectionBuilder.class);
     private final Collection<Consumer<T>> contextualTasks = new LinkedList<>();
+    private final Collection<Consumer<T>> recurringTasks = new LinkedList<>();
     private final Collection<Consumer<Connection<T>>> shutdownCallbacks = new LinkedList<>();
     private MessageReaderFactory messageReaderFactory;
     private MessageWriterFactory messageWriterFactory;
@@ -40,8 +41,13 @@ public class SingleConnectionBuilder<T extends ExecutionContext>
         if (messageWriter == null) { throw new IllegalStateException("MessageWriter not set"); }
         if (executionContext == null) { throw new IllegalStateException("Execution Context not set"); }
 
-        return new Connection(executionContext, messageReader, messageWriter, errorCallback, contextualTasks,
-              shutdownCallbacks);
+        return new Connection(executionContext,
+              messageReader,
+              messageWriter,
+              errorCallback,
+              contextualTasks,
+              shutdownCallbacks,
+              recurringTasks);
     }
 
     /**
