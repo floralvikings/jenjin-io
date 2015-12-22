@@ -44,7 +44,7 @@ public class ConnectionBuilderSpec extends Specification {
             connection.stop()
     }
 
-    def "ConnectionBuilder should throw IOException if MessageIOFactory set twice"() {
+    def "ConnectionBuilder should throw IllegalStateException if MessageIOFactory set twice"() {
         given: "A ConnectionBuilder and mock MessageIOFactory"
             def builder = new ConnectionBuilder()
             def factory = Mock(MessageIOFactory)
@@ -52,6 +52,77 @@ public class ConnectionBuilderSpec extends Specification {
         when: "MessageIOFactory is set twice"
             builder.withMessageIOFactory(factory)
                     .withMessageIOFactory(factory)
+
+        then: "An IllegalStateException should be thrown"
+            thrown(IllegalStateException)
+    }
+
+    def "ConnectionBuilder should utilize Socket streams during build"() {
+        given: "A Mocked Socket, MessageIOFactory, ExecutionContextFactory, and Streams"
+            def socket = Mock(Socket);
+            def ioFactory = Mock(MessageIOFactory)
+            def contextFactory = Mock(ExecutionContextFactory)
+            def reader = Mock(MessageReader)
+            def writer = Mock(MessageWriter)
+            def inStream = Mock(InputStream)
+            def outStream = Mock(OutputStream)
+
+        and: "A ConnectionBuilder"
+            def connectionBuilder = new ConnectionBuilder()
+
+        when: "The connection is built"
+            connectionBuilder
+                    .withMessageIOFactory(ioFactory)
+                    .withExecutionContextFactory(contextFactory)
+                    .build(socket);
+
+        then:
+            1 * socket.inputStream >> inStream
+            1 * socket.outputStream >> outStream
+            1 * ioFactory.createReader(inStream) >> reader
+            1 * ioFactory.createWriter(outStream) >> writer
+    }
+
+    def "ConnectionBuilder should throw IllegalStateException if reader factory set twice"() {
+        given: "A mock reader factory"
+            def readerFactory = Mock(MessageReaderFactory)
+
+        and: "A ConnectionBuilder"
+            def connectionBuilder = new ConnectionBuilder();
+
+        when: "The reader factory is set twice"
+            connectionBuilder.withMessageReaderFactory(readerFactory)
+                    .withMessageReaderFactory(readerFactory)
+
+        then: "An IllegalStateException should be thrown"
+            thrown(IllegalStateException)
+    }
+
+    def "ConnectionBuilder should throw IllegalStateException if writer factory set twice"() {
+        given: "A mock writer factory"
+            def writerFactory = Mock(MessageWriterFactory)
+
+        and: "A ConnectionBuilder"
+            def connectionBuilder = new ConnectionBuilder();
+
+        when: "The writer factory is set twice"
+            connectionBuilder.withMessageWriterFactory(writerFactory)
+                    .withMessageWriterFactory(writerFactory)
+
+        then: "An IllegalStateException should be thrown"
+            thrown(IllegalStateException)
+    }
+
+    def "ConnectionBuilder should throw IllegalStateException if context factory set twice"() {
+        given: "A mock execution context factory"
+            def contextFactory = Mock(ExecutionContextFactory)
+
+        and: "A ConnectionBuilder"
+            def connectionBuilder = new ConnectionBuilder();
+
+        when: "The context factory is set twice"
+            connectionBuilder.withExecutionContextFactory(contextFactory)
+                    .withExecutionContextFactory(contextFactory)
 
         then: "An IllegalStateException should be thrown"
             thrown(IllegalStateException)
