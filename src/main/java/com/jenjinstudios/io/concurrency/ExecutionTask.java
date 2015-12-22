@@ -53,6 +53,10 @@ public class ExecutionTask<T extends ExecutionContext> implements Runnable
                 consumer.accept(executionContext);
             });
         });
-        messageQueue.getRecurringTasks().forEach(consumer -> consumer.accept(executionContext));
+        long currentTime = System.currentTimeMillis();
+        messageQueue.getRecurringTasks().stream().filter(task -> task.shouldExecute(currentTime)).forEach(task -> {
+            task.execute(executionContext);
+            task.done();
+        });
     }
 }
