@@ -64,7 +64,7 @@ public class Connection<C extends ExecutionContext>
           BiConsumer<Connection, Throwable> errorCallback,
           Collection<Consumer<C>> contextualTasks,
           Collection<Consumer<Connection>> shutdownCallbacks,
-          Collection<Consumer<C>> recurringTasks)
+          Collection<RecurringTask<C>> recurringTasks)
     {
         this.contextualTasks = contextualTasks;
         this.shutdownCallbacks = shutdownCallbacks;

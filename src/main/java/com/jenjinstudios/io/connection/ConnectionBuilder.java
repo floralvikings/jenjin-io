@@ -1,6 +1,7 @@
 package com.jenjinstudios.io.connection;
 
 import com.jenjinstudios.io.*;
+import com.jenjinstudios.io.concurrency.RecurringTask;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,7 +22,7 @@ public class ConnectionBuilder<T extends ExecutionContext>
 {
     private final Collection<Consumer<Connection<T>>> shutdownCallbacks = new LinkedList<>();
     private final Collection<Consumer<T>> contextualTasks = new LinkedList<>();
-    private final Collection<Consumer<T>> recurringTasks = new LinkedList<>();
+    private final Collection<RecurringTask<T>> recurringTasks = new LinkedList<>();
     private ExecutionContextFactory<T> executionContextFactory;
     private BiConsumer<Connection<T>, Throwable> errorCallback;
     private MessageReaderFactory readerFactory;
@@ -162,7 +163,7 @@ public class ConnectionBuilder<T extends ExecutionContext>
      *
      * @return This ConnectionBuilder.
      */
-    public ConnectionBuilder<T> withRecurringTasks(Consumer<T>... tasks) {
+    public ConnectionBuilder<T> withRecurringTasks(RecurringTask<T>... tasks) {
         Collections.addAll(recurringTasks, tasks);
         return this;
     }

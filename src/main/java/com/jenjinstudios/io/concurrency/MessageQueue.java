@@ -16,7 +16,7 @@ import java.util.function.Consumer;
  */
 public class MessageQueue<T extends ExecutionContext>
 {
-    private final Collection<Consumer<T>> recurringTasks = new LinkedList<>();
+    private final Collection<RecurringTask<T>> recurringTasks = new LinkedList<>();
     private final Collection<Message> incoming = new LinkedList<>();
     private final Collection<Message> outgoing = new LinkedList<>();
     private final Collection<Throwable> errors = new LinkedList<>();
@@ -32,7 +32,7 @@ public class MessageQueue<T extends ExecutionContext>
      * Construct a new MessageQueue with the given recurring tasks.
      * @param recurringTasks The recurring tasks.
      */
-    public MessageQueue(Collection<Consumer<T>> recurringTasks) {
+    public MessageQueue(Collection<RecurringTask<T>> recurringTasks) {
         this.recurringTasks.addAll(recurringTasks);
     }
 
@@ -115,5 +115,7 @@ public class MessageQueue<T extends ExecutionContext>
         return temp;
     }
 
-    public Collection<Consumer<T>> getRecurringTasks() { return Collections.unmodifiableCollection(recurringTasks); }
+    public Collection<RecurringTask<T>> getRecurringTasks() {
+        return Collections.unmodifiableCollection(recurringTasks);
+    }
 }
