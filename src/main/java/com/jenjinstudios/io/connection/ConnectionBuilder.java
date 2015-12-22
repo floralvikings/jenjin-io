@@ -141,24 +141,24 @@ public class ConnectionBuilder<T extends ExecutionContext>
     /**
      * Build a connection that includes the given contextual task to be executed synchronously with message execution.
      *
-     * @param callbacks The task(s) to be executed; Consumers accepting an ExecutionContext.
+     * @param tasks The task(s) to be executed; Consumers accepting an ExecutionContext.
      *
      * @return This ConnectionBuilder.
      */
-    public ConnectionBuilder<T> withContextualTasks(Consumer<T>... callbacks) {
-        Collections.addAll(contextualTasks, callbacks);
+    public ConnectionBuilder<T> withContextualTasks(Consumer<T>... tasks) {
+        Collections.addAll(contextualTasks, tasks);
         return this;
     }
 
     /**
      * Build a connection that includes the given contextual task to be executed synchronously with message execution.
      *
-     * @param tasks The task(s) to be executed; Consumers accepting an ExecutionContext.
+     * @param callbacks The task(s) to be executed; Consumers accepting a Connection.
      *
      * @return This ConnectionBuilder.
      */
-    public ConnectionBuilder<T> withShutdownCallbacks(Consumer<Connection<T>>... tasks) {
-        Collections.addAll(shutdownCallbacks, tasks);
+    public ConnectionBuilder<T> withShutdownCallbacks(Consumer<Connection<T>>... callbacks) {
+        Collections.addAll(shutdownCallbacks, callbacks);
         return this;
     }
 
