@@ -22,6 +22,21 @@ public class MessageQueue<T extends ExecutionContext>
     private final Collection<Throwable> errors = new LinkedList<>();
 
     /**
+     * Construct a new MessageQueue.
+     */
+    public MessageQueue() {
+        this(Collections.emptyList());
+    }
+
+    /**
+     * Construct a new MessageQueue with the given recurring tasks.
+     * @param recurringTasks The recurring tasks.
+     */
+    public MessageQueue(Collection<Consumer<T>> recurringTasks) {
+        this.recurringTasks.addAll(recurringTasks);
+    }
+
+    /**
      * Indicate that a message has been received and add it to the incoming queue.
      *
      * @param message The message that has been received.
