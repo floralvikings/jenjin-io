@@ -3,7 +3,7 @@ package com.jenjinstudios.io.server;
 import com.jenjinstudios.io.ExecutionContext;
 import com.jenjinstudios.io.Message;
 import com.jenjinstudios.io.connection.Connection;
-import com.jenjinstudios.io.connection.MultiConnectionBuilder;
+import com.jenjinstudios.io.connection.ConnectionBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +33,7 @@ public class Server<T extends ExecutionContext>
     private static final int EXECUTOR_THREADS = 4;
     private final ScheduledExecutorService executor;
     private final ServerSocket serverSocket;
-    private final MultiConnectionBuilder<T> connectionBuilder;
+    private final ConnectionBuilder<T> connectionBuilder;
     private final Collection<BiConsumer<Server, T>> contextualTasks;
     private final Collection<Consumer<Connection>> connectionAddedCallbacks;
     private final Collection<Consumer<Connection>> connectionRemovedCallbacks;
@@ -43,7 +43,7 @@ public class Server<T extends ExecutionContext>
 
     Server(
           ServerSocket serverSocket,
-          MultiConnectionBuilder connectionBuilder,
+          ConnectionBuilder connectionBuilder,
           Iterable<BiConsumer<Server, T>> contextualTasks,
           Iterable<Consumer<Connection>> addedCallbacks,
           Iterable<Consumer<Connection>> removedCallbacks,
@@ -67,10 +67,11 @@ public class Server<T extends ExecutionContext>
         startupCallbacks.forEach(this.startupCallbacks::add);
         shutdownCallbacks.forEach(this.shutdownCallbacks::add);
 
-        this.connectionBuilder.withShutdownCallback(connection -> {
+        Consumer<Connection<T>> callback = connection -> {
             connections.remove(connection);
             connectionRemovedCallbacks.forEach(consumer -> consumer.accept(connection));
-        });
+        };
+        this.connectionBuilder.withShutdownCallbacks(callback);
     }
 
     /**
@@ -96,7 +97,7 @@ public class Server<T extends ExecutionContext>
      * Start listening for inbound connections.
      */
     public void start() {
-        connectionBuilder.withContextualTask(this::invokeContextualTasks);
+        connectionBuilder.withContextualTasks((Consumer<T>) this::invokeContextualTasks);
         executor.scheduleWithFixedDelay(this::listenForConnection, 0, 10, TimeUnit.MILLISECONDS);
 
         startupCallbacks.forEach(consumer -> consumer.accept(this));
