@@ -1,6 +1,5 @@
 package com.jenjinstudios.io.concurrency;
 
-import com.jenjinstudios.io.ExecutionContext;
 import com.jenjinstudios.io.Message;
 import com.jenjinstudios.io.MessageReader;
 import org.slf4j.Logger;
@@ -13,10 +12,10 @@ import java.io.IOException;
  *
  * @author Caleb Brinkman
  */
-public class ReadTask<T extends ExecutionContext> implements Runnable
+public class ReadTask implements Runnable
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ReadTask.class);
-    private final MessageQueue<T> messageQueue;
+    private final MessageQueue messageQueue;
     private final MessageReader messageReader;
     private volatile boolean noError = true;
 
@@ -27,7 +26,7 @@ public class ReadTask<T extends ExecutionContext> implements Runnable
      * @param messageQueue The MessageQueue.
      * @param messageReader The MessageReader.
      */
-    public ReadTask(MessageQueue<T> messageQueue, MessageReader messageReader) {
+    public ReadTask(MessageQueue messageQueue, MessageReader messageReader) {
         this.messageQueue = messageQueue;
         this.messageReader = messageReader;
     }

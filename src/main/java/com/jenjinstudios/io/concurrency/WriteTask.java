@@ -1,6 +1,5 @@
 package com.jenjinstudios.io.concurrency;
 
-import com.jenjinstudios.io.ExecutionContext;
 import com.jenjinstudios.io.Message;
 import com.jenjinstudios.io.MessageWriter;
 import org.slf4j.Logger;
@@ -14,10 +13,10 @@ import java.util.List;
  *
  * @author Caleb Brinkman
  */
-public class WriteTask<T extends ExecutionContext> implements Runnable
+public class WriteTask implements Runnable
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(WriteTask.class);
-    private final MessageQueue<T> messageQueue;
+    private final MessageQueue messageQueue;
     private final MessageWriter messageWriter;
 
     /**
@@ -26,7 +25,7 @@ public class WriteTask<T extends ExecutionContext> implements Runnable
      * @param messageQueue The MessageQueue.
      * @param messageWriter The MessageWriter.
      */
-    public WriteTask(MessageQueue<T> messageQueue, MessageWriter messageWriter) {
+    public WriteTask(MessageQueue messageQueue, MessageWriter messageWriter) {
         this.messageQueue = messageQueue;
         this.messageWriter = messageWriter;
     }

@@ -19,8 +19,7 @@ class ExecutionTaskSpec extends Specification {
         def message = Mock(Message)
         def context = Mock(ExecutionContext)
 
-        messageQueue.recurringTasks >> [];
-        messageQueue.incomingAndClear >> [message]
+        messageQueue.getIncomingAndClear() >> [message]
 
         def task = new ExecutionTask(messageQueue, context, Collections.singletonList(consumer))
 

@@ -2,7 +2,7 @@ package com.jenjinstudios.io.server;
 
 import com.jenjinstudios.io.ExecutionContext;
 import com.jenjinstudios.io.connection.Connection;
-import com.jenjinstudios.io.connection.ConnectionBuilder;
+import com.jenjinstudios.io.connection.MultiConnectionBuilder;
 
 import java.net.ServerSocket;
 import java.util.Arrays;
@@ -24,7 +24,7 @@ public class ServerBuilder<T extends ExecutionContext>
     private final Collection<Consumer<Server<T>>> startupCallbacks = new LinkedList<>();
     private final Collection<Consumer<Server<T>>> shutdownCallbacks = new LinkedList<>();
     private ServerSocket serverSocket;
-    private ConnectionBuilder<T> connectionBuilder;
+    private MultiConnectionBuilder<T> connectionBuilder;
 
     /**
      * Build a Server using the properties supplied to this builder.
@@ -79,7 +79,7 @@ public class ServerBuilder<T extends ExecutionContext>
      *
      * @throws IllegalStateException If the ReusableConnectionBuilder has already been set.
      */
-    public ServerBuilder<T> withMultiConnectionBuilder(ConnectionBuilder<T> builder) {
+    public ServerBuilder<T> withMultiConnectionBuilder(MultiConnectionBuilder<T> builder) {
         if (this.connectionBuilder == null) {
             this.connectionBuilder = builder;
         } else {

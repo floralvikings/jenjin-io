@@ -2,7 +2,7 @@ package com.jenjinstudios.io.server
 
 import com.jenjinstudios.io.Message
 import com.jenjinstudios.io.connection.Connection
-import com.jenjinstudios.io.connection.ConnectionBuilder
+import com.jenjinstudios.io.connection.MultiConnectionBuilder
 import spock.lang.Specification
 
 import java.util.function.Consumer
@@ -10,7 +10,7 @@ import java.util.function.Consumer
 public class ServerSpec extends Specification {
     def "When started, Server should listen for and accept inbound connections"() {
         given: "A ServerSocket and Server"
-            def connectionBuilder = Mock(ConnectionBuilder)
+            def connectionBuilder = Mock(MultiConnectionBuilder)
             def serverSocket = Mock(ServerSocket)
             def server = new Server(serverSocket, connectionBuilder, [], [], [], [], [])
 
@@ -31,7 +31,7 @@ public class ServerSpec extends Specification {
             def socket = Mock(Socket)
             serverSocket.accept() >>> [socket, { while (true); }]
             def connection = Mock(Connection)
-            def connectionBuilder = Mock(ConnectionBuilder)
+            def connectionBuilder = Mock(MultiConnectionBuilder)
             connectionBuilder.build(socket) >> connection
 
         and: "A Server using the given socket"
@@ -55,7 +55,7 @@ public class ServerSpec extends Specification {
 
     def "When Server starts, callback(s) should be invoked"() {
         given: "A Server with a start callback"
-            def connectionBuilder = Mock(ConnectionBuilder)
+            def connectionBuilder = Mock(MultiConnectionBuilder)
             def serverSocket = Mock(ServerSocket)
             serverSocket.accept() >>> [{ while (true); }]
             def callback = Mock(Consumer)
@@ -74,7 +74,7 @@ public class ServerSpec extends Specification {
 
     def "When Server stops, callback(s) should be invoked"() {
         given: "A Server with a stop callback"
-            def connectionBuilder = Mock(ConnectionBuilder)
+            def connectionBuilder = Mock(MultiConnectionBuilder)
             def serverSocket = Mock(ServerSocket)
             serverSocket.accept() >>> [{ while (true); }]
             def callback = Mock(Consumer)
@@ -100,7 +100,7 @@ public class ServerSpec extends Specification {
             def socket = Mock(Socket)
             serverSocket.accept() >> { args -> socket } >> m_block
             def connection = Mock(Connection)
-            def connectionBuilder = Mock(ConnectionBuilder)
+            def connectionBuilder = Mock(MultiConnectionBuilder)
             connectionBuilder.build(socket) >> connection
 
         and: "A Server using the given socket, and a connection added callback"
@@ -125,7 +125,7 @@ public class ServerSpec extends Specification {
             def socket = Mock(Socket)
             serverSocket.accept() >>> [socket, { while (true); }]
             def connection = Mock(Connection)
-            def connectionBuilder = Mock(ConnectionBuilder)
+            def connectionBuilder = Mock(MultiConnectionBuilder)
             connectionBuilder.build(socket) >> connection
 
         and: "A Server using the given socket, and a connection removed callback"
@@ -153,7 +153,7 @@ public class ServerSpec extends Specification {
             serverSocket.accept() >>> [socket, socket, { while (true); }]
             def connection1 = Mock(Connection)
             def connection2 = Mock(Connection);
-            def connectionBuilder = Mock(ConnectionBuilder)
+            def connectionBuilder = Mock(MultiConnectionBuilder)
             connectionBuilder.build(socket) >>> [connection1, connection2]
 
         and: "A Server using the given socket, and a connection removed callback"
