@@ -1,6 +1,6 @@
 package com.jenjinstudios.io.server
 
-import com.jenjinstudios.io.connection.ConnectionBuilder
+import com.jenjinstudios.io.connection.MultiConnectionBuilder
 import spock.lang.Specification
 
 public class ServerBuilderSpec extends Specification {
@@ -30,7 +30,7 @@ public class ServerBuilderSpec extends Specification {
 
     def "ServerBuilder should not fail to build Server if both ServerSocket and ReusableConnectionBuilder present"() {
         given: "A ServerBuilder with a ServerSocket and ReusableConnectionBuilder"
-            def connectionBuilder = Mock(ConnectionBuilder)
+            def connectionBuilder = Mock(MultiConnectionBuilder)
             def serverSocket = Mock(ServerSocket)
             def builder = new ServerBuilder()
             builder.withServerSocket(serverSocket).withMultiConnectionBuilder(connectionBuilder)
@@ -57,7 +57,7 @@ public class ServerBuilderSpec extends Specification {
 
     def "ServerBuilder should throw exception if ReusableConnectionBuilder is set when alread extant"() {
         given: "A ServerBuilder with a ReusableConnectionBuilder"
-            def serverSocket = Mock(ConnectionBuilder)
+            def serverSocket = Mock(MultiConnectionBuilder)
             def builder = new ServerBuilder()
             builder.withMultiConnectionBuilder(serverSocket)
 
@@ -70,7 +70,7 @@ public class ServerBuilderSpec extends Specification {
 
     def "ServerBuilder should pass contextual tasks to built server"() {
         given: "A ServerBuilder with a ServerSocket and ReusableConnectionBuilder"
-            def connectionBuilder = Mock(ConnectionBuilder)
+            def connectionBuilder = Mock(MultiConnectionBuilder)
             def serverSocket = Mock(ServerSocket)
             def builder = new ServerBuilder()
             def callbacks = Mock(Iterable)
@@ -85,7 +85,7 @@ public class ServerBuilderSpec extends Specification {
 
     def "ServerBuilder should pass Connection Added callbacks to built server"() {
         given: "A ServerBuilder with a ServerSocket and ReusableConnectionBuilder"
-            def connectionBuilder = Mock(ConnectionBuilder)
+            def connectionBuilder = Mock(MultiConnectionBuilder)
             def serverSocket = Mock(ServerSocket)
             def builder = new ServerBuilder()
             def callbacks = Mock(Iterable)
@@ -100,7 +100,7 @@ public class ServerBuilderSpec extends Specification {
 
     def "ServerBuilder should pass Connection Removed callbacks to built server"() {
         given: "A ServerBuilder with a ServerSocket and ReusableConnectionBuilder"
-            def connectionBuilder = Mock(ConnectionBuilder)
+            def connectionBuilder = Mock(MultiConnectionBuilder)
             def serverSocket = Mock(ServerSocket)
             def builder = new ServerBuilder()
             def callbacks = Mock(Iterable)
@@ -115,7 +115,7 @@ public class ServerBuilderSpec extends Specification {
 
     def "ServerBuilder should pass Startup callbacks to built server"() {
         given: "A ServerBuilder with a ServerSocket and ReusableConnectionBuilder"
-            def connectionBuilder = Mock(ConnectionBuilder)
+            def connectionBuilder = Mock(MultiConnectionBuilder)
             def serverSocket = Mock(ServerSocket)
             def builder = new ServerBuilder()
             def callbacks = Mock(Iterable)
@@ -130,7 +130,7 @@ public class ServerBuilderSpec extends Specification {
 
     def "ServerBuilder should pass Shutdown callbacks to built server"() {
         given: "A ServerBuilder with a ServerSocket and ReusableConnectionBuilder"
-            def connectionBuilder = Mock(ConnectionBuilder)
+            def connectionBuilder = Mock(MultiConnectionBuilder)
             def serverSocket = Mock(ServerSocket)
             def builder = new ServerBuilder()
             def callbacks = Mock(Iterable)

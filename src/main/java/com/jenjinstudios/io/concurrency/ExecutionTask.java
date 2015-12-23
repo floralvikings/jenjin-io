@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 public class ExecutionTask<T extends ExecutionContext> implements Runnable
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExecutionTask.class);
-    private final MessageQueue<T> messageQueue;
+    private final MessageQueue messageQueue;
     private final T executionContext;
     private final Collection<Consumer<T>> contextualTasks;
 
@@ -28,7 +28,7 @@ public class ExecutionTask<T extends ExecutionContext> implements Runnable
      * @param executionContext The context in which messages should execute.
      * @param contextualTasks Tasks which should be invoked in synchronous fashion with the execution context.
      */
-    public ExecutionTask(MessageQueue<T> messageQueue, T executionContext, Collection<Consumer<T>> contextualTasks)
+    public ExecutionTask(MessageQueue messageQueue, T executionContext, Collection<Consumer<T>> contextualTasks)
     {
         this.messageQueue = messageQueue;
         this.executionContext = executionContext;
@@ -52,11 +52,6 @@ public class ExecutionTask<T extends ExecutionContext> implements Runnable
                 }
                 consumer.accept(executionContext);
             });
-        });
-        long currentTime = System.currentTimeMillis();
-        messageQueue.getRecurringTasks().stream().filter(task -> task.shouldExecute(currentTime)).forEach(task -> {
-            task.execute(executionContext);
-            task.done();
         });
     }
 }
