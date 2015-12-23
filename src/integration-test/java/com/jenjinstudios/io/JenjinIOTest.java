@@ -54,7 +54,7 @@ public final class JenjinIOTest
 
     private static final int PORT = 51015;
     private static final String LOCALHOST = "127.0.0.1";
-    private static final int BLOCK_TIME = 500;
+    private static final int BLOCK_TIME = 1000;
 
     private Server server;
 
