@@ -10,13 +10,14 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+
+import static java.util.Collections.emptyList;
 
 /**
  * Used for making connections so that Message objects can be read, written, and executed in a non-blocking fashion.
@@ -28,7 +29,7 @@ public class Connection<C extends ExecutionContext>
     private static final Logger LOGGER = LoggerFactory.getLogger(Connection.class);
     private final String id = UUID.randomUUID().toString();
     private final BiConsumer<Connection, Throwable> errorCallback;
-    private final MessageQueue messageQueue;
+    private final MessageQueue<C> messageQueue;
     private final ScheduledExecutorService executor;
     private final C context;
     private final MessageReader messageReader;
@@ -45,7 +46,7 @@ public class Connection<C extends ExecutionContext>
      */
     Connection(C context, MessageReader messageReader, MessageWriter messageWriter)
     {
-        this(context, messageReader, messageWriter, null, Collections.emptyList(), Collections.emptyList());
+        this(context, messageReader, messageWriter, null, emptyList(), emptyList(), emptyList());
     }
 
     /**
@@ -62,7 +63,8 @@ public class Connection<C extends ExecutionContext>
           MessageWriter messageWriter,
           BiConsumer<Connection, Throwable> errorCallback,
           Collection<Consumer<C>> contextualTasks,
-          Collection<Consumer<Connection>> shutdownCallbacks)
+          Collection<Consumer<Connection>> shutdownCallbacks,
+          Collection<RecurringTask<C>> recurringTasks)
     {
         this.contextualTasks = contextualTasks;
         this.shutdownCallbacks = shutdownCallbacks;
@@ -70,7 +72,7 @@ public class Connection<C extends ExecutionContext>
         this.context = context;
         this.messageReader = messageReader;
         this.messageWriter = messageWriter;
-        messageQueue = new MessageQueue();
+        messageQueue = new MessageQueue<>(recurringTasks);
         this.errorCallback = errorCallback;
     }
 
@@ -81,7 +83,7 @@ public class Connection<C extends ExecutionContext>
         Runnable executionTask = new ExecutionTask(messageQueue, context, contextualTasks);
         Runnable writeTask = new WriteTask(messageQueue, messageWriter);
         Runnable readTask = new ReadTask(messageQueue, messageReader);
-        Runnable errorTask = new ErrorTask(messageQueue, this::errorEncountered);
+        Runnable errorTask = new ErrorTask<>(messageQueue, this::errorEncountered);
 
         executor.scheduleWithFixedDelay(errorTask, 0, 10, TimeUnit.MILLISECONDS);
         executor.scheduleWithFixedDelay(readTask, 0, 10, TimeUnit.MILLISECONDS);
