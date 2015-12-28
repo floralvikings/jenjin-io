@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class RecurringTask<T extends ExecutionContext>
 {
+    private boolean cancelled;
     private final long interval;
     private long lastExecutionTime;
 
@@ -49,7 +50,16 @@ public abstract class RecurringTask<T extends ExecutionContext>
      */
     public abstract void execute(T context);
 
-    final boolean shouldExecute(long currentTime) { return (currentTime - lastExecutionTime) >= interval; }
+    /**
+     * Cancel this task; after this method is called, the task will not be run again.
+     */
+    public void cancel() { cancelled = true; }
+
+    public boolean isCancelled() { return cancelled; }
+
+    final boolean shouldExecute(long currentTime) {
+        return !cancelled && ((currentTime - lastExecutionTime) >= interval);
+    }
 
     final void done() { lastExecutionTime = System.currentTimeMillis(); }
 }
