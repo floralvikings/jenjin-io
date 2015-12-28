@@ -27,8 +27,7 @@ public abstract class RecurringTask<T extends ExecutionContext>
      *
      * @param timeUnit The time unit that should pass between each execution.  Note that no time unit will ever cause
      * this task to be executed faster that once per millisecond.  Also note that this specifies the <i>minimum</i>
-     * unit
-     * of time that must pass before the next time this task executes.
+     * unit of time that must pass before the next time this task executes.
      */
     public RecurringTask(TimeUnit timeUnit) { this(timeUnit.toMillis(1)); }
 
