@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Represents a task with access to an ExecutionContext that should be repeated at a given interval until it is
- * canceled.
+ * cancelled.
  *
  * @author Caleb Brinkman
  */
