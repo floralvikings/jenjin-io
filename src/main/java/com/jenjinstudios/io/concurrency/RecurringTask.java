@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 public abstract class RecurringTask<T extends ExecutionContext>
 {
     private boolean cancelled;
+    private boolean paused;
     private final long interval;
     private long lastExecutionTime;
 
@@ -57,8 +58,20 @@ public abstract class RecurringTask<T extends ExecutionContext>
 
     public boolean isCancelled() { return cancelled; }
 
+    public boolean isPaused() { return paused; }
+
+    /**
+     * Pause this task; it will not be executed again until it is resumed.
+     */
+    public void pause() { paused = true; }
+
+    /**
+     * Resume this task; if it is currently paused, it will begin executing at it's regular interval again.
+     */
+    public void resume() { paused = false; }
+
     final boolean shouldExecute(long currentTime) {
-        return !cancelled && ((currentTime - lastExecutionTime) >= interval);
+        return !cancelled && !paused && ((currentTime - lastExecutionTime) >= interval);
     }
 
     final void done() { lastExecutionTime = System.currentTimeMillis(); }
