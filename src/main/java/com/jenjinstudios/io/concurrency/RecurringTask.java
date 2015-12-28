@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class RecurringTask<T extends ExecutionContext>
 {
+    private boolean skipped;
     private boolean cancelled;
     private boolean paused;
     private final long interval;
@@ -59,6 +60,8 @@ public abstract class RecurringTask<T extends ExecutionContext>
 
     public boolean isPaused() { return paused; }
 
+    public boolean isSkipped() { return skipped; }
+
     /**
      * Pause this task; it will not be executed again until it is resumed.
      */
@@ -69,8 +72,18 @@ public abstract class RecurringTask<T extends ExecutionContext>
      */
     public void resume() { paused = false; }
 
+    /**
+     * Skip the next execution of this task.
+     */
+    public void skip() { skipped = true; }
+
     final boolean shouldExecute(long currentTime) {
-        return !cancelled && !paused && ((currentTime - lastExecutionTime) >= interval);
+        boolean shouldExecute = !cancelled;
+        shouldExecute &= !paused;
+        shouldExecute &= !skipped;
+        shouldExecute &= (currentTime - lastExecutionTime) >= interval;
+        skipped = false;
+        return shouldExecute;
     }
 
     final void done() { lastExecutionTime = System.currentTimeMillis(); }
