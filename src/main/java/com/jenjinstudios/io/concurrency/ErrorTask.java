@@ -1,5 +1,6 @@
 package com.jenjinstudios.io.concurrency;
 
+import com.jenjinstudios.io.ExecutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,10 +12,10 @@ import java.util.function.Consumer;
  *
  * @author Caleb Brinkman
  */
-public class ErrorTask implements Runnable
+public class ErrorTask<T extends ExecutionContext> implements Runnable
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ErrorTask.class);
-    private final MessageQueue messageQueue;
+    private final MessageQueue<T> messageQueue;
     private final Consumer<Throwable> errorCallback;
 
     /**
@@ -23,7 +24,7 @@ public class ErrorTask implements Runnable
      * @param messageQueue The MessageQueue.
      * @param errorCallback A Consumable to be called when an error is encountered.
      */
-    public ErrorTask(MessageQueue messageQueue, Consumer<Throwable> errorCallback) {
+    public ErrorTask(MessageQueue<T> messageQueue, Consumer<Throwable> errorCallback) {
         this.messageQueue = messageQueue;
         this.errorCallback = errorCallback;
     }

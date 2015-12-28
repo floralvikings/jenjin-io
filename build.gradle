@@ -14,7 +14,7 @@ plugins {
 
 description = 'Jenjin Core IO API'
 group = 'com.jenjinstudios'
-version = '0.4.0-alpha'
+version = '1.0.0'
 
 // Core plugins
 apply plugin: 'java'
