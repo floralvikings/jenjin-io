@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * Queues incoming and outgoing messages in a thread-safe manner.
@@ -116,6 +115,7 @@ public class MessageQueue<T extends ExecutionContext>
     }
 
     public Collection<RecurringTask<T>> getRecurringTasks() {
+        recurringTasks.removeIf(RecurringTask::isCancelled);
         return Collections.unmodifiableCollection(recurringTasks);
     }
 }
