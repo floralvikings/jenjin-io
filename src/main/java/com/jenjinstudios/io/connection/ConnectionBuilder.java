@@ -2,6 +2,7 @@ package com.jenjinstudios.io.connection;
 
 import com.jenjinstudios.io.*;
 import com.jenjinstudios.io.concurrency.RecurringTask;
+import com.jenjinstudios.io.concurrency.RecurringTaskFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,6 +24,7 @@ public class ConnectionBuilder<T extends ExecutionContext>
     private final Collection<Consumer<Connection<T>>> shutdownCallbacks = new LinkedList<>();
     private final Collection<Consumer<T>> contextualTasks = new LinkedList<>();
     private final Collection<RecurringTask<T>> recurringTasks = new LinkedList<>();
+    private final Collection<RecurringTaskFactory<T>> recurringTaskFactories = new LinkedList<>();
     private ExecutionContextFactory<T> executionContextFactory;
     private BiConsumer<Connection<T>, Throwable> errorCallback;
     private MessageReaderFactory readerFactory;
@@ -62,6 +64,9 @@ public class ConnectionBuilder<T extends ExecutionContext>
      * @return The built connection.
      */
     public Connection<T> build(MessageReader reader, MessageWriter writer) {
+        Collection<RecurringTask<T>> recurring = new LinkedList<>(this.recurringTasks);
+        recurringTaskFactories.forEach(factory -> recurring.add(factory.createInstance()));
+
         return new Connection(
               executionContextFactory.createInstance(),
               reader,
@@ -69,7 +74,7 @@ public class ConnectionBuilder<T extends ExecutionContext>
               errorCallback,
               contextualTasks,
               shutdownCallbacks,
-              recurringTasks
+              recurring
         );
     }
 
@@ -193,6 +198,18 @@ public class ConnectionBuilder<T extends ExecutionContext>
         } else {
             throw new IllegalStateException("Execution context is already set");
         }
+        return this;
+    }
+
+    /**
+     * Specify factories which generate recurring tasks.  Useful for builders which will create multiple connections.
+     *
+     * @param factories The factories.
+     *
+     * @return This ConnectionBuilder.
+     */
+    public ConnectionBuilder<T> withRecurringTaskFactories(RecurringTaskFactory<T>... factories) {
+        Collections.addAll(recurringTaskFactories, factories);
         return this;
     }
 }

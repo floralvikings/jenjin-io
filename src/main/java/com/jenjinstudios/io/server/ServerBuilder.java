@@ -33,7 +33,7 @@ public class ServerBuilder<T extends ExecutionContext>
      *
      * @throws IllegalStateException If the ServerSocket or ReusableConnectionBuilder are not set.
      */
-    public Server build() {
+    public Server<T> build() {
         if (serverSocket == null) {
             throw new IllegalStateException("ServerSocket must be set to build server");
         }
