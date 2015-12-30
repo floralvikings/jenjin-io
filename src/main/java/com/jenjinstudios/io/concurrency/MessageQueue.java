@@ -18,7 +18,6 @@ public class MessageQueue<T extends ExecutionContext>
     private final Collection<RecurringTask<T>> recurringTasks = new LinkedList<>();
     private final Collection<Message> incoming = new LinkedList<>();
     private final Collection<Message> outgoing = new LinkedList<>();
-    private final Collection<Throwable> errors = new LinkedList<>();
 
     /**
      * Construct a new MessageQueue.
