@@ -28,16 +28,4 @@ class MessageQueueSpec extends Specification{
             queue.getOutgoingAndClear().size() == 1
             queue.getOutgoingAndClear().size() == 0
     }
-
-    def "After calling getErrorsAndClear, error list should be empty"() {
-        def throwable = Mock(Throwable)
-        def queue = new MessageQueue()
-
-        when:
-            queue.errorEncountered(throwable)
-
-        then:
-            queue.getErrorsAndClear().size() == 1
-            queue.getErrorsAndClear().size() == 0
-    }
 }

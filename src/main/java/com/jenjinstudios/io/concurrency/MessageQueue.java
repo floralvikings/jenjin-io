@@ -89,31 +89,6 @@ public class MessageQueue<T extends ExecutionContext>
         return temp;
     }
 
-    /**
-     * Indicate than an exception has occurred and store the exception in the queue.
-     *
-     * @param throwable The exception.
-     */
-    public void errorEncountered(Throwable throwable) {
-        synchronized (errors) {
-            errors.add(throwable);
-        }
-    }
-
-    /**
-     * Get any errors reported to this queue and clear the internal list.
-     *
-     * @return A List of errors reported to this queue.
-     */
-    public List<Throwable> getErrorsAndClear() {
-        List<Throwable> temp;
-        synchronized (errors) {
-            temp = new LinkedList<>(errors);
-            errors.clear();
-        }
-        return temp;
-    }
-
     public Collection<RecurringTask<T>> getRecurringTasks() {
         recurringTasks.removeIf(RecurringTask::isCancelled);
         return Collections.unmodifiableCollection(recurringTasks);
