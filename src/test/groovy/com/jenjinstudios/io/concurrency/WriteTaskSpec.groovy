@@ -40,23 +40,4 @@ public class WriteTaskSpec extends Specification {
             0 * writer.write(_)
 
     }
-
-    def "When an error is encountered, an error should be passed to the MessageQueue"() {
-        given:
-            def queue = Mock(MessageQueue)
-            def message = Mock(Message);
-            queue.outgoingAndClear >> [message]
-            def writer = Mock(MessageWriter)
-            def exception = Mock(IOException)
-            def task = new WriteTask(queue, writer);
-
-        when:
-            writer.write(message) >> { throw exception }
-        and:
-            task.run()
-
-        then:
-            1 * queue.errorEncountered(exception)
-
-    }
 }

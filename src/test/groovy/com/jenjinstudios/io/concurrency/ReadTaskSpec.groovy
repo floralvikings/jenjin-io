@@ -19,21 +19,4 @@ class ReadTaskSpec extends Specification {
         then:
             1 * queue.messageReceived(message)
     }
-
-    def "When an error is encountered, an error should be passed to the MessageQueue"() {
-        given:
-            def queue = Mock(MessageQueue)
-            def reader = Mock(MessageReader)
-            def exception = Mock(IOException)
-            def task = new ReadTask(queue, reader);
-
-        when:
-            reader.read() >> { throw exception }
-        and:
-            task.run()
-
-        then:
-            1 * queue.errorEncountered(exception)
-
-    }
 }

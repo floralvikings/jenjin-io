@@ -41,12 +41,12 @@ public class WriteTask<T extends ExecutionContext> implements Runnable
                 }
                 messageWriter.write(message);
             } catch (IOException e) {
-                messageQueue.errorEncountered(e);
                 try {
                     messageWriter.close();
                 } catch (IOException e1) {
                     LOGGER.warn("Error when closing message writer", e1);
                 }
+                throw new ConcurrentException(e);
             }
         });
     }

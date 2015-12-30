@@ -2,6 +2,9 @@ package com.jenjinstudios.io.concurrency
 
 import spock.lang.Specification
 
+import java.util.concurrent.ExecutionException
+import java.util.concurrent.Future
+import java.util.concurrent.ScheduledFuture
 import java.util.function.Consumer
 
 /**
@@ -12,32 +15,32 @@ import java.util.function.Consumer
 class ErrorTaskSpec extends Specification {
 
     def "Error task should invoke callback when error encountered"() {
-        def messageQueue = Mock(MessageQueue)
+        def future = Mock(ScheduledFuture)
         def consumer = Mock(Consumer)
-        def throwable = Mock(Throwable)
+        def throwable = Mock(ExecutionException)
 
-        def errorTask = new ErrorTask(messageQueue, consumer)
+        def errorTask = new ErrorTask(future, consumer)
 
         when:
             errorTask.run()
 
         then:
-            1 * messageQueue.getErrorsAndClear() >> [throwable]
+            1 * future.get() >> { throw throwable } >> ""
             1 * consumer.accept(throwable)
     }
 
     def "Error task should not invoke callback when no error encountered"() {
-        def messageQueue = Mock(MessageQueue)
+        def future = Mock(ScheduledFuture)
         def consumer = Mock(Consumer)
         def throwable = Mock(Throwable)
 
-        def errorTask = new ErrorTask(messageQueue, consumer)
+        def errorTask = new ErrorTask(future, consumer)
 
         when:
             errorTask.run()
 
         then:
-            1 * messageQueue.getErrorsAndClear() >> []
+            1 * future.get() >> ""
             0 * consumer.accept(throwable)
     }
 }

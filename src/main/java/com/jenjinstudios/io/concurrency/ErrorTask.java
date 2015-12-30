@@ -1,44 +1,50 @@
 package com.jenjinstudios.io.concurrency;
 
-import com.jenjinstudios.io.ExecutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.EOFException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ScheduledFuture;
 import java.util.function.Consumer;
 
 /**
- * Checks for errors, and raises a flag if necessary.
+ * Checks a given ScheduledFuture for errors, invoking a callback with the error if one is encountered.
  *
  * @author Caleb Brinkman
  */
-public class ErrorTask<T extends ExecutionContext> implements Runnable
+public class ErrorTask implements Runnable
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ErrorTask.class);
-    private final MessageQueue<T> messageQueue;
     private final Consumer<Throwable> errorCallback;
+    private final ScheduledFuture future;
 
     /**
-     * Construct a new ErrorTask that will utilize the given MessageQueue.
+     * Construct a new ErrorTask that will monitor the supplied ScheduledFuture for exceptions and invoke the given
+     * callback if one is encountered.
      *
-     * @param messageQueue The MessageQueue.
-     * @param errorCallback A Consumable to be called when an error is encountered.
+     * @param future The ScheduledFuture.
+     * @param errorCallback The callback to be invoked if an exception is encountered.
      */
-    public ErrorTask(MessageQueue<T> messageQueue, Consumer<Throwable> errorCallback) {
-        this.messageQueue = messageQueue;
+    public ErrorTask(ScheduledFuture future, Consumer<Throwable> errorCallback) {
+        this.future = future;
         this.errorCallback = errorCallback;
     }
 
     @Override
     public void run() {
-        messageQueue.getErrorsAndClear().forEach(t -> {
-            if (t instanceof EOFException) {
-                LOGGER.warn("Encountered EOF from MessageQueue; message: {}", t.getLocalizedMessage());
-            } else {
-                LOGGER.warn("Encountered error from MessageQueue", t);
+        Throwable throwable = null;
+        try {
+            future.get();
+        } catch (InterruptedException e) {
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Error Thread Interrupted", e);
             }
-            LOGGER.debug("Invoking error callback function");
-            errorCallback.accept(t);
-        });
+        } catch (ExecutionException e) {
+            LOGGER.error("Encountered ExecutionException", e.getCause());
+            throwable = e;
+        }
+        if (throwable != null) {
+            errorCallback.accept(throwable);
+        }
     }
 }

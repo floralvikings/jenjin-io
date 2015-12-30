@@ -115,7 +115,9 @@ public class Server<T extends ExecutionContext>
                     connectionAddedCallbacks.forEach(consumer -> consumer.accept(connection));
                     connection.start();
                 } else {
-                    LOGGER.warn("ServerSocket returned null connection");
+                    if(LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("ServerSocket returned null connection");
+                    }
                 }
             }
         } catch (SocketException e) {

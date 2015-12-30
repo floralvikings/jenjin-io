@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -68,7 +69,7 @@ public class Connection<C extends ExecutionContext>
     {
         this.contextualTasks = contextualTasks;
         this.shutdownCallbacks = shutdownCallbacks;
-        executor = Executors.newScheduledThreadPool(4);
+        executor = Executors.newScheduledThreadPool(6);
         this.context = context;
         this.messageReader = messageReader;
         this.messageWriter = messageWriter;
@@ -83,12 +84,14 @@ public class Connection<C extends ExecutionContext>
         Runnable executionTask = new ExecutionTask(messageQueue, context, contextualTasks);
         Runnable writeTask = new WriteTask(messageQueue, messageWriter);
         Runnable readTask = new ReadTask(messageQueue, messageReader);
-        Runnable errorTask = new ErrorTask<>(messageQueue, this::errorEncountered);
 
-        executor.scheduleWithFixedDelay(errorTask, 0, 10, TimeUnit.MILLISECONDS);
-        executor.scheduleWithFixedDelay(readTask, 0, 10, TimeUnit.MILLISECONDS);
-        executor.scheduleWithFixedDelay(writeTask, 0, 10, TimeUnit.MILLISECONDS);
-        executor.scheduleWithFixedDelay(executionTask, 0, 10, TimeUnit.MILLISECONDS);
+        final ScheduledFuture<?> read = executor.scheduleWithFixedDelay(readTask, 0, 10, TimeUnit.MILLISECONDS);
+        final ScheduledFuture<?> write = executor.scheduleWithFixedDelay(writeTask, 0, 10, TimeUnit.MILLISECONDS);
+        final ScheduledFuture<?> execute = executor.scheduleWithFixedDelay(executionTask, 0, 10, TimeUnit.MILLISECONDS);
+
+        executor.schedule(new ErrorTask(read, this::errorEncountered), 0, TimeUnit.MILLISECONDS);
+        executor.schedule(new ErrorTask(write, this::errorEncountered), 0, TimeUnit.MILLISECONDS);
+        executor.schedule(new ErrorTask(execute, this::errorEncountered), 0, TimeUnit.MILLISECONDS);
     }
 
     /**

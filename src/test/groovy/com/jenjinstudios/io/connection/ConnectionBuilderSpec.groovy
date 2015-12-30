@@ -38,7 +38,7 @@ public class ConnectionBuilderSpec extends Specification {
             Thread.sleep(100)
 
         then: "Callback should be called with exception and connection"
-            1 * callback.accept(connection, exception)
+            1 * callback.accept(connection, _)
 
         cleanup: "Close connection"
             connection.stop()
